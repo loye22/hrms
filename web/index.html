@@ -31,6 +31,34 @@
 
   <title>hrms</title>
   <link rel="manifest" href="manifest.json">
+  <script type="module">
+    // Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyAv9Ob74QE4fAeFbzMxB-13UtYrerwdzj4",
+  authDomain: "hrms-6c649.firebaseapp.com",
+  projectId: "hrms-6c649",
+  storageBucket: "hrms-6c649.appspot.com",
+  messagingSenderId: "110127987253",
+  appId: "1:110127987253:web:10e85384a44c447dec8f7c",
+  measurementId: "G-7D5EF3B9WJ"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
+  </script>
+
+
+
+
+
 
   <script>
     // The value below is injected by flutter build, do not touch.
@@ -55,5 +83,23 @@
       });
     });
   </script>
+
+
+  <script src="https://www.gstatic.com/firebasejs/7.14.6/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/7.14.6/firebase-analytics.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/7.14.6/firebase-storage.js"></script>
+
+  <script
+          src="https://cdn.jsdelivr.net/npm/pdfjs-dist@2.12.313/build/pdf.js"
+          type="text/javascript"
+  ></script>
+
+
+
+  <script src="//cdnjs.cloudflare.com/ajax/libs/pdf.js/2.4.456/pdf.min.js"></script>
+  <script type="text/javascript">
+   pdfjsLib.GlobalWorkerOptions.workerSrc = "//cdnjs.cloudflare.com/ajax/libs/pdf.js/2.4.456/pdf.worker.min.js";
+</script>
+
 </body>
 </html>

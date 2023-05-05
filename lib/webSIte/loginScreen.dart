@@ -1,6 +1,14 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:hrms/models/gloablVar.dart';
+import 'package:hrms/provider/UserData.dart';
+import 'package:hrms/webSIte/homeScreen.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
+import '../models/Dialog.dart';
 import '../widgets/button.dart';
 import '../widgets/emplyeeCard.dart';
 import '../widgets/inputTxt.dart';
@@ -17,9 +25,9 @@ class loginScreen extends StatefulWidget {
 
 class _loginScreenState extends State<loginScreen> {
   final _key = GlobalKey<FormState>();
-  String _userName = '';
+  String _eamil = '';
   String _passwd = '';
-  var _islogIn = true;
+  bool _isLoading = false;
 
   void _submit() {
     final v = _key.currentState?.validate();
@@ -28,7 +36,7 @@ class _loginScreenState extends State<loginScreen> {
       _key.currentState?.save();
       FocusScope.of(context).unfocus();
       //log in logic ...
-      print(_passwd + " " + _userName);
+      // print(_passwd + " " + _eamil);
     }
   }
 
@@ -57,148 +65,219 @@ class _loginScreenState extends State<loginScreen> {
           ),
           Center(
               child: Form(
-                key: _key,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    SizedBox(
-                      height: 200,
+            key: _key,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SizedBox(
+                    //        height: 150,
                     ),
-                    Container(
-                      height: 40,
-                      width: 300,
-                      child: TextFormField(
-                        key: ValueKey('username'),
-                        style: TextStyle(color: Colors.white),
-                        keyboardType: TextInputType.emailAddress,
-                        decoration: InputDecoration(
-                          prefixIcon: Icon(Icons.person_outline_outlined,
-                              color: Colors.white),
-                          labelText: 'User name',
-                          labelStyle: TextStyle(color: Colors.white),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(25.0),
-                            borderSide: BorderSide(
-                              color: Colors.white,
-                              width: 2.0,
-                            ),
+                CircleAvatar(
+                  radius: 90,
+                  backgroundImage: AssetImage("assests/momo.jfif"),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                Container(
+                  height: 40,
+                  width: 300,
+                  child: TextFormField(
+                      key: ValueKey('username'),
+                      style: TextStyle(color: Colors.white),
+                      keyboardType: TextInputType.emailAddress,
+                      decoration: InputDecoration(
+                        prefixIcon: Icon(Icons.email, color: Colors.white),
+                        labelText: 'email',
+                        labelStyle: TextStyle(color: Colors.white),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(25.0),
+                          borderSide: BorderSide(
+                            color: Colors.white,
+                            width: 2.0,
                           ),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(25.0),
-                            borderSide: BorderSide(
-                              color: Colors.white,
-                              width: 2.0,
-                            ),
-                          ),
-                          filled: true,
-                          fillColor: Colors.grey.shade200.withOpacity(0.45),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(25.0),
-                            borderSide: BorderSide(
-                              color: Colors.white.withOpacity(0.7),
-                            ),
-                          ),
-                          contentPadding: EdgeInsets.symmetric(
-                              vertical: 10.0, horizontal: 16.0),
                         ),
-                        onSaved: (val) {
-                          if (val!= null) {
-                            val = val?.replaceAll(" ", "").toString();
-                            _userName = val!;
-                          }
-                        },
-                        validator: (val) {
-                          if (val == null){
-                            return;
-                          }
-                      //   val = val?.replaceAll(" ", "").toString();
-
-
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(25.0),
+                          borderSide: BorderSide(
+                            color: Colors.white,
+                            width: 2.0,
+                          ),
+                        ),
+                        filled: true,
+                        fillColor: Colors.grey.shade200.withOpacity(0.45),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(25.0),
+                          borderSide: BorderSide(
+                            color: Colors.white.withOpacity(0.7),
+                          ),
+                        ),
+                        contentPadding: EdgeInsets.symmetric(
+                            vertical: 10.0, horizontal: 16.0),
+                      ),
+                      onSaved: (val) {
+                        if (val != null) {
+                          val = val?.replaceAll(" ", "").toString();
+                          _eamil = val!;
                         }
-                      ),
-                    ),
-                    SizedBox(height: 10),
-                    Container(
-                      height: 40,
-                      width: 300,
-                      child: TextFormField(
-                        key: ValueKey('password'),
-                        style: TextStyle(color: Colors.white),
-                        obscureText: true,
-                        keyboardType: TextInputType.emailAddress,
-                        decoration: InputDecoration(
-                          prefixIcon: Icon(Icons.password, color: Colors.white),
-                          labelText: 'Password',
-                          labelStyle: TextStyle(color: Colors.white),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(25.0),
-                            borderSide: BorderSide(
-                              color: Colors.white,
-                              width: 2.0,
-                            ),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(25.0),
-                            borderSide: BorderSide(
-                              color: Colors.white,
-                              width: 2.0,
-                            ),
-                          ),
-                          filled: true,
-                          fillColor: Colors.grey.shade200.withOpacity(0.45),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(25.0),
-                            borderSide: BorderSide(
-                              color: Colors.white.withOpacity(0.7),
-                            ),
-                          ),
-                          contentPadding: EdgeInsets.symmetric(
-                              vertical: 10.0, horizontal: 16.0),
-                        ),
-                        onSaved: (val) {
-                          if (val != null) {
-                            //val = val?.replaceAll(" ", "").toString();
-                            _passwd = val;
-                          }
-                        },
-                      ),
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Container(
-                      height: 50,
-                      child: Center(
-                        child: Button(
-                          txt: "Log in ",
-                          icon: Icons.login,
-                          isSelected: true,
-                          onPress: () {
-                            _submit();
-                          },
-
+                      },
+                      validator: (val) {
+                        if (val == null) {
+                          return;
+                        }
+                        //   val = val?.replaceAll(" ", "").toString();
+                      }),
+                ),
+                SizedBox(height: 10),
+                Container(
+                  height: 40,
+                  width: 300,
+                  child: TextFormField(
+                    key: ValueKey('password'),
+                    style: TextStyle(color: Colors.white),
+                    obscureText: true,
+                    keyboardType: TextInputType.emailAddress,
+                    decoration: InputDecoration(
+                      prefixIcon: Icon(Icons.password, color: Colors.white),
+                      labelText: 'Password',
+                      labelStyle: TextStyle(color: Colors.white),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(25.0),
+                        borderSide: BorderSide(
+                          color: Colors.white,
+                          width: 2.0,
                         ),
                       ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(25.0),
+                        borderSide: BorderSide(
+                          color: Colors.white,
+                          width: 2.0,
+                        ),
+                      ),
+                      filled: true,
+                      fillColor: Colors.grey.shade200.withOpacity(0.45),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(25.0),
+                        borderSide: BorderSide(
+                          color: Colors.white.withOpacity(0.7),
+                        ),
+                      ),
+                      contentPadding: EdgeInsets.symmetric(
+                          vertical: 10.0, horizontal: 16.0),
                     ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    /* Container(
+                    onSaved: (val) {
+                      if (val != null) {
+                        //val = val?.replaceAll(" ", "").toString();
+                        _passwd = val;
+                      }
+                    },
+                  ),
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                Container(
                   height: 50,
                   child: Center(
-                    child: Button(
-                      txt: "Sing Up ",
-                      icon: Icons.add,
-                      isSelected: true,
-                      onPress: () {},
-                    ),
+                    child: _isLoading
+                        ? CircularProgressIndicator()
+                        : Button(
+                            txt: "Log in ",
+                            icon: Icons.login,
+                            isSelected: true,
+                            onPress: () async {
+                              try {
+                                _submit();
+                                setState(() {this._isLoading = true;});
+
+                                dynamic res = await signInWithEmailAndPassword(
+                                        _eamil, _passwd, context)
+                                    .then((value) => null);
+
+                              } catch (e) {
+                                String displayMessage = e
+                                    .toString()
+                                    .substring(e.toString().indexOf("]") + 2);
+                                print("error  $e");
+                                if (mounted) {
+                                  MyDialog.showAlert(
+                                      context, '$displayMessage');
+                                  setState(() {
+                                    this._isLoading = false;
+                                  });
+                                }
+                              } finally {}
+                            },
+                          ),
                   ),
-                )*/
-                  ],
                 ),
-              )),
+                SizedBox(
+                  height: 10,
+                ),
+              ],
+            ),
+          )),
         ],
       ),
     );
+  }
+
+/*
+  Future<UserCredential> signInWithEmailAndPassword(
+      String email, String password) async {
+    final FirebaseAuth _auth = FirebaseAuth.instance;
+    UserCredential result = await _auth.signInWithEmailAndPassword(
+      email: email,
+      password: password,
+    );
+    print(result);
+
+
+    return result;
+  }
+
+  */
+
+  Future<UserCredential> signInWithEmailAndPassword(
+      String emaile, String password, BuildContext ctx) async {
+
+    final FirebaseAuth _auth = FirebaseAuth.instance;
+    // Sign in with email and password
+    UserCredential result = await _auth.signInWithEmailAndPassword(
+      email: emaile,
+      password: password,
+    );
+
+    // Retrieve the user's document from Firestore
+    DocumentSnapshot userDoc = await FirebaseFirestore.instance
+        .collection('Adminusers')
+        .doc(result.user!.uid)
+        .get();
+
+    // Set the user's name and email from the document
+    String name = await userDoc.get('userName');
+    String email = await userDoc.get('email');
+    String url = await userDoc.get('photo');
+
+    // Generate a token and store it in the provider
+    String token = await result.user!.getIdToken();
+
+
+    //print("form log in method   "+ url.toString());
+    /*
+    Provider.of<AuthProvider>(ctx, listen: false)
+        .setData(userdataa(email: email, name: name, uri:url ), token);
+*/
+
+    /*
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('userName', name);
+    await prefs.setString('email', email);
+    await prefs.setString('photo', url);
+    await prefs.setString('token', token);*/
+
+    // Return the UserCredential
+    return result;
   }
 }

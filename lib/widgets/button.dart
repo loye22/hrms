@@ -46,7 +46,7 @@ class _ButtonState extends State<Button> {
                     color: Colors.white,
                   ),
                   SizedBox(width: 20,),
-                  Text(this.widget.txt.toString() , style: TextStyle(color: Colors.white),)
+                  Expanded(child: Text(this.widget.txt.toString() , style: TextStyle(color: Colors.white),))
                 ],
               )),
         ),

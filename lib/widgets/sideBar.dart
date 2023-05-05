@@ -1,6 +1,12 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:hrms/webSIte/companyDocScreen.dart';
+import 'package:hrms/webSIte/homeScreen.dart';
 
+import '../webSIte/employeesPage.dart';
+import '../webSIte/shiftScedual.dart';
+import '../webSIte/timeOffMangeScreen.dart';
 import 'button.dart';
 
 class sideBar extends StatefulWidget {
@@ -53,6 +59,9 @@ class _sideBarState extends State<sideBar> {
               txt: "Dashboard",
               onPress: () {
                 _handleButtonTap(0);
+                if(mounted){
+                  Navigator.of(context).pushNamed(homeScreen.routeName);
+                }
               },
               isSelected: _selectedButtonIndex == 0,
             ),
@@ -61,9 +70,10 @@ class _sideBarState extends State<sideBar> {
             ),
             Button(
               icon: Icons.person,
-              txt: "Add Employee",
+              txt: "Employee",
               onPress: () {
                 _handleButtonTap(1);
+                Navigator.pushNamed(context, employeesPage.routeName);
               },
               isSelected: _selectedButtonIndex == 1,
             ),
@@ -86,6 +96,10 @@ class _sideBarState extends State<sideBar> {
               txt: "Shifts schedule",
               onPress: () {
                 _handleButtonTap(3);
+                if(mounted){
+                  Navigator.of(context).pushNamed(shiftScedual.routeName);
+                }
+
               },
               isSelected: _selectedButtonIndex == 3,
             ),
@@ -130,6 +144,11 @@ class _sideBarState extends State<sideBar> {
               txt: "Company documents",
               onPress: () {
                 _handleButtonTap(7);
+                  if(mounted){
+                    Navigator.of(context).pushNamed(companyDocScreen.routeName);
+                  }
+
+
               },
               isSelected: _selectedButtonIndex == 7,
             ),
@@ -144,12 +163,24 @@ class _sideBarState extends State<sideBar> {
               },
               isSelected: _selectedButtonIndex == 8,
             ),
+            SizedBox(height: this.spaceBetween,) ,
+            Button(
+              icon: Icons.timelapse,
+              txt: "Time off manger",
+              onPress: () {
+                _handleButtonTap(9);
+                Navigator.of(context).pushNamed(timeOffMangeScreen.routeName);
+              },
+              isSelected: _selectedButtonIndex == 8,
+            ),
             SizedBox(height: 90,) ,
             Button(
               icon: Icons.login_outlined,
               txt: "Log out",
-              onPress: () {
-                _handleButtonTap(9);
+              onPress: () async {
+                _handleButtonTap(10);
+                await FirebaseAuth.instance.signOut();
+
               },
               isSelected: _selectedButtonIndex == 9,
             ),

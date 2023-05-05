@@ -3,6 +3,12 @@
 #
 
 list(APPEND FLUTTER_PLUGIN_LIST
+  flutter_localization
+  native_pdf_renderer
+  permission_handler_windows
+  syncfusion_pdfviewer_windows
+  url_launcher_windows
+  webview_windows
 )
 
 list(APPEND FLUTTER_FFI_PLUGIN_LIST

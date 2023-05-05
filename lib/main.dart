@@ -1,13 +1,45 @@
+import 'dart:ui';
+
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
+
+import 'package:hrms/provider/UserData.dart';
+
+import 'package:hrms/provider/employeeProfileProvider.dart';
+import 'package:hrms/webSIte/addNewEmployeeScreen.dart';
+import 'package:hrms/webSIte/companyDocAdd.dart';
+import 'package:hrms/webSIte/companyDocScreen.dart';
+import 'package:hrms/webSIte/employeesPage.dart';
+import 'package:hrms/webSIte/emplyeeProfile.dart';
+
+
 
 import 'package:hrms/webSIte/homeScreen.dart';
 import 'package:hrms/webSIte/loginScreen.dart';
+import 'package:hrms/webSIte/shiftScedual.dart';
 import 'package:hrms/webSIte/singUpScreen.dart';
-import 'package:responsive_builder/responsive_builder.dart';
+import 'package:hrms/webSIte/timeOffMangeScreen.dart';
+import 'package:hrms/webSIte/weekEndMangerScreen.dart';
+import 'package:provider/provider.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
-import 'mobile/mobileScreen.dart';
 
-void main() {
+
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+      options: FirebaseOptions(
+    apiKey: "AIzaSyAv9Ob74QE4fAeFbzMxB-13UtYrerwdzj4",
+    appId: "1:110127987253:web:10e85384a44c447dec8f7c",
+    messagingSenderId: "110127987253",
+    projectId: "hrms-6c649",
+    storageBucket: "myapp.appspot.com",
+  ));
+
+
+
   runApp(const MyApp());
 }
 
@@ -21,8 +53,59 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: singUpScreen(),
-    ) ;
+    if (kIsWeb) {
+      return MultiProvider(
+        providers: [
+          ChangeNotifierProvider<AuthProvider>(
+            create: (_) => AuthProvider(),
+          ),
+          ChangeNotifierProvider<EmployeeProfilesProvider>( create: (_) => EmployeeProfilesProvider(),)
+        ],
+        child: MaterialApp(
+          scrollBehavior: MaterialScrollBehavior().copyWith(
+            dragDevices: {
+              PointerDeviceKind.mouse,
+              PointerDeviceKind.touch,
+              PointerDeviceKind.stylus,
+              PointerDeviceKind.unknown
+            },
+          ),
+          home: StreamBuilder(
+            stream: FirebaseAuth.instance.authStateChanges(),
+            builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+              if (snapshot.hasData) {
+              //  print(snapshot.data.uid);
+                //Provider.of<AuthProvider>(context, listen: false).setUid(snapshot.data.uid);
+              //  global.set(snapshot.data.uid);
+                return shiftScedual();
+              } else {
+                return loginScreen();
+              }
+            },
+
+          ),
+          routes: {
+            loginScreen.routeName: (ctx) => loginScreen(),
+            singUpScreen.routeName: (ctx) => singUpScreen(),
+            homeScreen.routeName: (ctx) => homeScreen(),
+            companyDocAdd.routeName: (ctx) => companyDocAdd(),
+            companyDocScreen.routeName: (ctx) => companyDocScreen(),
+            addNewEmployeeScreen.routeName: (ctx) => addNewEmployeeScreen(),
+            weekEndMangerScreen.routeName: (ctx) => weekEndMangerScreen(),
+            employeesPage.routeName: (ctx) => employeesPage(),
+            emplyeeProfile.routeName: (ctx) => emplyeeProfile(),
+            timeOffMangeScreen.routeName: (ctx) => timeOffMangeScreen(),
+            shiftScedual.routeName: (ctx) => shiftScedual(),
+          },
+        ),
+      );
+    }
+
+    else {
+      return MaterialApp(
+        home: Scaffold(),
+        routes: {},
+      );
+    }
   }
 }

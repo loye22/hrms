@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 import 'button.dart';
@@ -20,6 +21,7 @@ class _AddWeekendFormState extends State<AddWeekendForm> {
     'Saturday',
     'Sunday'
   ];
+  bool isLoding = false ;
 
   void _onTitleChanged(String value) {
     setState(() {
@@ -43,6 +45,8 @@ class _AddWeekendFormState extends State<AddWeekendForm> {
     });
   }
 
+
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -60,6 +64,7 @@ class _AddWeekendFormState extends State<AddWeekendForm> {
             child: Container(
               decoration: BoxDecoration(
                 // borderRadius: BorderRadius.circular(30),
+                borderRadius: BorderRadius.all(Radius.circular(30)),
                 border: Border.all(color: Colors.white.withOpacity(0.13)),
                 color: Colors.grey.shade200.withOpacity(0.25),
               ),
@@ -67,7 +72,7 @@ class _AddWeekendFormState extends State<AddWeekendForm> {
           ),
           Container(
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(10)),
+              borderRadius: BorderRadius.all(Radius.circular(30)),
               border: Border.all(color: Colors.white.withOpacity(0.13)),
               color: Colors.grey.shade200.withOpacity(0.23),
             ),
@@ -133,30 +138,44 @@ class _AddWeekendFormState extends State<AddWeekendForm> {
                 width: 120,
                 height: 50,
                 child: Center(
-                    child: Button(
+                    child:isLoding ? CircularProgressIndicator() :  Button(
                   txt: 'submit',
                   icon: Icons.subdirectory_arrow_left,
                   isSelected: true,
-                  onPress: () {
+                  onPress: () async {
                     if(title == '' || description == '' || selectedDays == []){
                       Navigator.pop(context);
                       return ;
                     }
                     try{
-                      print(title  + " " +  description  + " " +  selectedDays.toString());
+                      setState(() {isLoding = true ; });
+                      FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+                      // Create a new document with an auto-generated ID
+                      DocumentReference docRef = await firestore.collection('weekEnd').add({
+                        'title': title,
+                        'description': description,
+                        'days': selectedDays,
+                      });
+                      setState(() {isLoding = false ; });
+                      //print(title  + " " +  description  + " " +  selectedDays.toString());
+
+
 
 
                     }
                     catch(e){
+                      print(e);
 
                     }
                     finally{
+                      setState(() {isLoding = false ; });
                       Navigator.pop(context);
                     }
 
 
                   },
-                ))),
+                ),),),
           ),
         ],
       ),
