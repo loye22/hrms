@@ -1,5 +1,4 @@
 import 'dart:html';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:data_table_2/data_table_2.dart';
 import 'package:flutter/cupertino.dart';
@@ -13,6 +12,7 @@ import 'package:intl/intl.dart';
 class shiftScedual extends StatefulWidget {
   static const routeName = '/shiftScedual';
   List<Map<String, dynamic>> employeesData2 = [];
+
 
   shiftScedual({Key? key}) : super(key: key);
 
@@ -141,7 +141,9 @@ class _shiftScedualState extends State<shiftScedual> {
                                 'Abu Dabi'; // to save the  Abu Dabi/ajman
                             String v2 = 'On duty'; // On duty/Off
 
-                            setState(() {});
+
+                            List<String> Branchs = await this.getBranchTitles();
+                            print(Branchs);
 
                             dynamic x = await showDialog(
                               context: context,
@@ -226,7 +228,7 @@ class _shiftScedualState extends State<shiftScedual> {
                                                     v2 = value!;
                                                     //widget.onSelectedItems();
                                                   },
-                                                  items: ['Abu Dabi', 'ajman']
+                                                  items:Branchs
                                                       .map((String value) {
                                                     return DropdownMenuItem<
                                                         String>(
@@ -321,6 +323,8 @@ class _shiftScedualState extends State<shiftScedual> {
       employeesData.add(employee);
     });
 
+
+
     return employeesData;
   }
 
@@ -335,6 +339,7 @@ class _shiftScedualState extends State<shiftScedual> {
       String title = data?['title'] ?? 'Default Title';
       titles.add(title);
     });
+
 
     return titles;
   }
