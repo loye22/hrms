@@ -13,7 +13,6 @@ class shiftScedual extends StatefulWidget {
   static const routeName = '/shiftScedual';
   List<Map<String, dynamic>> employeesData2 = [];
 
-
   shiftScedual({Key? key}) : super(key: key);
 
   @override
@@ -21,6 +20,8 @@ class shiftScedual extends StatefulWidget {
 }
 
 class _shiftScedualState extends State<shiftScedual> {
+  Map<String, dynamic> workingTimes = {};
+
   @override
   Widget build(BuildContext context) {
     List<String> weekdays =
@@ -99,9 +100,11 @@ class _shiftScedualState extends State<shiftScedual> {
                       widget.employeesData2 = f.data!;
                     }
 
-                    return EmployeeCalendarWidget(
-                      employeeData: widget.employeesData2,
-                    );
+                    return MediaQuery.of(context).size.width <= 1400
+                        ? Container()
+                        : EmployeeCalendarWidget(
+                            employeeData: widget.employeesData2,
+                          );
                   }
                 },
               ),
@@ -120,172 +123,255 @@ class _shiftScedualState extends State<shiftScedual> {
                 width: MediaQuery.of(context).size.width - 650 > 0
                     ? MediaQuery.of(context).size.width - 650
                     : 500,
-                child: Row(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(right: 10),
-                      child: Button(
-                          icon: Icons.upload,
-                          onPress: () {},
-                          txt: 'Publish',
-                          isSelected: true),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(right: 10),
-                      child: Button(
-                          icon: Icons.schedule,
-                          onPress: () async {
-                            // ['Abu Dabi', 'ajman']
-                            //['On duty', 'Off']
-                            String v1 =
-                                'Abu Dabi'; // to save the  Abu Dabi/ajman
-                            String v2 = 'On duty'; // On duty/Off
+                child: MediaQuery.of(context).size.width <= 1400
+                    ? Container()
+                    : Row(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(right: 10),
+                            child: Button(
+                              txt: 'Publish',
+                              isSelected: true,
+                              icon: Icons.upload,
+                              onPress: () async {
+                                if (widget.employeesData2 == []) return;
 
+                                print(this.workingTimes);
+                              },
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(right: 10),
+                            child: Button(
+                              icon: Icons.schedule,
+                              txt: 'Secdual for all emplyee',
+                              isSelected: true,
+                              onPress: () async {
+                                // ['Abu Dabi', 'ajman']
+                                //['On duty', 'Off']
+                                String v1 = ''; // to save the  Abu Dabi/ajman
+                                String v2 = '';
+                                String v3 = ''; // On duty/Off
 
-                            List<String> Branchs = await this.getBranchTitles();
-                            print(Branchs);
+                                List<String> Branchs =
+                                    await this.getBranchTitles();
 
-                            dynamic x = await showDialog(
-                              context: context,
-                              builder: (BuildContext context) => AlertDialog(
-                                  backgroundColor: Colors.transparent,
-                                  content: Container(
-                                    width:
-                                        MediaQuery.of(context).size.width - 500,
-                                    height: 600,
-                                    child: Stack(
-                                      children: [
-                                        Container(
-                                          decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(30),
-                                              gradient: LinearGradient(colors: [
-                                                Color.fromRGBO(90, 137, 214, 1),
-                                                Color.fromRGBO(95, 167, 210, 1),
-                                                Color.fromRGBO(49, 162, 202, 1)
-                                              ])),
-                                          child: Container(
-                                            decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(30),
-                                              //borderRadius: BorderRadius.all(Radius.circular(30)),
-                                              border: Border.all(
-                                                  color: Colors.white
-                                                      .withOpacity(0.13)),
-                                              color: Colors.grey.shade200
-                                                  .withOpacity(0.25),
-                                            ),
-                                          ),
-                                        ),
-                                        Container(
-                                          decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.all(
-                                                Radius.circular(30)),
-                                            border: Border.all(
-                                                color: Colors.white
-                                                    .withOpacity(0.13)),
-                                            color: Colors.grey.shade200
-                                                .withOpacity(0.23),
-                                          ),
-                                          child: Padding(
-                                            padding: EdgeInsets.all(16.0),
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
+                                List<String> workeTime = this
+                                    .workingTimes
+                                    .entries
+                                    .map((entry) => MapEntry(
+                                        entry.key.toString(),
+                                        entry.value.toString()))
+                                    .map((entry) =>
+                                        entry.key + " " + entry.value)
+                                    .toList();
+
+                                dynamic x = await showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) =>
+                                      AlertDialog(
+                                          backgroundColor: Colors.transparent,
+                                          content: Container(
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width -
+                                                500,
+                                            height: 600,
+                                            child: Stack(
                                               children: [
-                                                Text(
-                                                  'Shift the secdual for all employees',
-                                                  style: TextStyle(
-                                                      fontSize: 24,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      color: Colors.white),
-                                                ),
-                                                SizedBox(height: 16),
-                                                DropdownButtonFormField<String>(
-                                                  value: 'On duty',
-                                                  onChanged: (value) {
-                                                    v1 = value!;
-                                                  },
-                                                  items: ['On duty', 'Off']
-                                                      .map((String value) {
-                                                    return DropdownMenuItem<
-                                                        String>(
-                                                      value: value,
-                                                      child: Text(value),
-                                                    );
-                                                  }).toList(),
-                                                  decoration: InputDecoration(
-                                                    labelText: 'On duty / Off',
-                                                    border:
-                                                        OutlineInputBorder(),
+                                                Container(
+                                                  decoration: BoxDecoration(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              30),
+                                                      gradient: LinearGradient(
+                                                          colors: [
+                                                            Color.fromRGBO(90,
+                                                                137, 214, 1),
+                                                            Color.fromRGBO(95,
+                                                                167, 210, 1),
+                                                            Color.fromRGBO(
+                                                                49, 162, 202, 1)
+                                                          ])),
+                                                  child: Container(
+                                                    decoration: BoxDecoration(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              30),
+                                                      //borderRadius: BorderRadius.all(Radius.circular(30)),
+                                                      border: Border.all(
+                                                          color: Colors.white
+                                                              .withOpacity(
+                                                                  0.13)),
+                                                      color: Colors
+                                                          .grey.shade200
+                                                          .withOpacity(0.25),
+                                                    ),
                                                   ),
                                                 ),
-                                                SizedBox(height: 16),
-                                                DropdownButtonFormField<String>(
-                                                  value: 'Abu Dabi',
-                                                  onChanged: (value) {
-                                                    v2 = value!;
-                                                    //widget.onSelectedItems();
-                                                  },
-                                                  items:Branchs
-                                                      .map((String value) {
-                                                    return DropdownMenuItem<
-                                                        String>(
-                                                      value: value,
-                                                      child: Text(value),
-                                                    );
-                                                  }).toList(),
-                                                  decoration: InputDecoration(
-                                                    labelText:
-                                                        'Please select the bransh',
-                                                    border:
-                                                        OutlineInputBorder(),
+                                                Container(
+                                                  decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.all(
+                                                            Radius.circular(
+                                                                30)),
+                                                    border: Border.all(
+                                                        color: Colors.white
+                                                            .withOpacity(0.13)),
+                                                    color: Colors.grey.shade200
+                                                        .withOpacity(0.23),
                                                   ),
-                                                ),
-                                                SizedBox(height: 16),
-                                                Button(
-                                                  icon: Icons.add,
-                                                  txt: 'Submit',
-                                                  isSelected: true,
-                                                  onPress: () {
-                                                    try {
-                                                      if (v1 == null ||
-                                                          v2 == null) {
-                                                        MyDialog.showAlert(
-                                                            context,
-                                                            "Please insert the both fileds");
-                                                        return;
-                                                      }
+                                                  child: Padding(
+                                                    padding:
+                                                        EdgeInsets.all(16.0),
+                                                    child: Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      children: [
+                                                        Text(
+                                                          'Shift the secdual for all employees',
+                                                          style: TextStyle(
+                                                              fontSize: 24,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                              color:
+                                                                  Colors.white),
+                                                        ),
+                                                        SizedBox(height: 16),
+                                                        DropdownButtonFormField<
+                                                            String>(
+                                                          value: 'On duty',
+                                                          onChanged: (value) {
+                                                            v1 = value!;
+                                                          },
+                                                          items: [
+                                                            'On duty',
+                                                            'Off'
+                                                          ].map((String value) {
+                                                            return DropdownMenuItem<
+                                                                String>(
+                                                              value: value,
+                                                              child:
+                                                                  Text(value),
+                                                            );
+                                                          }).toList(),
+                                                          decoration:
+                                                              InputDecoration(
+                                                            labelText:
+                                                                'On duty / Off',
+                                                            border:
+                                                                OutlineInputBorder(),
+                                                          ),
+                                                        ),
+                                                        SizedBox(height: 16),
+                                                        DropdownButtonFormField<
+                                                            String>(
+                                                          value: 'Abu Dabi',
+                                                          onChanged: (value) {
+                                                            v2 = value!;
+                                                            //widget.onSelectedItems();
+                                                          },
+                                                          items: Branchs.map(
+                                                              (String value) {
+                                                            return DropdownMenuItem<
+                                                                String>(
+                                                              value: value,
+                                                              child:
+                                                                  Text(value),
+                                                            );
+                                                          }).toList(),
+                                                          decoration:
+                                                              InputDecoration(
+                                                            labelText:
+                                                                'Please select the bransh',
+                                                            border:
+                                                                OutlineInputBorder(),
+                                                          ),
+                                                        ),
+                                                        SizedBox(height: 16),
+                                                        DropdownButtonFormField<
+                                                            String>(
+                                                          value: workeTime[0],
+                                                          onChanged: (value) {
+                                                            v3 = value!;
+                                                            //widget.onSelectedItems();
+                                                          },
+                                                          items: workeTime.map(
+                                                              (String value) {
+                                                            return DropdownMenuItem<
+                                                                String>(
+                                                              value: value,
+                                                              child:
+                                                                  Text(value),
+                                                            );
+                                                          }).toList(),
+                                                          decoration:
+                                                              InputDecoration(
+                                                            labelText:
+                                                                'Please select the time',
+                                                            border:
+                                                                OutlineInputBorder(),
+                                                          ),
+                                                        ),
+                                                        SizedBox(height: 16),
+                                                        Button(
+                                                          icon: Icons.add,
+                                                          txt: 'Submit',
+                                                          isSelected: true,
+                                                          onPress: () {
+                                                            try {
+                                                              if (v1 == '' ||
+                                                                  v2 == '') {
+                                                                MyDialog.showAlert(
+                                                                    context,
+                                                                    "Please insert the both fileds");
+                                                                return;
+                                                              }
 
-                                                      Navigator.pop(
-                                                          context, [v1, v2]);
-                                                    } catch (e) {
-                                                      MyDialog.showAlert(
-                                                          context,
-                                                          e.toString());
-                                                    }
-                                                  },
+                                                              Navigator.pop(
+                                                                  context,
+                                                                  [v1, v2]);
+                                                            } catch (e) {
+                                                              MyDialog.showAlert(
+                                                                  context,
+                                                                  e.toString());
+                                                            }
+                                                          },
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
                                                 ),
                                               ],
                                             ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  )),
-                            );
-                            // print(v1 + "       " + v2 );
+                                          )),
+                                );
+                                if (x == null) {
+                                  v1 = 'OFF';
+                                  v2 = 'Abudabi';
+                                  v3 = 'defalt: 7:15 AM 4:00 PM';
+                                }
 
-                            for (var i in widget.employeesData2) {
-                              i['shifts']['bransh'] = v2;
-                            }
-                            setState(() {});
-                          },
-                          txt: 'Secdual for all emplyee',
-                          isSelected: true),
-                    ),
-                    /*Padding(
+                                String timeRange = v3.replaceAll(
+                                        RegExp(r'[^0-9:AMP\s]+'), '') ??
+                                    '';
+                                v3 = timeRange ;
+
+                                for (var i in widget.employeesData2) {
+                                  i['shifts']['bransh'] = v2;
+                                  for (var j in i['shifts'].keys) {
+                                    if (j != 'bransh') {
+                                      i['shifts'][j] = v1 + " " + v3 ;//"\n" + v1 + "\n" + timeRange ;
+                                    }
+                                  }
+                                }
+                                setState(() {});
+                              },
+                            ),
+                          ),
+                          /*Padding(
                       padding: const EdgeInsets.only(right: 10),
                       child: Button(icon: Icons.upload, onPress: (){}, txt: 'Publish', isSelected: true),
                     ),
@@ -293,13 +379,14 @@ class _shiftScedualState extends State<shiftScedual> {
                       padding: const EdgeInsets.only(right: 10),
                       child: Button(icon: Icons.upload, onPress: (){}, txt: 'Publish', isSelected: true),
                     ),*/
-                  ],
-                ),
+                        ],
+                      ),
               ))
         ],
       ),
     );
   }
+
   Future<List<Map<String, dynamic>>> fetchEmployeesData() async {
     QuerySnapshot querySnapshot =
         await FirebaseFirestore.instance.collection('Employee').get();
@@ -323,7 +410,7 @@ class _shiftScedualState extends State<shiftScedual> {
       employeesData.add(employee);
     });
 
-
+    this.workingTimes = await workingHoudData();
 
     return employeesData;
   }
@@ -332,7 +419,7 @@ class _shiftScedualState extends State<shiftScedual> {
     List<String> titles = [];
 
     QuerySnapshot querySnapshot =
-    await FirebaseFirestore.instance.collection('branchs').get();
+        await FirebaseFirestore.instance.collection('branchs').get();
 
     querySnapshot.docs.forEach((doc) {
       Map<String, dynamic>? data = doc.data() as Map<String, dynamic>?;
@@ -340,8 +427,30 @@ class _shiftScedualState extends State<shiftScedual> {
       titles.add(title);
     });
 
-
     return titles;
+  }
+
+  Future<Map<String, dynamic>> workingHoudData() async {
+    try {
+      QuerySnapshot querySnapshot =
+          await FirebaseFirestore.instance.collection('workingHours').get();
+
+      Map<String, String> res = {};
+
+      querySnapshot.docs.forEach((doc) {
+        Map<String, dynamic>? data = doc.data() as Map<String, dynamic>?;
+        String title = data?['title'] ?? 'Default';
+        String time = data?['time'] ?? '12 Am to 12 Pm';
+        res.addAll({title: time});
+      });
+      //  print(res);
+
+      return res;
+    } catch (e) {
+      MyDialog.showAlert(context, "Error $e");
+      print(e);
+      return {};
+    }
   }
 }
 
@@ -382,7 +491,7 @@ class EmployeeCalendarWidget extends StatelessWidget {
     }
 
     return DataTable2(
-      dataRowHeight: 100,
+      dataRowHeight: 120,
       columnSpacing: 10,
       columns: List.generate(
         8,
@@ -391,8 +500,15 @@ class EmployeeCalendarWidget extends StatelessWidget {
             return DataColumn(label: SizedBox.shrink());
           } else {
             return DataColumn(
-                label: Text(
-                    '   ${weekdays[index - 1]} ${DateFormat.d().format(weekDates[index - 1])}'));
+                label: Row(
+              children: [
+                SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.02,
+                ),
+                Text(
+                    '${weekdays[index - 1]} ${DateFormat.d().format(weekDates[index - 1])}'),
+              ],
+            ));
           }
         },
       ),
@@ -509,14 +625,18 @@ class _HoverContainerState extends State<HoverContainer> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    widget.text,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 14,
+                  Container(
+                    child: Center(
+                      child: Text(
+                        widget.text,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 14,
+                        ),
+                      ),
                     ),
                   ),
                   Row(

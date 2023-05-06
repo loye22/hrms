@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hrms/webSIte/companyDocAdd.dart';
 import 'package:hrms/webSIte/singUpScreen.dart';
+import 'package:hrms/widgets/workHoursPicker.dart';
 import 'package:provider/provider.dart';
 
 import '../provider/UserData.dart';
@@ -196,6 +197,24 @@ class rightBar extends StatelessWidget {
                   builder: (BuildContext context) => AlertDialog(
                       backgroundColor: Colors.transparent,
                       content:  addNewBranch()),);
+
+              },
+            ),
+          ),
+          SizedBox(height: 15,),
+          Container(
+            width: 300,
+            child: Button(
+              txt: "Add working hours",
+              icon: Icons.hourglass_bottom,
+              isSelected: true,
+              onPress: () async {
+
+                await showDialog(
+                  context: context,
+                  builder: (BuildContext context) => AlertDialog(
+                      backgroundColor: Colors.transparent,
+                      content:  Container(child : WorkHoursPicker( title: 'Please add working hours',))),);
 
               },
             ),
