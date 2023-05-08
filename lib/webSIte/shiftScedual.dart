@@ -11,6 +11,10 @@ import 'package:intl/intl.dart';
 
 class shiftScedual extends StatefulWidget {
   static const routeName = '/shiftScedual';
+
+  //static List<String> BranshNames = [] ;
+  //static List<String> workingHours = [];
+
   List<Map<String, dynamic>> employeesData2 = [];
 
   shiftScedual({Key? key}) : super(key: key);
@@ -21,6 +25,7 @@ class shiftScedual extends StatefulWidget {
 
 class _shiftScedualState extends State<shiftScedual> {
   Map<String, dynamic> workingTimes = {};
+  bool isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -57,7 +62,9 @@ class _shiftScedualState extends State<shiftScedual> {
               ),
             ),
           ),
-          rightBar(),
+          StatefulBuilder(
+              builder: (BuildContext context, StateSetter setState) =>
+                  rightBar()),
           Positioned(
             left: 280,
             bottom: 15,
@@ -127,17 +134,49 @@ class _shiftScedualState extends State<shiftScedual> {
                     ? Container()
                     : Row(
                         children: [
-                          Padding(
-                            padding: const EdgeInsets.only(right: 10),
-                            child: Button(
-                              txt: 'Publish',
-                              isSelected: true,
-                              icon: Icons.upload,
-                              onPress: () async {
-                                if (widget.employeesData2 == []) return;
+                          StatefulBuilder(
+                            builder:
+                                (BuildContext context, StateSetter setState) =>
+                                    Padding(
+                              padding: const EdgeInsets.only(right: 10),
+                              child: isLoading
+                                  ? Container(
+                                      width: 200,
+                                      child: Center(
+                                        child: CircularProgressIndicator(),
+                                      ),
+                                    )
+                                  : Button(
+                                      txt: 'Publish',
+                                      isSelected: true,
+                                      icon: Icons.upload,
+                                      onPress: () async {
+                                        try {
+                                          if (widget.employeesData2 == [] ||
+                                              widget.employeesData2.isEmpty) {
+                                            MyDialog.showAlert(context,
+                                                'The schedule is currently empty. Please refresh the page and wait for 5 seconds while we load the data');
+                                            return;
+                                          }
+                                          //  print(widget.employeesData2);
 
-                                print(this.workingTimes);
-                              },
+                                          isLoading = true;
+                                          setState(() {});
+                                          await addShiftEmployees(
+                                              widget.employeesData2);
+                                          isLoading = false;
+                                          setState(() {});
+                                          MyDialog.showAlert(context,
+                                              'The schedule has been successfully published.');
+
+                                          //print(widget.employeesData2);
+                                        } catch (e) {
+                                          MyDialog.showAlert(
+                                              context, e.toString());
+                                          print(e);
+                                        }
+                                      },
+                                    ),
                             ),
                           ),
                           Padding(
@@ -153,8 +192,7 @@ class _shiftScedualState extends State<shiftScedual> {
                                 String v2 = '';
                                 String v3 = ''; // On duty/Off
 
-                                List<String> Branchs =
-                                    await this.getBranchTitles();
+                                List<String> Branchs = await getBranchTitles();
 
                                 List<String> workeTime = this
                                     .workingTimes
@@ -357,17 +395,26 @@ class _shiftScedualState extends State<shiftScedual> {
                                 String timeRange = v3.replaceAll(
                                         RegExp(r'[^0-9:AMP\s]+'), '') ??
                                     '';
-                                v3 = timeRange ;
+                                v3 = timeRange;
+                                // v1 off / on duty
+                                // v2 bransh
+                                // v3 timeing
 
                                 for (var i in widget.employeesData2) {
                                   i['shifts']['bransh'] = v2;
                                   for (var j in i['shifts'].keys) {
                                     if (j != 'bransh') {
-                                      i['shifts'][j] = v1 + " " + v3 ;//"\n" + v1 + "\n" + timeRange ;
+                                      v1.toString().toLowerCase() != 'off'
+                                          ? i['shifts'][j] =
+                                              v3 + " " + v2 // working
+                                          : i['shifts'][j] = v1;
+                                      //i['shifts'][j] = v1 + " " + v3;
                                     }
                                   }
                                 }
                                 setState(() {});
+
+                                // print(widget.employeesData2);
                               },
                             ),
                           ),
@@ -397,12 +444,12 @@ class _shiftScedualState extends State<shiftScedual> {
         'name': doc['userName'],
         'photoUrl': doc['photo'],
         'shifts': {
-          'mon': '7Am to 4 Pm',
-          'tur': '7Am to 4 Pm',
-          'wed': '7Am to 4 Pm',
-          'thu': '7Am to 4 Pm',
-          'fri': '7Am to 12 Am',
-          'sat': '7Am to 4 Pm',
+          'mon': '9:00 AM 5:00 PM ajman',
+          'tur': '9:00 AM 5:00 PM ajman',
+          'wed': '9:00 AM 5:00 PM ajman',
+          'thu': '9:00 AM 5:00 PM ajman',
+          'fri': '9:00 AM 5:00 PM ajman',
+          'sat': '9:00 AM 5:00 PM ajman',
           'sun': 'OFF',
           'bransh': 'Abudabi'
         },
@@ -427,6 +474,7 @@ class _shiftScedualState extends State<shiftScedual> {
       titles.add(title);
     });
 
+    //shiftScedual.BranshNames = titles ;
     return titles;
   }
 
@@ -450,6 +498,28 @@ class _shiftScedualState extends State<shiftScedual> {
       MyDialog.showAlert(context, "Error $e");
       print(e);
       return {};
+    }
+  }
+
+  Future<void> addShiftEmployees(List<Map<String, dynamic>> employees) async {
+    final CollectionReference employeesCollection =
+        FirebaseFirestore.instance.collection('Employee');
+
+    for (var employee in employees) {
+      final String employeeId = employee['id'];
+      final CollectionReference employeeCollection =
+          employeesCollection.doc(employeeId).collection('shifts');
+
+      final DocumentReference documentRef =
+          employeeCollection.doc(); // Generate a unique document ID
+
+      final Map<String, dynamic> documentData = {
+        'shifts': employee['shifts'],
+        'timestamp': DateTime.now().toString(),
+      };
+
+      await documentRef.set(documentData);
+      //break;
     }
   }
 }
@@ -553,10 +623,24 @@ class EmployeeCalendarWidget extends StatelessWidget {
                           text2: e['shifts']['bransh'] ?? 'not found 404',
                           shiftDate:
                               '${DateFormat("MMMM").format(DateTime.now())} ${weekdays[index]} ${DateFormat.d().format(weekDates[index])}',
-                          onSelectedItems: (x, y) {
+                          onSelectedItems: (x, y, z) {
                             setState(() {
-                              e['shifts'][daysGon[index].toString()] = x;
-                              e['shifts']['bransh'] = y;
+                              try {
+                                // x onduty/off
+                                // y bransh
+                                // z timing
+                                x.toString().toLowerCase() != 'off'
+                                    ? e['shifts'][daysGon[index].toString()] =
+                                        z.toString() + " " + y.toString()
+                                    : e['shifts'][daysGon[index].toString()] =
+                                        x;
+
+                                // e['shifts'][daysGon[index].toString()] = x;
+                                e['shifts']['bransh'] = y;
+                              } catch (e) {
+                                print(e);
+                                MyDialog.showAlert(context, e.toString());
+                              }
                             });
                           },
                         ),
@@ -575,7 +659,9 @@ class HoverContainer extends StatefulWidget {
   final List<String> secondDropDownList;
   final String empName;
   final String shiftDate;
-  final Function(String?, String?) onSelectedItems;
+  bool isInit = false;
+
+  final Function(String?, String?, String?) onSelectedItems;
 
   HoverContainer(
       {required this.text,
@@ -596,12 +682,27 @@ class _HoverContainerState extends State<HoverContainer> {
   int duration = 0;
   String? selectedFirst;
   String? selectedSecond;
+  String? selected3rd;
 
   final titleController = TextEditingController();
   final durationController = TextEditingController();
 
+  List<String> bNames = [];
+  List<dynamic> wHours = [];
+  List<String> regx = [];
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getBranchTitles().then((value) {
+      regx = value;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    // print( shiftScedual.BranshNames);
     return MouseRegion(
       onEnter: (event) {
         setState(() {
@@ -631,7 +732,13 @@ class _HoverContainerState extends State<HoverContainer> {
                   Container(
                     child: Center(
                       child: Text(
-                        widget.text,
+                        '${widget.text.replaceAll(RegExp(r'[^APM:\d\sOFF\d\sOff]'), '')}'
+
+                        /*
+                        widget.text.length >= 23
+                            ? widget.text.substring(0, 17)
+                            : widget.text*/
+                        ,
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 14,
@@ -660,137 +767,184 @@ class _HoverContainerState extends State<HoverContainer> {
                   ),
                   Visibility(
                     visible: _isHovering,
-                    child: InkWell(
-                      onTap: () async {
-                        await showDialog(
-                          context: context,
-                          builder: (BuildContext context) => AlertDialog(
-                              backgroundColor: Colors.transparent,
-                              content: Container(
-                                width: MediaQuery.of(context).size.width - 500,
-                                height: 600,
-                                child: Stack(
-                                  children: [
-                                    Container(
-                                      decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(30),
-                                          gradient: LinearGradient(colors: [
-                                            Color.fromRGBO(90, 137, 214, 1),
-                                            Color.fromRGBO(95, 167, 210, 1),
-                                            Color.fromRGBO(49, 162, 202, 1)
-                                          ])),
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(30),
-                                          //borderRadius: BorderRadius.all(Radius.circular(30)),
-                                          border: Border.all(
-                                              color: Colors.white
-                                                  .withOpacity(0.13)),
-                                          color: Colors.grey.shade200
-                                              .withOpacity(0.25),
+                    child: FutureBuilder(
+                      future: f(),
+                      builder: (ctx, f) => InkWell(
+                        onTap: () async {
+                          try {
+                            await showDialog(
+                              context: context,
+                              builder: (BuildContext context) => AlertDialog(
+                                  backgroundColor: Colors.transparent,
+                                  content: Container(
+                                    width:
+                                        MediaQuery.of(context).size.width - 500,
+                                    height: 600,
+                                    child: Stack(
+                                      children: [
+                                        Container(
+                                          decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(30),
+                                              gradient: LinearGradient(colors: [
+                                                Color.fromRGBO(90, 137, 214, 1),
+                                                Color.fromRGBO(95, 167, 210, 1),
+                                                Color.fromRGBO(49, 162, 202, 1)
+                                              ])),
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(30),
+                                              //borderRadius: BorderRadius.all(Radius.circular(30)),
+                                              border: Border.all(
+                                                  color: Colors.white
+                                                      .withOpacity(0.13)),
+                                              color: Colors.grey.shade200
+                                                  .withOpacity(0.25),
+                                            ),
+                                          ),
                                         ),
-                                      ),
-                                    ),
-                                    Container(
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(30)),
-                                        border: Border.all(
-                                            color:
-                                                Colors.white.withOpacity(0.13)),
-                                        color: Colors.grey.shade200
-                                            .withOpacity(0.23),
-                                      ),
-                                      child: Padding(
-                                        padding: EdgeInsets.all(16.0),
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              'Shift the secdual for ${this.widget.empName}\n${this.widget.shiftDate}',
-                                              style: TextStyle(
-                                                  fontSize: 24,
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Colors.white),
-                                            ),
-                                            SizedBox(height: 16),
-                                            DropdownButtonFormField<String>(
-                                              value: selectedFirst,
-                                              onChanged: (value) {
-                                                selectedFirst = value;
-                                              },
-                                              items: widget.firstDropDownList
-                                                  .map((String value) {
-                                                return DropdownMenuItem<String>(
-                                                  value: value,
-                                                  child: Text(value),
-                                                );
-                                              }).toList(),
-                                              decoration: InputDecoration(
-                                                labelText: 'On duty / Off',
-                                                border: OutlineInputBorder(),
-                                              ),
-                                            ),
-                                            SizedBox(height: 16),
-                                            DropdownButtonFormField<String>(
-                                              value: selectedSecond,
-                                              onChanged: (value) {
-                                                selectedSecond = value;
-                                                //widget.onSelectedItems();
-                                              },
-                                              items: widget.secondDropDownList
-                                                  .map((String value) {
-                                                return DropdownMenuItem<String>(
-                                                  value: value,
-                                                  child: Text(value),
-                                                );
-                                              }).toList(),
-                                              decoration: InputDecoration(
-                                                labelText:
-                                                    'Please select the bransh',
-                                                border: OutlineInputBorder(),
-                                              ),
-                                            ),
-                                            SizedBox(height: 16),
-                                            Button(
-                                              icon: Icons.add,
-                                              txt: 'Submit',
-                                              isSelected: true,
-                                              onPress: () {
-                                                try {
-                                                  if (selectedFirst == null ||
-                                                      selectedSecond == null) {
-                                                    MyDialog.showAlert(context,
-                                                        "Please insert the both fileds");
-                                                    return;
-                                                  }
-                                                  widget.onSelectedItems(
-                                                      selectedFirst,
-                                                      selectedSecond);
+                                        Container(
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(30)),
+                                            border: Border.all(
+                                                color: Colors.white
+                                                    .withOpacity(0.13)),
+                                            color: Colors.grey.shade200
+                                                .withOpacity(0.23),
+                                          ),
+                                          child: Padding(
+                                            padding: EdgeInsets.all(16.0),
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  'Shift the secdual for ${this.widget.empName}\n${this.widget.shiftDate}',
+                                                  style: TextStyle(
+                                                      fontSize: 24,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color: Colors.white),
+                                                ),
+                                                SizedBox(height: 16),
+                                                DropdownButtonFormField<String>(
+                                                  value: selectedFirst,
+                                                  onChanged: (value) {
+                                                    selectedFirst = value;
+                                                  },
+                                                  items: widget
+                                                      .firstDropDownList
+                                                      .map((String value) {
+                                                    return DropdownMenuItem<
+                                                        String>(
+                                                      value: value,
+                                                      child: Text(value),
+                                                    );
+                                                  }).toList(),
+                                                  decoration: InputDecoration(
+                                                    labelText: 'On duty / Off',
+                                                    border:
+                                                        OutlineInputBorder(),
+                                                  ),
+                                                ),
+                                                SizedBox(height: 16),
+                                                DropdownButtonFormField<String>(
+                                                  value: selectedSecond,
+                                                  onChanged: (value) {
+                                                    selectedSecond = value;
+                                                    //widget.onSelectedItems();
+                                                  },
+                                                  items: /*widget.secondDropDownList*/
+                                                      this
+                                                          .bNames
+                                                          .map((String value) {
+                                                    return DropdownMenuItem<
+                                                        String>(
+                                                      value: value,
+                                                      child: Text(value),
+                                                    );
+                                                  }).toList(),
+                                                  decoration: InputDecoration(
+                                                    labelText:
+                                                        'Please select the bransh',
+                                                    border:
+                                                        OutlineInputBorder(),
+                                                  ),
+                                                ),
+                                                SizedBox(height: 10),
+                                                DropdownButtonFormField<String>(
+                                                  value: selected3rd,
+                                                  onChanged: (value) {
+                                                    selected3rd = value;
 
-                                                  Navigator.pop(context);
-                                                } catch (e) {
-                                                  MyDialog.showAlert(
-                                                      context, e.toString());
-                                                }
-                                              },
+                                                    //widget.onSelectedItems();
+                                                  },
+                                                  items: wHours
+                                                      .map((e) => e.toString())
+                                                      .toList()
+                                                      .map((String value) {
+                                                    return DropdownMenuItem<
+                                                        String>(
+                                                      value: value,
+                                                      child: Text(value),
+                                                    );
+                                                  }).toList(),
+                                                  decoration: InputDecoration(
+                                                    labelText:
+                                                        'Please select the time',
+                                                    border:
+                                                        OutlineInputBorder(),
+                                                  ),
+                                                ),
+                                                SizedBox(height: 16),
+                                                Button(
+                                                  icon: Icons.add,
+                                                  txt: 'Submit',
+                                                  isSelected: true,
+                                                  onPress: () {
+                                                    try {
+                                                      if (selectedFirst ==
+                                                              null ||
+                                                          selectedSecond ==
+                                                              null ||
+                                                          selected3rd == null) {
+                                                        MyDialog.showAlert(
+                                                            context,
+                                                            "Please insert the both fileds");
+                                                        return;
+                                                      }
+                                                      widget.onSelectedItems(
+                                                          selectedFirst,
+                                                          selectedSecond,
+                                                          selected3rd);
+
+                                                      Navigator.pop(context);
+                                                    } catch (e) {
+                                                      MyDialog.showAlert(
+                                                          context,
+                                                          e.toString());
+                                                    }
+                                                  },
+                                                ),
+                                              ],
                                             ),
-                                          ],
+                                          ),
                                         ),
-                                      ),
+                                      ],
                                     ),
-                                  ],
-                                ),
-                              )),
-                        );
-                      },
-                      child: Icon(
-                        Icons.edit,
-                        size: 16,
-                        color: Colors.white,
+                                  )),
+                            );
+                          } catch (e) {
+                            MyDialog.showAlert(context, e.toString());
+                          }
+                        },
+                        child: Icon(
+                          Icons.edit,
+                          size: 16,
+                          color: Colors.white,
+                        ),
                       ),
                     ),
                     /* onPressed: () {
@@ -804,5 +958,54 @@ class _HoverContainerState extends State<HoverContainer> {
         ),
       ),
     );
+  }
+
+  Future<List<String>> getBranchTitles() async {
+    List<String> titles = [];
+
+    QuerySnapshot querySnapshot =
+        await FirebaseFirestore.instance.collection('branchs').get();
+
+    querySnapshot.docs.forEach((doc) {
+      Map<String, dynamic>? data = doc.data() as Map<String, dynamic>?;
+      String title = data?['title'] ?? 'Default Title';
+      titles.add(title);
+    });
+
+    //shiftScedual.BranshNames = titles ;
+    return titles;
+  }
+
+  Future<Map<String, dynamic>> workingHoudData() async {
+    try {
+      QuerySnapshot querySnapshot =
+          await FirebaseFirestore.instance.collection('workingHours').get();
+
+      Map<String, String> res = {};
+
+      querySnapshot.docs.forEach((doc) {
+        Map<String, dynamic>? data = doc.data() as Map<String, dynamic>?;
+        String title = data?['title'] ?? 'Default';
+        String time = data?['time'] ?? '12 Am to 12 Pm';
+        res.addAll({title: time});
+      });
+      //  print(res);
+
+      return res;
+    } catch (e) {
+      MyDialog.showAlert(context, "Error $e");
+      print(e);
+      return {};
+    }
+  }
+
+  Future<void> f() async {
+    dynamic helpVar = await workingHoudData();
+    this.bNames = await getBranchTitles();
+    this.wHours = helpVar.entries
+        .map((entry) => MapEntry(entry.key.toString(), entry.value.toString()))
+        .map((entry) => entry.key + " " + entry.value)
+        .toList();
+    this.regx = this.bNames;
   }
 }

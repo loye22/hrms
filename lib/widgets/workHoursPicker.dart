@@ -259,7 +259,7 @@ class _WorkHoursPickerState extends State<WorkHoursPicker> {
 
                     // Add a new document to the collection with the entered title
                     await branchsCollection.add({
-                      'title': _titleController.text.toLowerCase(),
+                      'title': _titleController.text.toLowerCase().substring(0,7),
                       'time' :_startTime.format(context).toString() + " " + _endTime.format(context).toString()
                     });
 
