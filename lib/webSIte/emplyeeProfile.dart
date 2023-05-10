@@ -121,7 +121,7 @@ class _emplyeeProfileState extends State<emplyeeProfile> {
             ),
           ),
           Positioned(
-            child: sideBar(),
+            child: sideBar(index: 0,),
           ),
         ],
       ),

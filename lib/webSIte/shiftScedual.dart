@@ -118,7 +118,7 @@ class _shiftScedualState extends State<shiftScedual> {
             ),
           ),
           Positioned(
-            child: sideBar(),
+            child: sideBar(index: 3,),
           ),
           Positioned(
               left: 280,

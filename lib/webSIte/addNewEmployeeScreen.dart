@@ -774,7 +774,7 @@ class _addNewEmployeeScreenState extends State<addNewEmployeeScreen> {
             ),
           ),
           Positioned(
-            child: sideBar(),
+            child: sideBar(index: 0),
           ),
         ],
       ),

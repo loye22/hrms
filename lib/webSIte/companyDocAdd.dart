@@ -403,7 +403,7 @@ class _companyDocAddState extends State<companyDocAdd> {
                 ),
               )),
           Positioned(
-            child: sideBar(),
+            child: sideBar(index: 0,),
           ),
         ],
       ),

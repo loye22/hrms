@@ -1,7 +1,3 @@
-
-
-
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -18,17 +14,13 @@ class AddDepartmantForm extends StatefulWidget {
 class _AddDepartmantFormState extends State<AddDepartmantForm> {
   String title = '';
 
-  bool isLoding = false ;
+  bool isLoding = false;
 
   void _onTitleChanged(String value) {
     setState(() {
       title = value;
     });
   }
-
-
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -81,7 +73,6 @@ class _AddDepartmantFormState extends State<AddDepartmantForm> {
                       border: OutlineInputBorder(),
                     ),
                   ),
-
                 ],
               ),
             ),
@@ -94,40 +85,42 @@ class _AddDepartmantFormState extends State<AddDepartmantForm> {
               width: 120,
               height: 50,
               child: Center(
-                child:isLoding ? CircularProgressIndicator() :  Button(
-                  txt: 'submit',
-                  icon: Icons.subdirectory_arrow_left,
-                  isSelected: true,
-                  onPress: () async {
-                    if(title == '' ){
-                      Navigator.pop(context);
-                      return ;
-                    }
-                    try{
-                      setState(() {isLoding = true ; });
-                      FirebaseFirestore firestore = FirebaseFirestore.instance;
-                      DocumentReference docRef = await firestore.collection('Departments').add({
-                        'title': title,
-                      });
-                      setState(() {isLoding = false ; });
-
-
-
-
-
-                    }
-                    catch(e){
-                      print(e);
-
-                    }
-                    finally{
-                      setState(() {isLoding = false ; });
-                      Navigator.pop(context);
-                    }
-
-
-                  },
-                ),),),
+                child: isLoding
+                    ? CircularProgressIndicator()
+                    : Button(
+                        txt: 'submit',
+                        icon: Icons.subdirectory_arrow_left,
+                        isSelected: true,
+                        onPress: () async {
+                          if (title == '') {
+                            Navigator.pop(context);
+                            return;
+                          }
+                          try {
+                            setState(() {
+                              isLoding = true;
+                            });
+                            FirebaseFirestore firestore =
+                                FirebaseFirestore.instance;
+                            DocumentReference docRef =
+                                await firestore.collection('Departments').add({
+                              'title': title,
+                            });
+                            setState(() {
+                              isLoding = false;
+                            });
+                          } catch (e) {
+                            print(e);
+                          } finally {
+                            setState(() {
+                              isLoding = false;
+                            });
+                            Navigator.pop(context);
+                          }
+                        },
+                      ),
+              ),
+            ),
           ),
         ],
       ),

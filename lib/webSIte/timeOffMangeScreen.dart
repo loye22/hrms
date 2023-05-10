@@ -161,7 +161,7 @@ class _timeOffMangeScreenState extends State<timeOffMangeScreen> {
             ),
           ),
           Positioned(
-            child: sideBar(),
+            child: sideBar(index: 9,),
           ),
         ],
       ),

@@ -76,7 +76,7 @@ class _homeScreenState extends State<homeScreen> {
             ),
           ),
           Positioned(
-            child: sideBar(),
+            child: sideBar(index: 0,),
           ),
         ],
       ),

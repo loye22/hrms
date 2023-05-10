@@ -231,7 +231,7 @@ class _employeesPageState extends State<employeesPage> {
             ),*/
           ),
           Positioned(
-            child: sideBar(),
+            child: sideBar(index: 1),
           ),
         ],
       ),

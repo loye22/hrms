@@ -118,7 +118,7 @@ class _weekEndMangerScreenState extends State<weekEndMangerScreen> {
             ),
           ),
           Positioned(
-            child: sideBar(),
+            child: sideBar(index: 0,),
           ),
           Positioned(
             left: 280,

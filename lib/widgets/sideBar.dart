@@ -10,8 +10,9 @@ import '../webSIte/timeOffMangeScreen.dart';
 import 'button.dart';
 
 class sideBar extends StatefulWidget {
-  const sideBar({
-    super.key,
+final int index ;
+ const  sideBar({
+    super.key, required this.index,
   });
 
   @override
@@ -63,7 +64,7 @@ class _sideBarState extends State<sideBar> {
                   Navigator.of(context).pushNamed(homeScreen.routeName);
                 }
               },
-              isSelected: _selectedButtonIndex == 0,
+              isSelected: 0 == widget.index,
             ),
             SizedBox(
               height: this.spaceBetween,
@@ -72,10 +73,10 @@ class _sideBarState extends State<sideBar> {
               icon: Icons.person,
               txt: "Employee",
               onPress: () {
-                _handleButtonTap(1);
+                //_handleButtonTap(1);
                 Navigator.pushNamed(context, employeesPage.routeName);
               },
-              isSelected: _selectedButtonIndex == 1,
+              isSelected: 1 ==widget.index,
             ),
             SizedBox(
               height: this.spaceBetween,
@@ -84,9 +85,9 @@ class _sideBarState extends State<sideBar> {
               icon: Icons.sync_alt,
               txt: "requests",
               onPress: () {
-                _handleButtonTap(2);
+                //_handleButtonTap(2);
               },
-              isSelected: _selectedButtonIndex == 2,
+              isSelected: 2 == widget.index,
             ),
             SizedBox(
               height: this.spaceBetween,
@@ -95,13 +96,13 @@ class _sideBarState extends State<sideBar> {
               icon: Icons.calendar_month,
               txt: "Shifts schedule",
               onPress: () {
-                _handleButtonTap(3);
+               // _handleButtonTap(3);
                 if(mounted){
                   Navigator.of(context).pushNamed(shiftScedual.routeName);
                 }
 
               },
-              isSelected: _selectedButtonIndex == 3,
+              isSelected: 3 == widget.index,
             ),
             SizedBox(
               height: this.spaceBetween,
@@ -110,9 +111,9 @@ class _sideBarState extends State<sideBar> {
               icon: Icons.how_to_reg,
               txt: "Attendence ",
               onPress: () {
-                _handleButtonTap(4);
+                //_handleButtonTap(4);
               },
-              isSelected: _selectedButtonIndex == 4,
+              isSelected: 4 == widget.index,
             ),
             SizedBox(
               height: this.spaceBetween,
@@ -121,9 +122,9 @@ class _sideBarState extends State<sideBar> {
               icon: Icons.attach_money_sharp,
               txt: "Work expensive",
               onPress: () {
-                _handleButtonTap(5);
+               // _handleButtonTap(5);
               },
-              isSelected: _selectedButtonIndex == 5,
+              isSelected: 5 == widget.index,
             ),
             SizedBox(
               height: this.spaceBetween,
@@ -132,9 +133,9 @@ class _sideBarState extends State<sideBar> {
               icon: Icons.description,
               txt: "Employee claim ",
               onPress: () {
-                _handleButtonTap(6);
+               // _handleButtonTap(6);
               },
-              isSelected: _selectedButtonIndex == 6,
+              isSelected: 6 == widget.index,
             ),
             SizedBox(
               height: this.spaceBetween,
@@ -143,14 +144,14 @@ class _sideBarState extends State<sideBar> {
               icon: Icons.document_scanner,
               txt: "Company documents",
               onPress: () {
-                _handleButtonTap(7);
+               // _handleButtonTap(7);
                   if(mounted){
                     Navigator.of(context).pushNamed(companyDocScreen.routeName);
                   }
 
 
               },
-              isSelected: _selectedButtonIndex == 7,
+              isSelected: 7 == widget.index,
             ),
             SizedBox(
               height: this.spaceBetween,
@@ -159,30 +160,30 @@ class _sideBarState extends State<sideBar> {
               icon: Icons.device_hub,
               txt: "Work flow",
               onPress: () {
-                _handleButtonTap(8);
+               // _handleButtonTap(8);
               },
-              isSelected: _selectedButtonIndex == 8,
+              isSelected: 8== widget.index,
             ),
             SizedBox(height: this.spaceBetween,) ,
             Button(
               icon: Icons.timelapse,
               txt: "Time off manger",
               onPress: () {
-                _handleButtonTap(9);
+                //_handleButtonTap(9);
                 Navigator.of(context).pushNamed(timeOffMangeScreen.routeName);
               },
-              isSelected: _selectedButtonIndex == 8,
+              isSelected: 9 == widget.index,
             ),
             SizedBox(height: 90,) ,
             Button(
               icon: Icons.login_outlined,
               txt: "Log out",
               onPress: () async {
-                _handleButtonTap(10);
+              //  _handleButtonTap(10);
                 await FirebaseAuth.instance.signOut();
 
               },
-              isSelected: _selectedButtonIndex == 9,
+              isSelected: 10 == widget.index,
             ),
           ],
         ),

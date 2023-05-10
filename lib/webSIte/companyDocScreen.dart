@@ -206,7 +206,7 @@ class _companyDocScreenState extends State<companyDocScreen> {
             ),
           ),
           Positioned(
-            child: sideBar(),
+            child: sideBar(index: 7,),
           ),
         ],
       ),

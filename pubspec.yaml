@@ -66,6 +66,7 @@ dependencies:
   syncfusion_flutter_calendar: ^21.1.41
   syncfusion_localizations: ^21.1.41
   flutter_localization: ^0.1.10
+  flutter_animate: ^4.1.1+1
 
 dev_dependencies:
   flutter_test:

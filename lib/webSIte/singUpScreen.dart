@@ -445,7 +445,7 @@ class _singUpScreenState extends State<singUpScreen> {
             ),
           ),
           Positioned(
-            child: sideBar(),
+            child: sideBar(index: 0,),
           ),
         ],
       ),
