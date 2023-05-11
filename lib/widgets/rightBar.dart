@@ -242,7 +242,7 @@ class rightBar extends StatelessWidget {
                     context: context,
                     builder: (BuildContext context) => AlertDialog(
                       backgroundColor: Colors.transparent,
-                      content: WorkflowExecutionPage(fun: (s){ print("from" + s.toString()) ;}),
+                      content: WorkflowExecutionPage(fun: (s){}),
                     ),
                   );
                 },

@@ -26,6 +26,8 @@ class _WorkflowExecutionPageState extends State<WorkflowExecutionPage> {
     'Employee 3': 'ID_51489s3',
   };
   Map<String, String> selectedEmployeeMap = {};
+  final titleController = TextEditingController();
+  bool isLodaing = false;
 
   Widget buildStep(int index) {
     String stepTitle = workflowSteps[index];
@@ -120,17 +122,41 @@ class _WorkflowExecutionPageState extends State<WorkflowExecutionPage> {
   }
 
   Future<void> handleSubmit() async {
-    if (selectedEmployeeMap.isEmpty) {
-      print('Select employee first');
-      MyDialog.showAlert(context, 'Select employee first');
-      return;
-    }
-    widget.fun(selectedEmployeeMap);
-   // print(selectedEmployeeMap);
+    try {
+      if (selectedEmployeeMap.isEmpty) {
+        print('Select employee first');
+        MyDialog.showAlert(context, 'Select employee first');
+        return;
+      }
+      if (titleController.text.isEmpty) {
+        print(
+            'Please include a title for this task so that it can be referenced and utilized in the future');
+        MyDialog.showAlert(context,
+            'Please include a title for this workflow so that it can be referenced and utilized in the future');
+        return;
+      }
 
-    // print(await getAdminUsersData());
-  //  print('Selected Employees:');
-   // print(selectedEmployeeMap);
+      String key = titleController.text.length > 9
+          ? titleController.text.trim().substring(0, 10)
+          : titleController.text.trim();
+      Map<String, dynamic> data = {'title' : key,'flow': selectedEmployeeMap};
+
+      isLodaing = true;
+      setState(() {});
+      final collectionReference =
+          FirebaseFirestore.instance.collection('workflow');
+      await collectionReference.doc().set(data);
+      isLodaing = false;
+      setState(() {});
+      MyDialog.showAlert(
+          context, "The new workflow has been successfully added.");
+      await Future.delayed(Duration(seconds: 3)); // Delay for 3 seconds
+      Navigator.of(context).pop(); // Close the popup window
+     // Navigator.of(context).pop(); // Close the popup window
+    } catch (e) {
+      MyDialog.showAlert(context, e.toString());
+      print(e.toString());
+    }
   }
 
   Future<Map<String, String>> getAdminUsersData() async {
@@ -193,16 +219,28 @@ class _WorkflowExecutionPageState extends State<WorkflowExecutionPage> {
                 SizedBox(
                   height: 10,
                 ),
-                Center(
-                  child: Text(
-                    'Workflow Steps',
-                    style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white),
-                  ),
+                Text(
+                  'Workflow Steps',
+                  style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white),
                 ),
                 SizedBox(height: 16),
+                Container(
+                  width: 400,
+                  child: TextField(
+                    style: TextStyle(color: Colors.white),
+                    controller: titleController,
+                    decoration: InputDecoration(
+                      hintStyle: TextStyle(color: Colors.white),
+                      labelText: 'Title',
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.white),
+                      ),
+                    ),
+                  ),
+                ),
                 Row(
                   children: [
                     MediaQuery.of(context).size.width - 1200 == 720
@@ -233,12 +271,17 @@ class _WorkflowExecutionPageState extends State<WorkflowExecutionPage> {
                                 ),
                               ),
                             ),
-                            Button(
-                              isSelected: true,
-                              icon: Icons.subdirectory_arrow_left_outlined,
-                              onPress: handleSubmit,
-                              txt: 'Create workflow',
-                            ),
+                            isLodaing
+                                ? Center(
+                                    child: CircularProgressIndicator(),
+                                  )
+                                : Button(
+                                    isSelected: true,
+                                    icon:
+                                        Icons.subdirectory_arrow_left_outlined,
+                                    onPress: handleSubmit,
+                                    txt: 'Create workflow',
+                                  ),
                           ],
                         ),
                       ),
