@@ -1,3 +1,5 @@
+import 'dart:html';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -288,6 +290,7 @@ Future<void> fun(BuildContext ctx) async {
     String name = await userDoc.get('userName');
     String email = await userDoc.get('email');
     String url = await userDoc.get('photo');
+
     Provider.of<AuthProvider>(ctx, listen: false)
         .setData(userdataa(email: email, name: name, uri: url), "token");
   }

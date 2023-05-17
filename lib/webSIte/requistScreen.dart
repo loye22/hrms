@@ -143,36 +143,36 @@ class _requistScreenState extends State<requistScreen> {
                                                     for (var key in sortedKeys) {
                                                       sortedMap[key] = e['flow'][key];
                                                     }
-
-                                                    // flag variables
-                                                    bool notMyTurn = false;
-                                                    bool alreadyAccepted = false;
+                                                    // Variable to track condition
+                                                    bool conditionMet = false;
 
                                                     sortedMap.forEach((outerKey, innerMap) {
                                                       innerMap.forEach((innerKey, innerValue) {
+                                                        if (conditionMet) {
+                                                          // Break out of the outer loop
+                                                          return;
+                                                        }
                                                         if (innerKey != user!.uid && !innerValue) {
-                                                          notMyTurn = true;
-                                                        } else if (innerKey == user!.uid && innerValue) {
-                                                          alreadyAccepted = true;
+                                                          // Not my turn / pending
+                                                          print('Not my turn');
+                                                          conditionMet = true;
+                                                          return ;
+                                                        }
+                                                        else if (innerKey == user!.uid && !innerValue) {
+                                                          // Display buttons and apply logic to alter data
+                                                          print('Display buttons');
+                                                          conditionMet = true;
+                                                          return;
+                                                        }
+                                                        else {
+                                                          print('done');
+                                                          conditionMet = true;
+
                                                         }
                                                       });
+
+
                                                     });
-
-                                                    if (notMyTurn) {
-                                                      print('Not my turn / Pending');
-                                                   //  return;
-                                                    } else if (alreadyAccepted) {
-                                                      print('You have already accepted this');
-                                                    //  return;
-                                                    } else {
-                                                      // Display buttons and apply logic
-                                                      print('Display buttons');
-                                                    }
-
-
-
-
-
 
 
                                                   },
