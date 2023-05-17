@@ -67,20 +67,82 @@ class _homeScreenState extends State<homeScreen> {
                 border: Border.all(color: Colors.white.withOpacity(0.13)),
                 color: Colors.grey.shade200.withOpacity(0.23),
               ),
-              child: Center(child: Column(
+              child: Center(
+                  child: Column(
                 children: [
-                  Text("HOMe screen"),
-
+                  Text("HOMe screen for testing "),
+                  Button(
+                      icon: Icons.forward_to_inbox,
+                      onPress: () async {
+                        await newRequist("VIW12XiEaTY7cm91niDKEgvlRCv2",
+                            "uEN0M0g8qnBVOBMUhysV");
+                      },
+                      txt: "New requist",
+                      isSelected: true)
                 ],
               )),
             ),
           ),
           Positioned(
-            child: sideBar(index: 0,),
+            child: sideBar(
+              index: 0,
+            ),
           ),
         ],
       ),
     );
   }
 
+  Future<void> newRequist(String userId, String workflowId) async {
+    try {
+      DateTime currentDate = DateTime.now();
+      List<String> flowOrder = [];
+      // Create the request document data
+      Map<String, dynamic> requestData = {
+        'eId': userId,
+        'date': currentDate,
+        'title': workflowId,
+        'flow': {},
+      };
+      // Retrieve the workflow document
+      DocumentSnapshot workflowSnapshot = await FirebaseFirestore.instance
+          .collection('workflow')
+          .doc(workflowId)
+          .get();
+
+      // Check if the workflow document exists
+      if (workflowSnapshot.exists) {
+        // Retrieve the flow map from the workflow document
+        Map<String, dynamic>? flowMap =
+            workflowSnapshot.data() as Map<String, dynamic>?;
+        // print(flowMap.toString()  + "<<<<<<<<");
+        //print(flowMap!['flow']!.keys.toList()..sort());
+        List<String> sortedKeys = flowMap!['flow'].keys.toList()..sort();
+        Map<String, dynamic> sortedMap = {};
+        for (var key in sortedKeys) {
+          sortedMap[key] = {flowMap['flow'][key]: false};
+        }
+        /*
+                      sortedMap.forEach((processKey, innerMap) {
+                        innerMap.forEach((id, value) {
+                          // Update the boolean value to true
+                          sortedMap[processKey]![id] = true;
+                        });
+                      });*/
+
+        requestData['flow'] = sortedMap;
+        // Create the request document in the requests collection
+        CollectionReference requestsCollection =
+            FirebaseFirestore.instance.collection('requests');
+
+        requestsCollection.add(requestData).catchError((error) {
+          print('Failed to create request document: $error');
+        });
+
+        // print(requestData);
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
 }

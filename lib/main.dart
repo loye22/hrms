@@ -16,6 +16,7 @@ import 'package:hrms/webSIte/emplyeeProfile.dart';
 
 import 'package:hrms/webSIte/homeScreen.dart';
 import 'package:hrms/webSIte/loginScreen.dart';
+import 'package:hrms/webSIte/requistScreen.dart';
 import 'package:hrms/webSIte/shiftScedual.dart';
 import 'package:hrms/webSIte/singUpScreen.dart';
 import 'package:hrms/webSIte/test.dart';
@@ -100,6 +101,7 @@ class _MyAppState extends State<MyApp> {
             timeOffMangeScreen.routeName: (ctx) => timeOffMangeScreen(),
             shiftScedual.routeName: (ctx) => shiftScedual(),
             workFlowMangeScreen.routeName: (ctx) => workFlowMangeScreen(),
+            requistScreen.routeName: (ctx) => requistScreen(),
             test.routeName: (ctx) => test(),
           },
         ),

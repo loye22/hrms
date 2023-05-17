@@ -6,6 +6,7 @@ import 'package:hrms/webSIte/homeScreen.dart';
 import 'package:hrms/webSIte/workFlowMangeScreen.dart';
 
 import '../webSIte/employeesPage.dart';
+import '../webSIte/requistScreen.dart';
 import '../webSIte/shiftScedual.dart';
 import '../webSIte/timeOffMangeScreen.dart';
 import 'button.dart';
@@ -87,6 +88,9 @@ class _sideBarState extends State<sideBar> {
               txt: "requests",
               onPress: () {
                 //_handleButtonTap(2);
+                if(mounted){
+                  Navigator.of(context).pushNamed(requistScreen.routeName);
+                }
               },
               isSelected: 2 == widget.index,
             ),

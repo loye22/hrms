@@ -12,6 +12,7 @@ import '../provider/UserData.dart';
 import '../webSIte/addNewEmployeeScreen.dart';
 import '../webSIte/weekEndMangerScreen.dart';
 import 'AddDepartmantForm.dart';
+import 'AddNewReq.dart';
 import 'addMandetoryEmplyeDoc.dart';
 import 'addNewBranch.dart';
 import 'addNewTimeOff.dart';
@@ -248,7 +249,27 @@ class rightBar extends StatelessWidget {
                 },
               ),
             ),
-            SizedBox(height: 200,)
+            /*SizedBox(
+              height: 15,
+            ),
+            Container(
+              width: 300,
+              child: Button(
+                txt: "Add new requists",
+                icon: Icons.sync_alt,
+                isSelected: true,
+                onPress: () async {
+                  await showDialog(
+                    context: context,
+                    builder: (BuildContext context) => AlertDialog(
+                      backgroundColor: Colors.transparent,
+                      content: AddNewReq(),
+                    ),
+                  );
+                },
+              ),
+            ),*/
+            SizedBox(height: 100,)
           ],
         ),
       ),

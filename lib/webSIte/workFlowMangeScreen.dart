@@ -74,7 +74,7 @@ class _workFlowMangeScreenState extends State<workFlowMangeScreen> {
               // Replace with your function to load workflow data
               builder: (ctx, snapshot) => snapshot.connectionState ==
                       ConnectionState.waiting
-                  ? CircularProgressIndicator()
+                  ? Center(child: CircularProgressIndicator())
                   : Container(
                       width: MediaQuery.of(context).size.width - 650,
                       height: MediaQuery.of(context).size.height - 130,
