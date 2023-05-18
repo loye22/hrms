@@ -12,10 +12,9 @@ import '../widgets/sideBar.dart';
 class requistScreen extends StatefulWidget {
   static const routeName = '/requistScreen';
   late Map<String, String> reqNameMap;
-
   late Map<String, String> empNamesMap;
-
   late List<Map<String, dynamic>> dataTable;
+  late List<String> TimeOffTitlesList;
 
   @override
   State<requistScreen> createState() => _requistScreenState();
@@ -26,7 +25,7 @@ class _requistScreenState extends State<requistScreen> {
 
   @override
   Widget build(BuildContext context) {
-   // print(MediaQuery.of(context).size.width - 650);
+    // print(MediaQuery.of(context).size.width - 650);
     return Scaffold(
       body: Stack(
         children: [
@@ -53,7 +52,10 @@ class _requistScreenState extends State<requistScreen> {
             left: 280,
             top: 15,
             child: Container(
-              width: MediaQuery.of(context).size.width - 650,
+              width: MediaQuery
+                  .of(context)
+                  .size
+                  .width - 650,
               height: 80,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.all(Radius.circular(10)),
@@ -77,116 +79,218 @@ class _requistScreenState extends State<requistScreen> {
             child: FutureBuilder(
               future: initt(),
               // Replace with your function to load workflow data
-              builder: (ctx, snapshot) => snapshot.connectionState ==
-                      ConnectionState.waiting
+              builder: (ctx, snapshot) =>
+              snapshot.connectionState ==
+                  ConnectionState.waiting
                   ? Center(child: CircularProgressIndicator())
                   : Container(
-                      width: MediaQuery.of(context).size.width - 650,
-                      height: MediaQuery.of(context).size.height - 130,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(10)),
-                        border:
-                            Border.all(color: Colors.white.withOpacity(0.13)),
-                        color: Colors.grey.shade200.withOpacity(0.23),
-                      ),
-                      child: SingleChildScrollView(
-                        scrollDirection: Axis.vertical,
-                        child: Container(
-                          width: MediaQuery.of(context).size.width - 650,
-                          height: MediaQuery.of(context).size.height - 150,
-                          padding: EdgeInsets.all(12),
-                          child: isLoading
-                              ? Center(child: CircularProgressIndicator())
-                              : DataTable(
-                                  columnSpacing:
-                                      MediaQuery.of(context).size.width - 650 <
-                                              1000
-                                          ? 110
-                                          : 202,
-                                  columns: [
-                                    DataColumn(
-                                      label: Text('Requist type'),
-                                    ),
-                                    DataColumn(
-                                      label: Text('Requisted by'),
-                                    ),
-                                    DataColumn(
-                                      label: Text('date'),
-                                    ),
-                                    DataColumn(
-                                      label: Text('Options'),
-                                    ),
-                                  ],
-                                  rows: widget.dataTable
-                                      .map((e) => DataRow(cells: [
-                                            DataCell(Text(widget.reqNameMap[e['title']] ?? '404 not found!')),
-                                            DataCell(Text(widget.empNamesMap[e['eId']] ?? '404 not found!')),
-                                            DataCell(Text(DateFormat('yyyy-MM-dd').format(e['date'].toDate().toLocal()))),
-                                            DataCell(Row(
-
-                                              children: [
-                                                ElevatedButton(
-                                                  onPressed: (){},
-                                                  style: ElevatedButton.styleFrom(primary: Colors.green),
-                                                  child: Text('Approve'),
-                                                ),
-                                                SizedBox(width: 16.0),
-                                                ElevatedButton(
-                                                  onPressed: (){
-
-
-
-                                                    User? user = FirebaseAuth.instance.currentUser;
-                                                    // sort the flow
-                                                    List<String> sortedKeys = e['flow'].keys.toList()..sort();
-                                                    Map<String, dynamic> sortedMap = {};
-                                                    for (var key in sortedKeys) {
-                                                      sortedMap[key] = e['flow'][key];
-                                                    }
-                                                    // Variable to track condition
-                                                    bool conditionMet = false;
-
-                                                    sortedMap.forEach((outerKey, innerMap) {
-                                                      innerMap.forEach((innerKey, innerValue) {
-                                                        if (conditionMet) {
-                                                          // Break out of the outer loop
-                                                          return;
-                                                        }
-                                                        if (innerKey != user!.uid && !innerValue) {
-                                                          // Not my turn / pending
-                                                          print('Not my turn');
-                                                          conditionMet = true;
-                                                          return ;
-                                                        }
-                                                        else if (innerKey == user!.uid && !innerValue) {
-                                                          // Display buttons and apply logic to alter data
-                                                          print('Display buttons');
-                                                          conditionMet = true;
-                                                          return;
-                                                        }
-                                                        else {
-                                                          print('done');
-                                                          conditionMet = true;
-
-                                                        }
-                                                      });
-
-
-                                                    });
-
-
-                                                  },
-                                                  style: ElevatedButton.styleFrom(primary: Colors.red),
-                                                  child: Text('Reject'),
-                                                ),
-                                              ],
-                                            ))
-                                          ]))
-                                      .toList(),
-                                ),
+                width: MediaQuery
+                    .of(context)
+                    .size
+                    .width - 650,
+                height: MediaQuery
+                    .of(context)
+                    .size
+                    .height - 130,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(10)),
+                  border:
+                  Border.all(color: Colors.white.withOpacity(0.13)),
+                  color: Colors.grey.shade200.withOpacity(0.23),
+                ),
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.vertical,
+                  child: Container(
+                    width: MediaQuery
+                        .of(context)
+                        .size
+                        .width - 650,
+                    height: MediaQuery
+                        .of(context)
+                        .size
+                        .height - 150,
+                    padding: EdgeInsets.all(12),
+                    child: isLoading
+                        ? Center(child: CircularProgressIndicator())
+                        : DataTable(
+                      columnSpacing:
+                      MediaQuery
+                          .of(context)
+                          .size
+                          .width - 650 <
+                          1000
+                          ? 110
+                          : 202,
+                      columns: [
+                        DataColumn(
+                          label: Text('Requist type'),
                         ),
-                      ),
+                        DataColumn(
+                          label: Text('Requisted by'),
+                        ),
+                        DataColumn(
+                          label: Text('date'),
+                        ),
+                        DataColumn(
+                          label: Text('Options'),
+                        ),
+                      ],
+                      rows: widget.dataTable
+                          .map((e) {
+                        bool reqFlag = false;
+                        User? user = FirebaseAuth.instance.currentUser;
+                        // sort the flow
+                        List<String> sortedKeys = e['flow'].keys.toList()
+                          ..sort();
+                        Map<String, dynamic> sortedMap = {};
+                        for (var key in sortedKeys) {
+                          sortedMap[key] = e['flow'][key];
+                        }
+                        if (sortedMap.values
+                            .toList()
+                            .length > 0 &&
+                            sortedMap.values.toList()[0] == user!.uid) {
+                          // display the requists
+                          reqFlag = true;
+                          //print(reqFlag);
+                        }
+                        return DataRow(cells: [
+                          DataCell(Text(widget.reqNameMap[e['title']] ??
+                              '404 not found!')),
+                          DataCell(Text(widget.empNamesMap[e['eId']] ??
+                              '404 not found!')),
+                          DataCell(Text(DateFormat('yyyy-MM-dd').format(
+                              e['date'].toDate().toLocal()))),
+                          DataCell(reqFlag ? Row(
+                            children: [
+                              ElevatedButton(
+                                onPressed: () async {
+                                  // the last admin in the pipline
+                                  if (e['flow'].length == 1) {
+                                    try {
+                                      //  print(widget.TimeOffTitlesList);
+                                      //  print(widget.reqNameMap[e['title']]);
+                                      if (widget.TimeOffTitlesList.contains(
+                                          widget.reqNameMap[e['title']])) {
+                                        // this to handle the time off requsits
+                                        // we check if time off tilte is exsist
+                                        // we need to check if the employee has enght days
+                                        Map<String, dynamic> timeOff = {};
+                                        Map<String,
+                                            dynamic> employeeTimeOffData = {};
+
+                                        QuerySnapshot querySnapshot = await FirebaseFirestore
+                                            .instance
+                                            .collection('Employee')
+                                            .doc(e['eId'])
+                                            .collection('TimeOff')
+                                            .where('title', isEqualTo: widget
+                                            .reqNameMap[e['title']])
+                                            .get();
+
+                                        querySnapshot.docs.forEach((doc) {
+                                          Map<String, dynamic> data = doc
+                                              .data() as Map<String, dynamic>;
+                                          employeeTimeOffData = data;
+                                        });
+
+                                        int d = int.parse(employeeTimeOffData['duration']);
+                                        int c = int.parse(employeeTimeOffData['consume']);
+                                        int r = int.parse(e['ReqistedDays']);
+                                        print(d - (c+r) );
+                                        if (d - (c+r) >= 0 ){
+                                          // the emplyee has enght days to precess
+                                          // we update consume value where the new value is
+                                          // consume = c + r toString.....
+                                          print('yea');
+
+                                        }
+                                        else {
+                                          // no enght days
+                                          MyDialog.showAlert(context, "The employee has requested or exceeded their allotted number of days");
+                                          return;
+                                        }
+                                      }
+                                    }
+                                    catch (e) {
+                                      print(e);
+                                      MyDialog.showAlert(context,'Please make sure that this the holaday assinged to this emplyee \n' + e.toString());
+                                    }
+                                    print('next block');
+                                    return;
+
+                                    // here we are handing the pip line it self
+                                    // in case if the admin approved will go to nex admin
+                                    e['flow'].removeWhere((key,
+                                        value) => value == user!.uid);
+                                    String documentId = e['docId']; // Assuming this is the document ID where the data is stored
+                                    FirebaseFirestore.instance.collection(
+                                        'requests').doc(documentId).update({
+                                      'flow': e['flow'],
+                                      'status': 'pending'
+                                    }).then((value) {
+                                      MyDialog.showAlert(context,
+                                          'Status updated successfully.');
+                                      print('Status updated successfully.');
+                                    }).catchError((error) {
+                                      MyDialog.showAlert(context,
+                                          'Failed to update status: $error');
+                                      print('Failed to update status: $error');
+                                    });
+                                    return;
+                                  }
+                                  e['flow'].removeWhere((key, value) =>
+                                  value == user!.uid);
+                                  String documentId = e['docId']; // Assuming this is the document ID where the data is stored
+                                  FirebaseFirestore.instance.collection(
+                                      'requests').doc(documentId).update({
+                                    'flow': e['flow']
+                                  }).then((value) {
+                                    MyDialog.showAlert(context,
+                                        'Status updated successfully.');
+                                    print('Status updated successfully.');
+                                  }).catchError((error) {
+                                    MyDialog.showAlert(context,
+                                        'Failed to update status: $error');
+                                    print('Failed to update status: $error');
+                                  });
+                                },
+                                style: ElevatedButton.styleFrom(
+                                    primary: Colors.green),
+                                child: Text('Approve'),
+                              ),
+                              SizedBox(width: 16.0),
+                              ElevatedButton(
+                                onPressed: () {
+                                  String documentId = e['docId']; // Assuming this is the document ID where the data is stored
+                                  FirebaseFirestore.instance.collection(
+                                      'requests').doc(documentId).update({
+                                    'status': 'reject',
+                                    'flow': {}
+                                  }).then((value) {
+                                    MyDialog.showAlert(context,
+                                        'Status updated successfully.');
+                                    print('Status updated successfully.');
+                                  }).catchError((error) {
+                                    MyDialog.showAlert(context,
+                                        'Failed to update status: $error');
+                                    print('Failed to update status: $error');
+                                  });
+                                },
+                                style: ElevatedButton.styleFrom(
+                                    primary: Colors.red),
+                                child: Text('Reject'),
+                              ),
+                            ],
+                          ) : (Text(e['status'] != 'pending'
+                              ? e['status']
+                              : 'pending')))
+                        ]);
+                      }).toList(),
                     ),
+                  ),
+                ),
+              ),
             ),
           ),
           Positioned(
@@ -204,7 +308,7 @@ class _requistScreenState extends State<requistScreen> {
       widget.reqNameMap = await getWorkflowTitles();
       widget.empNamesMap = await getEmployeeNames();
       widget.dataTable = await getAllRequests();
-
+      widget.TimeOffTitlesList = await getTimeOffTitles();
     } catch (e) {}
   }
 
@@ -213,7 +317,7 @@ class _requistScreenState extends State<requistScreen> {
 
     // Retrieve the documents from the "workflow" collection
     QuerySnapshot workflowSnapshot =
-        await FirebaseFirestore.instance.collection('workflow').get();
+    await FirebaseFirestore.instance.collection('workflow').get();
 
     // Iterate through the documents and extract the document ID and title
     workflowSnapshot.docs.forEach((doc) {
@@ -232,7 +336,7 @@ class _requistScreenState extends State<requistScreen> {
 
     // Retrieve the documents from the "Employee" collection
     QuerySnapshot employeeSnapshot =
-        await FirebaseFirestore.instance.collection('Employee').get();
+    await FirebaseFirestore.instance.collection('Employee').get();
 
     // Iterate through the documents and extract the document ID and name
     employeeSnapshot.docs.forEach((doc) {
@@ -251,17 +355,30 @@ class _requistScreenState extends State<requistScreen> {
 
     // Retrieve the documents from the "requests" collection
     QuerySnapshot requestSnapshot =
-        await FirebaseFirestore.instance.collection('requests').get();
+    await FirebaseFirestore.instance.collection('requests').get();
 
     // Iterate through the documents and store the data
     requestSnapshot.docs.forEach((doc) {
       Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+      data['docId'] = doc.id;
       requestData.add(data);
     });
     return requestData;
   }
 
+  Future<List<String>> getTimeOffTitles() async {
+    List<String> dataList = [];
 
+    QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+        .collection('timeOff')
+        .get();
+
+    querySnapshot.docs.forEach((doc) {
+      Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+      dataList.add(data['title']);
+    });
+    return dataList;
+  }
 
 
 }

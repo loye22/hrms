@@ -216,7 +216,7 @@ class _timeOffMangeScreenState extends State<timeOffMangeScreen> {
             .add({
           'title': title,
           'duration': duration,
-          'consume': 0,
+          'consume': "0",
         });
 
         print('TimeOff collection added to employee with ID $employeeId.');

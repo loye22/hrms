@@ -74,8 +74,7 @@ class _homeScreenState extends State<homeScreen> {
                   Button(
                       icon: Icons.forward_to_inbox,
                       onPress: () async {
-                        await newRequist("VIW12XiEaTY7cm91niDKEgvlRCv2",
-                            "SFNruWlgZ7XG1fsmsk4i");
+                        await newRequist("Y1S5WDkIFvMpdqrEPu0hWa9CMyE2", "BSheLtI4LYHyCrRsuJ1B");
                       },
                       txt: "New requist",
                       isSelected: true)
@@ -105,6 +104,9 @@ class _homeScreenState extends State<homeScreen> {
         'date': currentDate,
         'title': workflowId,
         'flow': {},
+        'status':'pending' ,
+        'ReqistedDays': "7"
+
       };
       // Retrieve the workflow document
       DocumentSnapshot workflowSnapshot = await FirebaseFirestore.instance
@@ -122,15 +124,9 @@ class _homeScreenState extends State<homeScreen> {
         List<String> sortedKeys = flowMap!['flow'].keys.toList()..sort();
         Map<String, dynamic> sortedMap = {};
         for (var key in sortedKeys) {
-          sortedMap[key] = {flowMap['flow'][key]: false};
+          sortedMap[key] = flowMap['flow'][key];
         }
-        /*
-                      sortedMap.forEach((processKey, innerMap) {
-                        innerMap.forEach((id, value) {
-                          // Update the boolean value to true
-                          sortedMap[processKey]![id] = true;
-                        });
-                      });*/
+
 
         requestData['flow'] = sortedMap;
         // Create the request document in the requests collection
