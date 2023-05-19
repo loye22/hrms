@@ -126,10 +126,10 @@ class _requistScreenState extends State<requistScreen> {
                           label: Text('Requist type'),
                         ),
                         DataColumn(
-                          label: Text('Requisted by'),
+                          label: Expanded(child: Text('Requisted by')),
                         ),
                         DataColumn(
-                          label: Text('date'),
+                          label: Expanded(child: Text('Requisted date')),
                         ),
                         DataColumn(
                           label: Text('Options'),
@@ -168,10 +168,12 @@ class _requistScreenState extends State<requistScreen> {
                                   // the last admin in the pipline
                                   if (e['flow'].length == 1) {
                                     try {
+
                                       //  print(widget.TimeOffTitlesList);
                                       //  print(widget.reqNameMap[e['title']]);
                                       if (widget.TimeOffTitlesList.contains(
                                           widget.reqNameMap[e['title']])) {
+                                        print('sdasda');
                                         // this to handle the time off requsits
                                         // we check if time off tilte is exsist
                                         // we need to check if the employee has enght days
@@ -188,9 +190,11 @@ class _requistScreenState extends State<requistScreen> {
                                             .reqNameMap[e['title']])
                                             .get();
 
+                                        String timeOffDocId = '';
                                         querySnapshot.docs.forEach((doc) {
                                           Map<String, dynamic> data = doc
                                               .data() as Map<String, dynamic>;
+                                          timeOffDocId = doc.id;
                                           employeeTimeOffData = data;
                                         });
 
@@ -200,9 +204,41 @@ class _requistScreenState extends State<requistScreen> {
                                         print(d - (c+r) );
                                         if (d - (c+r) >= 0 ){
                                           // the emplyee has enght days to precess
-                                          // we update consume value where the new value is
+                                          // we update consume value where the new value is and change the status to accepted
                                           // consume = c + r toString.....
-                                          print('yea');
+                                          // Get a reference to the employee document
+                                          print(d - (c+r)  );
+                                          print(timeOffDocId + "<<<");
+                                          final DocumentReference employeeRef =
+                                          FirebaseFirestore.instance.collection('Employee').doc(e['eId']);
+                                          // Get a reference to the time-off document within the employee document
+                                          final DocumentReference timeOffRef =
+                                          employeeRef.collection('TimeOff').doc(timeOffDocId);
+                                          // Update the consume attribute
+                                          timeOffRef.update({
+                                            'consume': (c+r).toString() // Replace 'new_consume_value' with the desired value
+                                          }).then((_) {
+                                            MyDialog.showAlert(context, 'Consume attribute updated successfully.');
+                                            print('Consume attribute updated successfully.');
+                                          }).catchError((error) {MyDialog.showAlert(context, 'Failed to update consume attribute: $error');print('Failed to update consume attribute: $error');});
+
+
+                                          //change the requist statuse
+                                          FirebaseFirestore.instance.collection(
+                                              'requests').doc(e['docId']).update({
+                                            'status': 'Accepted',
+                                            'flow': {}
+                                          }).then((value) {
+                                            MyDialog.showAlert(context,
+                                                'Status updated successfully.');
+                                            print('Status updated successfully.');
+                                          }).catchError((error) {
+                                            MyDialog.showAlert(context,
+                                                'Failed to update status: $error');
+                                            print('Failed to update status: $error');
+                                          });
+                                          setState(() {});
+
 
                                         }
                                         else {
@@ -211,12 +247,31 @@ class _requistScreenState extends State<requistScreen> {
                                           return;
                                         }
                                       }
+                                      else {
+                                        // handing the non time off requists
+                                        await FirebaseFirestore.instance.collection(
+                                            'requests').doc(e['docId']).update({
+                                          'status': 'Accepted',
+                                          'flow': {}
+                                        }).then((value) {
+                                          MyDialog.showAlert(context,
+                                              'Status updated successfully.');
+                                          print('Status updated successfully.');
+                                        }).catchError((error) {
+                                          MyDialog.showAlert(context,
+                                              'Failed to update status: $error');
+                                          print('Failed to update status: $error');
+                                        });
+                                        setState(() {});
+                                        return;
+                                      }
                                     }
+
                                     catch (e) {
                                       print(e);
                                       MyDialog.showAlert(context,'Please make sure that this the holaday assinged to this emplyee \n' + e.toString());
                                     }
-                                    print('next block');
+
                                     return;
 
                                     // here we are handing the pip line it self
@@ -239,6 +294,10 @@ class _requistScreenState extends State<requistScreen> {
                                     });
                                     return;
                                   }
+
+
+
+                                  // passing the requist to hte next admin
                                   e['flow'].removeWhere((key, value) =>
                                   value == user!.uid);
                                   String documentId = e['docId']; // Assuming this is the document ID where the data is stored
@@ -254,6 +313,8 @@ class _requistScreenState extends State<requistScreen> {
                                         'Failed to update status: $error');
                                     print('Failed to update status: $error');
                                   });
+
+                                  setState(() {});
                                 },
                                 style: ElevatedButton.styleFrom(
                                     primary: Colors.green),
@@ -276,6 +337,7 @@ class _requistScreenState extends State<requistScreen> {
                                         'Failed to update status: $error');
                                     print('Failed to update status: $error');
                                   });
+                                  setState(() {});
                                 },
                                 style: ElevatedButton.styleFrom(
                                     primary: Colors.red),

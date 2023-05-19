@@ -182,7 +182,7 @@ class _ProfileWidgetState extends State<ProfileWidget>
                                // print(data);
                                 return DonutChartWidget(
                                   totalDays: data["duration"]!= null ? double.parse(data["duration"]) : 0.0 ,
-                                  usedDays:data["consume"]!= null ? data["consume"] as double : 0.0 ,
+                                  usedDays:data["consume"]!= null ? double.parse(data["consume"])  : 0.0 ,
                                   txt: data["title"]!= null ? data["title"] : "error",
                                   color: Colors.blue,
                                 );
