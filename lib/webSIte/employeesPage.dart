@@ -157,7 +157,9 @@ class _employeesPageState extends State<employeesPage> {
                           }, cells: [
                             DataCell(Row(
                               children: [
-                                CircleAvatar(
+
+
+                               CircleAvatar(
                                   radius: 20,
                                   backgroundImage:
                                   NetworkImage(employee['photo']),

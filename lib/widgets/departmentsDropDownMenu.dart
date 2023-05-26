@@ -38,7 +38,7 @@ class _departmentsDropDownMenuState extends State<departmentsDropDownMenu> {
     return Container(
       width: MediaQuery.of(context).size.width - 1600 > 1
           ? MediaQuery.of(context).size.width - 1600
-          : 10,
+          : 300,
       padding: EdgeInsets.all(16),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.all(Radius.circular(10)),

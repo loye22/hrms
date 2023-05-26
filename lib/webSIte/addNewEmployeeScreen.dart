@@ -611,7 +611,7 @@ class _addNewEmployeeScreenState extends State<addNewEmployeeScreen> {
                               width:
                                   MediaQuery.of(context).size.width - 1600 > 1
                                       ? MediaQuery.of(context).size.width - 1600
-                                      : 10,
+                                      : 300,
                               height: 60,
                               decoration: BoxDecoration(
                                 borderRadius:
@@ -666,6 +666,7 @@ class _addNewEmployeeScreenState extends State<addNewEmployeeScreen> {
                             ),
                             Container(
                               height: 60,
+
                               child: Center(
                                 child: WeekendDropdownMenu(
                                   onItemSelected: (c) {
@@ -690,7 +691,7 @@ class _addNewEmployeeScreenState extends State<addNewEmployeeScreen> {
                               width:
                                   MediaQuery.of(context).size.width - 1750 > 1
                                       ? MediaQuery.of(context).size.width - 1750
-                                      : 10,
+                                      : 300,
                               child: GenderPicker(
                                 initialGender: _selectedGender,
                                 onGenderChanged: (gender) {
@@ -933,7 +934,7 @@ class _WeekendDropdownMenuState extends State<WeekendDropdownMenu> {
     return Container(
       width: MediaQuery.of(context).size.width - 1600 > 1
           ? MediaQuery.of(context).size.width - 1600
-          : 10,
+          : 300,
       padding: EdgeInsets.all(16),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.all(Radius.circular(10)),

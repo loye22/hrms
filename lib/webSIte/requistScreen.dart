@@ -112,7 +112,7 @@ class _requistScreenState extends State<requistScreen> {
                     padding: EdgeInsets.all(12),
                     child: isLoading
                         ? Center(child: CircularProgressIndicator())
-                        : DataTable(
+                        : DataTable2(
                       columnSpacing:
                       MediaQuery
                           .of(context)
