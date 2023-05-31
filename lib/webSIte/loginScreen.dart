@@ -190,6 +190,13 @@ class _loginScreenState extends State<loginScreen> {
                               try {
                                 _submit();
                                 setState(() {this._isLoading = true;});
+                                // check if the this user in an admin
+                                // true ==> he is
+                                // false ==>
+                                bool isAdmin =await  checkAdminStatus(_eamil);
+                                if(!isAdmin){
+                                  throw Exception('Unfortunately, the provided email ${_eamil} does not have the necessary permissions to access the admin panel');
+                                }
 
                                 dynamic res = await signInWithEmailAndPassword(
                                         _eamil, _passwd, context)
@@ -279,5 +286,26 @@ class _loginScreenState extends State<loginScreen> {
 
     // Return the UserCredential
     return result;
+  }
+
+
+  // Check if the user's email exists in the "Adminusers" collection
+  Future<bool> checkAdminStatus(String userEmail) async {
+    final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+    // Query the "Adminusers" collection based on the user's email
+    QuerySnapshot querySnapshot = await _firestore
+        .collection('Adminusers')
+        .where('email', isEqualTo: userEmail)
+        .get();
+
+    if (querySnapshot.docs.isNotEmpty) {
+      // User's email exists in the "Adminusers" collection
+      // Allow access to the website or perform other actions
+      return true ;
+    } else {
+      // User's email does not exist in the "Adminusers" collection
+      // Deny access or show an appropriate message
+      return false ;
+    }
   }
 }

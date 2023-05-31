@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 
@@ -56,7 +57,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context)  {
     if (kIsWeb) {
       return MultiProvider(
         providers: [
@@ -78,6 +79,10 @@ class _MyAppState extends State<MyApp> {
             stream: FirebaseAuth.instance.authStateChanges(),
             builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
               if (snapshot.hasData) {
+
+
+
+
               //  print(snapshot.data.uid);
                 //Provider.of<AuthProvider>(context, listen: false).setUid(snapshot.data.uid);
               //  global.set(snapshot.data.uid);
@@ -115,4 +120,10 @@ class _MyAppState extends State<MyApp> {
       );
     }
   }
+
+
+
+
+
+
 }
