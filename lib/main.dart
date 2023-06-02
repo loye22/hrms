@@ -86,7 +86,7 @@ class _MyAppState extends State<MyApp> {
               //  print(snapshot.data.uid);
                 //Provider.of<AuthProvider>(context, listen: false).setUid(snapshot.data.uid);
               //  global.set(snapshot.data.uid);
-                return employeesPage();
+                return homeScreen();
               } else {
                 return loginScreen();
               }

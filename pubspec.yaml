@@ -67,6 +67,11 @@ dependencies:
   syncfusion_localizations: ^21.1.41
   flutter_localization: ^0.1.10
   flutter_animate: ^4.1.1+1
+  geolocator: ^9.0.2
+  flutter_map: ^4.0.0
+  latlng: ^1.0.0
+  latlong2: ^0.8.2
+
 
 dev_dependencies:
   flutter_test:
