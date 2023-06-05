@@ -1,32 +1,24 @@
 import 'dart:ui';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
-
 import 'package:hrms/provider/UserData.dart';
-
 import 'package:hrms/provider/employeeProfileProvider.dart';
 import 'package:hrms/webSIte/addNewEmployeeScreen.dart';
 import 'package:hrms/webSIte/companyDocAdd.dart';
 import 'package:hrms/webSIte/companyDocScreen.dart';
 import 'package:hrms/webSIte/employeesPage.dart';
 import 'package:hrms/webSIte/emplyeeProfile.dart';
-
-
-
 import 'package:hrms/webSIte/homeScreen.dart';
 import 'package:hrms/webSIte/loginScreen.dart';
 import 'package:hrms/webSIte/requistScreen.dart';
 import 'package:hrms/webSIte/shiftScedual.dart';
 import 'package:hrms/webSIte/singUpScreen.dart';
-import 'package:hrms/webSIte/test.dart';
 import 'package:hrms/webSIte/timeOffMangeScreen.dart';
 import 'package:hrms/webSIte/weekEndMangerScreen.dart';
 import 'package:hrms/webSIte/workFlowMangeScreen.dart';
 import 'package:hrms/widgets/workflow.dart';
 import 'package:provider/provider.dart';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 
@@ -107,7 +99,7 @@ class _MyAppState extends State<MyApp> {
             shiftScedual.routeName: (ctx) => shiftScedual(),
             workFlowMangeScreen.routeName: (ctx) => workFlowMangeScreen(),
             requistScreen.routeName: (ctx) => requistScreen(),
-            test.routeName: (ctx) => test(),
+
           },
         ),
       );
