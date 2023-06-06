@@ -102,7 +102,7 @@ class _addNewBranchState extends State<addNewBranch> {
                       // Create a new document with an auto-generated ID
                       DocumentReference docRef =
                       await firestore.collection('branchs').add({
-                        'title': titleController.text,
+                        'title': titleController.text.replaceAll(' ', ''),
 
                       });
                       setState(() {
