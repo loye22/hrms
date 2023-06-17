@@ -193,7 +193,6 @@ class _shiftScedualState extends State<shiftScedual> {
                                 String v3 = ''; // On duty/Off
 
                                 List<String> Branchs = await getBranchTitles();
-
                                 List<String> workeTime = this
                                     .workingTimes
                                     .entries
@@ -306,7 +305,7 @@ class _shiftScedualState extends State<shiftScedual> {
                                                         SizedBox(height: 16),
                                                         DropdownButtonFormField<
                                                             String>(
-                                                          value: 'Abu Dabi',
+                                                          value: 'AbuDabi',
                                                           onChanged: (value) {
                                                             v2 = value!;
                                                             //widget.onSelectedItems();

@@ -126,10 +126,10 @@ class _requistScreenState extends State<requistScreen> {
                           label: Text('Requist type'),
                         ),
                         DataColumn(
-                          label: Expanded(child: Text('Requisted by')),
+                          label: Text('Requisted by'),
                         ),
                         DataColumn(
-                          label: Expanded(child: Text('Requisted date')),
+                          label: Text('Requisted date'),
                         ),
                         DataColumn(
                           label: Text('Options'),

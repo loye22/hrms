@@ -5,6 +5,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:hrms/provider/UserData.dart';
 import 'package:hrms/provider/employeeProfileProvider.dart';
 import 'package:hrms/webSIte/addNewEmployeeScreen.dart';
+import 'package:hrms/webSIte/attendinceScreen.dart';
 import 'package:hrms/webSIte/companyDocAdd.dart';
 import 'package:hrms/webSIte/companyDocScreen.dart';
 import 'package:hrms/webSIte/employeesPage.dart';
@@ -99,6 +100,7 @@ class _MyAppState extends State<MyApp> {
             shiftScedual.routeName: (ctx) => shiftScedual(),
             workFlowMangeScreen.routeName: (ctx) => workFlowMangeScreen(),
             requistScreen.routeName: (ctx) => requistScreen(),
+            attendanceScreen.routeName: (ctx) => attendanceScreen(),
 
           },
         ),

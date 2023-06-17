@@ -5,6 +5,7 @@ import 'package:hrms/webSIte/companyDocScreen.dart';
 import 'package:hrms/webSIte/homeScreen.dart';
 import 'package:hrms/webSIte/workFlowMangeScreen.dart';
 
+import '../webSIte/attendinceScreen.dart';
 import '../webSIte/employeesPage.dart';
 import '../webSIte/requistScreen.dart';
 import '../webSIte/shiftScedual.dart';
@@ -116,6 +117,9 @@ class _sideBarState extends State<sideBar> {
               icon: Icons.how_to_reg,
               txt: "Attendence ",
               onPress: () {
+                if(mounted){
+                  Navigator.of(context).pushNamed(attendanceScreen.routeName);
+                }
                 //_handleButtonTap(4);
               },
               isSelected: 4 == widget.index,
