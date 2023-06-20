@@ -1,14 +1,17 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:data_table_2/data_table_2.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:hrms/models/Dialog.dart';
 import 'package:hrms/widgets/flutterMap.dart';
+import 'package:hrms/widgets/iconWiget.dart';
 import 'package:intl/intl.dart';
 import '../models/gloablVar.dart';
 import '../widgets/rightBar.dart';
 import '../widgets/sideBar.dart';
+import 'package:intl/intl.dart';
 
 class attendanceScreen extends StatefulWidget {
   static const routeName = '/attendinceScreen';
@@ -20,24 +23,10 @@ class attendanceScreen extends StatefulWidget {
 }
 
 class _attendanceScreenState extends State<attendanceScreen> {
+  Map<String, Map<String, String>> branshLocaions = {};
+
   @override
   Widget build(BuildContext context) {
-    Map<String, dynamic> i = {
-      'name': 'ayman',
-      'checkInPhoto': 'https://f4.bcbits.com/img/0023005329_10.jpg',
-      'checkOutPhoto':
-          'https://yt3.googleusercontent.com/ytc/AGIKgqPs2_byeqx3sMDj4KbZvkboIjUbq142qFv_fzcA6g=s900-c-k-c0x00ffffff-no-rj',
-      'checkInTimeStamp': '2023-06-18',
-      'checkOutTimeStamp': '2023-06-20',
-      'checkOutIsHeIn': 'true',
-      'checkInIsHeIn': 'true',
-      'checkInLong': '54.5989221',
-      'checkInLat': '24.2761789',
-      'checkOutLong': '54.5989221',
-      'checkOutLat': '24.2761789',
-      'BranshName': ''
-    };
-
     return Scaffold(
       body: /*attendincePopUpEditWindows(
       item: i,
@@ -78,6 +67,11 @@ class _attendanceScreenState extends State<attendanceScreen> {
                   border: Border.all(color: Colors.white.withOpacity(0.13)),
                   color: Colors.grey.shade200.withOpacity(0.23),
                 ),
+                // please note that the fetchAttendanceData() function call another function called getLocations();
+                // to load the beanshes names with there locaions to be used in the popup window
+                //so it will load the employee locaion with his bransh loacion
+                // after that the fetchAttendanceData() function will load the attendince data from firebase .
+                //
                 child: FutureBuilder(
                   future: fetchAttendanceData(),
                   builder: (ctx, snapShot) {
@@ -108,13 +102,10 @@ class _attendanceScreenState extends State<attendanceScreen> {
                           ),
                         ],
                         rows: snapShot.data!.map((e) {
-
-
-
-
                           // get the current shift shecdual
                           Map<String, dynamic> shift =
                               modifySchedule(e['scedual']['shifts']);
+
                           //from checkInTimeStamp attribute we will extract the current date and we will pass it for the map above
                           // to get the current shedual
                           int milliseconds = int.parse(e['checkInTimeStamp']);
@@ -128,7 +119,8 @@ class _attendanceScreenState extends State<attendanceScreen> {
                                 context: context,
                                 builder: (BuildContext context) => AlertDialog(
                                   backgroundColor: Colors.transparent,
-                                  content: attendincePopUpEditWindows(item: e),
+                                  content: attendincePopUpEditWindows(
+                                      item: e, bLoacions: this.branshLocaions),
                                 ),
                               );
                             },
@@ -166,8 +158,8 @@ class _attendanceScreenState extends State<attendanceScreen> {
 
   Future<List<Map<String, dynamic>>> fetchAttendanceData() async {
     List<Map<String, dynamic>> attendanceList = [];
-
     try {
+      await getLocations();
       QuerySnapshot querySnapshot = await FirebaseFirestore.instance
           .collection('attendance')
           .orderBy('checkInTimeStamp', descending: true)
@@ -179,7 +171,6 @@ class _attendanceScreenState extends State<attendanceScreen> {
         attendanceData['documentId'] = doc.id;
         attendanceList.add(attendanceData);
       });
-     
       return attendanceList;
     } catch (error) {
       print('Error retrieving attendance data: $error');
@@ -224,15 +215,32 @@ class _attendanceScreenState extends State<attendanceScreen> {
     String formattedTime = DateFormat('hh:mm a').format(date);
     return formattedTime;
   }
+
+  Future<void> getLocations() async {
+    Map<String, Map<String, String>> locationMap = {};
+    QuerySnapshot<Map<String, dynamic>> querySnapshot =
+        await FirebaseFirestore.instance.collection('locations').get();
+    for (QueryDocumentSnapshot<Map<String, dynamic>> documentSnapshot
+        in querySnapshot.docs) {
+      String title = documentSnapshot.data()['title'];
+      String latitude = documentSnapshot.data()['latitude'];
+      String longitude = documentSnapshot.data()['longitude'];
+      locationMap[title] = {
+        'checkInLat': latitude,
+        'checkInLong': longitude,
+      };
+    }
+
+    this.branshLocaions = locationMap;
+  }
 }
 
 class attendincePopUpEditWindows extends StatefulWidget {
   final Map<String, dynamic> item;
+  final Map<String,dynamic> bLoacions;
 
-  const attendincePopUpEditWindows({
-    super.key,
-    required this.item,
-  });
+  const attendincePopUpEditWindows(
+      {super.key, required this.item, required this.bLoacions});
 
   @override
   State<attendincePopUpEditWindows> createState() =>
@@ -241,10 +249,14 @@ class attendincePopUpEditWindows extends StatefulWidget {
 
 class _attendincePopUpEditWindowsState
     extends State<attendincePopUpEditWindows> {
-  bool isLoding = false ;
+  bool isLoding = false;
+  String timeStamp = '';
+
+
   @override
   Widget build(BuildContext context) {
     final double h = 10;
+    print(widget.bLoacions[widget.item['BranshName']]);
     return Container(
       width: 700,
       height: 600,
@@ -278,9 +290,59 @@ class _attendincePopUpEditWindowsState
                   SizedBox(
                     height: h,
                   ),
-                  Text(
-                    'Check in detals',
-                    style: global.txtStyle1,
+                  Row(
+                    children: [
+                      Text(
+                        'Check in detals',
+                        style: global.txtStyle1,
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      IconButton(
+                        onPressed: () async {
+                          final TimeOfDay? pickedTime = await showTimePicker(
+                            context: context,
+                            initialTime: TimeOfDay.now(),
+                          );
+                          if (pickedTime != null) {
+                            final int existingTimestamp =
+                                int.parse(widget.item['checkInTimeStamp']);
+                            final DateTime existingDateTime =
+                                DateTime.fromMillisecondsSinceEpoch(
+                                    existingTimestamp);
+                            final DateTime updatedDateTime = DateTime(
+                              existingDateTime.year,
+                              existingDateTime.month,
+                              existingDateTime.day,
+                              pickedTime.hour,
+                              pickedTime.minute,
+                            );
+                            final int updatedTimestamp =
+                                updatedDateTime.millisecondsSinceEpoch;
+                            try {
+                              final CollectionReference attendanceCollection =
+                                  FirebaseFirestore.instance
+                                      .collection('attendance');
+                              await attendanceCollection
+                                  .doc(widget.item['documentId'])
+                                  .update({
+                                'checkInTimeStamp': updatedTimestamp.toString(),
+                              });
+                              MyDialog.showAlert(context,
+                                  'Check in time updated successfully');
+                            } catch (e) {
+                              MyDialog.showAlert(context, 'Error: $e');
+                            }
+                          }
+                          print(timeStamp);
+                        },
+                        icon: Icon(
+                          Icons.edit,
+                          color: Colors.white,
+                        ),
+                      )
+                    ],
                   ),
                   SizedBox(
                     height: h,
@@ -327,11 +389,15 @@ class _attendincePopUpEditWindowsState
                                 height: 150,
                                 decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(30)),
-                                child: flutterMap(
-                                    centerLang: '54.5988998',
-                                    centerLat: '24.2762571',
-                                    p2Lang: widget.item['checkInLong'],
-                                    p2Lat: widget.item['checkInLat'])),
+                                child: widget.bLoacions[
+                                            widget.item['BranshName']] ==
+                                        null
+                                    ? Text('error404LocaionNotFound')
+                                    : flutterMap(
+                                        centerLang:widget.bLoacions[widget.item['BranshName']]['checkInLong'],
+                                        centerLat: widget.bLoacions[widget.item['BranshName']]['checkInLat'],
+                                        p2Lang: widget.item['checkInLong'],
+                                        p2Lat: widget.item['checkInLat'])),
                           ],
                         ),
                         SizedBox(
@@ -344,9 +410,57 @@ class _attendincePopUpEditWindowsState
                     height: h,
                   ),
                   // Check out parts///////////////////////////////////////////////////////////////////////////////////////////////////
-                  Text(
-                    'Check Out detals',
-                    style: global.txtStyle1,
+                  Row(
+                    children: [
+                      Text(
+                        'Check Out detals',
+                        style: global.txtStyle1,
+                      ),
+                      IconButton(
+                        onPressed: () async {
+                          final TimeOfDay? pickedTime = await showTimePicker(
+                            context: context,
+                            initialTime: TimeOfDay.now(),
+                          );
+                          if (pickedTime != null) {
+                            final int existingTimestamp =
+                                int.parse(widget.item['checkOutTimeStamp']);
+                            final DateTime existingDateTime =
+                                DateTime.fromMillisecondsSinceEpoch(
+                                    existingTimestamp);
+                            final DateTime updatedDateTime = DateTime(
+                              existingDateTime.year,
+                              existingDateTime.month,
+                              existingDateTime.day,
+                              pickedTime.hour,
+                              pickedTime.minute,
+                            );
+                            final int updatedTimestamp =
+                                updatedDateTime.millisecondsSinceEpoch;
+                            try {
+                              final CollectionReference attendanceCollection =
+                                  FirebaseFirestore.instance
+                                      .collection('attendance');
+                              await attendanceCollection
+                                  .doc(widget.item['documentId'])
+                                  .update({
+                                'checkOutTimeStamp':
+                                    updatedTimestamp.toString(),
+                              });
+                              MyDialog.showAlert(context,
+                                  'Check out time updated successfully');
+                            } catch (e) {
+                              MyDialog.showAlert(context, 'Error: $e');
+                            }
+                          }
+                          print(timeStamp);
+                        },
+                        icon: Icon(
+                          Icons.edit,
+                          color: Colors.white,
+                        ),
+                      )
+                    ],
                   ),
                   Container(
                     padding: EdgeInsets.only(left: 40),
@@ -413,8 +527,8 @@ class _attendincePopUpEditWindowsState
                                               borderRadius:
                                                   BorderRadius.circular(30)),
                                           child: flutterMap(
-                                              centerLang: '54.5988998',
-                                              centerLat: '24.2762571',
+                                              centerLang:widget.bLoacions[widget.item['BranshName']]['checkInLong'],
+                                              centerLat: widget.bLoacions[widget.item['BranshName']]['checkInLat'],
                                               p2Lang:
                                                   widget.item['checkOutLong'],
                                               p2Lat:
@@ -431,41 +545,49 @@ class _attendincePopUpEditWindowsState
                     height: 50,
                   ),
                   Center(
-                    child:isLoding == true ? CircularProgressIndicator() :
-                    GestureDetector(
-                      onTap: () async {
-                        try {
-                          isLoding = true ;
-                          setState(() {});
-                          final FirebaseFirestore firestore = FirebaseFirestore.instance;
-                          final DocumentReference docRef = firestore.collection('attendance').doc(widget.item['documentId']);
-                          await docRef.delete();
-                          MyDialog.showAlert(context, 'This record deleted sucsefully');
-                          Future.delayed(Duration(seconds: 3));
-                          isLoding = false  ;
-                          setState(() {});
-                          Navigator.pop(context);
-                          Navigator.pop(context);
-                        } catch (e) {
-                          MyDialog.showAlert(context, 'error $e');
-                          print('Error deleting document: $e');
-                        }
-
-                      },
-                      child: Container(
-                        width: 100,
-                        height: 40,
-                        decoration: BoxDecoration(
-                            color: Colors.red,
-                            borderRadius: BorderRadius.circular(30)),
-                        child: Center(
-                            child: Text(
-                          'Delete',
-                          style: TextStyle(
-                              color: Colors.white, fontWeight: FontWeight.bold),
-                        )),
-                      ),
-                    ),
+                    child: isLoding == true
+                        ? CircularProgressIndicator()
+                        : GestureDetector(
+                            onTap: () async {
+                              try {
+                                isLoding = true;
+                                setState(() {});
+                                final FirebaseFirestore firestore =
+                                    FirebaseFirestore.instance;
+                                final DocumentReference docRef = firestore
+                                    .collection('attendance')
+                                    .doc(widget.item['documentId']);
+                                await docRef.delete();
+                                MyDialog.showAlert(
+                                    context, 'This record deleted sucsefully');
+                                Future.delayed(Duration(seconds: 3));
+                                isLoding = false;
+                                setState(() {});
+                                Navigator.pop(context);
+                                Navigator.pop(context);
+                              } catch (e) {
+                                MyDialog.showAlert(context, 'error $e');
+                                print('Error deleting document: $e');
+                              }
+                            },
+                            child: Container(
+                              width: 100,
+                              height: 40,
+                              decoration: BoxDecoration(
+                                  color: Colors.red,
+                                  borderRadius: BorderRadius.circular(30)),
+                              child: Center(
+                                  child: Text(
+                                'Delete',
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold),
+                              )),
+                            ),
+                          ),
+                  ),
+                  SizedBox(
+                    height: 10,
                   )
                 ],
               ),
@@ -478,8 +600,8 @@ class _attendincePopUpEditWindowsState
 
   String timeStampToDate(String date) {
     DateTime dt = DateTime.fromMillisecondsSinceEpoch(int.parse(date));
-    String result =
-        DateFormat('dd/MM/yyyy\nHH:mm:ss', 'en_US').format(dt).toString();
+    String result = DateFormat('dd/MM/yyyy\nHH:mm').format(dt).toString();
+
     return result;
   }
 }
