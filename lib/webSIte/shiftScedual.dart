@@ -386,6 +386,8 @@ class _shiftScedualState extends State<shiftScedual> {
                                           )),
                                 );
                                 if (x == null) {
+                                  Navigator.of(context).pop();
+                                  return;
                                   v1 = 'OFF';
                                   v2 = 'Abudabi';
                                   v3 = 'defalt: 7:15 AM 4:00 PM';
@@ -443,12 +445,12 @@ class _shiftScedualState extends State<shiftScedual> {
         'name': doc['userName'],
         'photoUrl': doc['photo'],
         'shifts': {
-          'mon': '9:00 AM 5:00 PM ajman',
-          'tur': '9:00 AM 5:00 PM ajman',
-          'wed': '9:00 AM 5:00 PM ajman',
-          'thu': '9:00 AM 5:00 PM ajman',
-          'fri': '9:00 AM 5:00 PM ajman',
-          'sat': '9:00 AM 5:00 PM ajman',
+          'mon': '9:00 AM 5:00 PM AbuDabi',
+          'tur': '9:00 AM 5:00 PM AbuDabi',
+          'wed': '9:00 AM 5:00 PM AbuDabi',
+          'thu': '9:00 AM 5:00 PM AbuDabi',
+          'fri': '9:00 AM 5:00 PM AbuDabi',
+          'sat': '9:00 AM 5:00 PM AbuDabi',
           'sun': 'OFF',
           'bransh': 'Abudabi'
         },
