@@ -164,7 +164,6 @@ class _attendanceScreenState extends State<attendanceScreen> {
           .collection('attendance')
           .orderBy('checkInTimeStamp', descending: true)
           .get();
-
       querySnapshot.docs.forEach((doc) {
         Map<String, dynamic> attendanceData =
             doc.data() as Map<String, dynamic>;

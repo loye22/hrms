@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fl_chart/fl_chart.dart';
@@ -74,10 +76,24 @@ class _homeScreenState extends State<homeScreen> {
                   Button(
                       icon: Icons.forward_to_inbox,
                       onPress: () async {
-                        await newRequist("VIW12XiEaTY7cm91niDKEgvlRCv2", "IDkjkEURfUtxvyNG8ngZ");
+                        print('start');
+                        await insertDummyAttendanceData();
+                        print('end');
+                       // await newRequist("VIW12XiEaTY7cm91niDKEgvlRCv2", "IDkjkEURfUtxvyNG8ngZ");
                       },
                       txt: "New requist",
-                      isSelected: true)
+                      isSelected: true) ,
+                  Button(icon: Icons.ac_unit, onPress: () async {
+
+                    final startDate = DateTime(2023,2, 22);
+                    final endDate = DateTime(2023, 3, 22);
+                    print('start');
+                    await calculateWorkingHours2(startDate, endDate);
+                    print('end');
+
+
+
+                  }, txt: 'txt', isSelected: true)
                 ],
               )),
             ),
@@ -143,4 +159,135 @@ class _homeScreenState extends State<homeScreen> {
       print(e);
     }
   }
+
+
+  /////////////////////////// test aria ///////////////////////////////////////////////////////////////////////////////////////////////
+
+
+  final Random random = Random();
+
+// Generate a random check-in timestamp between 7:00 AM and 8:00 AM
+  int generateCheckInTimestamp(DateTime date) {
+    final checkInHour = 7 + random.nextInt(2);
+    final checkInMinute = random.nextInt(60);
+    final checkInTimestamp = DateTime(date.year, date.month, date.day, checkInHour, checkInMinute);
+    return checkInTimestamp.millisecondsSinceEpoch;
+  }
+
+// Generate a random check-out timestamp between 2:00 PM and 5:00 PM
+  int generateCheckOutTimestamp(DateTime date) {
+    final checkOutHour = 14 + random.nextInt(4);
+    final checkOutMinute = random.nextInt(60);
+    final checkOutTimestamp = DateTime(date.year, date.month, date.day, checkOutHour, checkOutMinute);
+    return checkOutTimestamp.millisecondsSinceEpoch;
+  }
+
+// Generate a dummy attendance record for a given date and employee UID
+  Map<String, dynamic> generateAttendanceRecord(DateTime date, String uid) {
+    final checkInTimestamp = generateCheckInTimestamp(date);
+    final checkOutTimestamp = generateCheckOutTimestamp(date);
+
+    return {
+      'BranshName': 'AbuDabi',
+      'checkInIsHeIn': true.toString(),
+      'checkInLat': '0',
+      'checkInLong': '0',
+      'checkInPhoto': 'https://www.shutterstock.com/image-photo/portrait-attractive-cheerful-girl-demonstrating-260nw-2113649489.jpg',
+      'checkInTimeStamp': checkInTimestamp.toString(),
+      'checkOutIsHeIn': true.toString(),
+      'checkOutLat': '0',
+      'checkOutLong': '0',
+      'checkOutPhoto': 'https://www.shutterstock.com/image-photo/portrait-attractive-cheerful-girl-demonstrating-260nw-2113649489.jpg',
+      'checkOutTimeStamp': checkOutTimestamp.toString(),
+      'email': 'employee@example.com',
+      'name': 'Employee Name',
+      'scedual': {'shifts': {'thu':' 9:00 AM 5:00 PM AbuDabi', 'fri':' 9:00 AM 5:00 PM AbuDabi', 'wed':' 9:00 AM 5:00 PM AbuDabi', 'tur': '9:00 AM 5:00 PM AbuDabi', 'mon': '9:00 AM 5:00 PM AbuDabi', 'sun': 'OFF', 'sat': '9:00 AM 5:00 PM AbuDabi'}, 'timestamp': '2023-06-21 13:21:00.521'},
+      'uid': uid,
+    };
+  }
+
+// Function to insert dummy attendance data into Firestore
+  Future<void> insertDummyAttendanceData() async {
+    final startDate = DateTime(2023, 1, 1); // Start date of the date range
+    final endDate = DateTime(2023, 4, 2); // End date of the date range
+    final employeeUids = [
+      '1VvCHb1DwEcJdsX9KQ9YD01sYVO2',
+      'BzGREtBwtdRg1OD1s4IOKWryuv73',
+      'JjKnRPmnMeZghE7eE2wydStaNKD3',
+      'MEWGndjyyscGs8hOHsJ2rZMaqkk2',
+      'VIW12XiEaTY7cm91niDKEgvlRCv2',
+      'Y1S5WDkIFvMpdqrEPu0hWa9CMyE2',
+      'kfiyUUflSVdqbWEdFJ6T1USQlyk2',
+      'tfZafzUTNrXurX0EnaCqAPnuCxw1',
+    ];
+
+    final dummyAttendanceData = <Map<String, dynamic>>[];
+
+    for (var date = startDate; date.isBefore(endDate); date = date.add(Duration(days: 1))) {
+      for (final uid in employeeUids) {
+        final attendanceRecord = generateAttendanceRecord(date, uid);
+        dummyAttendanceData.add(attendanceRecord);
+      }
+    }
+
+    final CollectionReference attendanceCollection = FirebaseFirestore.instance.collection('attendance');
+    for (final attendanceRecord in dummyAttendanceData) {
+      await attendanceCollection.add(attendanceRecord);
+    }
+
+    print('Dummy attendance data added to Firestore successfully!');
+  }
+
+
+  Future<void> calculateWorkingHours2(DateTime startDate, DateTime endDate) async {
+    // Retrieve the attendance records from Firestore within the specified date range
+    final CollectionReference attendanceCollection = FirebaseFirestore.instance.collection('attendance');
+    final QuerySnapshot attendanceSnapshot = await attendanceCollection
+        .where('checkInTimeStamp', isGreaterThanOrEqualTo:startDate.millisecondsSinceEpoch.toString())
+        .where('checkInTimeStamp', isLessThanOrEqualTo: endDate.millisecondsSinceEpoch.toString())
+        .get();
+
+    print('debig');
+
+    // Map to store the total working hours for each employee
+    final Map<String, Duration> workingHoursMap = {};
+
+    // Calculate working hours for each attendance record
+    for (final attendanceDoc in attendanceSnapshot.docs) {
+      final attendanceData = attendanceDoc.data() as Map<String,dynamic>;
+
+      final String uid = attendanceData['uid'];
+      final int checkInTimestamp = int.parse(attendanceData['checkInTimeStamp']);
+      final int checkOutTimestamp = int.parse(attendanceData['checkOutTimeStamp']);
+
+      final DateTime checkInDateTime = DateTime.fromMillisecondsSinceEpoch(checkInTimestamp);
+      final DateTime checkOutDateTime = DateTime.fromMillisecondsSinceEpoch(checkOutTimestamp);
+
+      final Duration workingHours = checkOutDateTime.difference(checkInDateTime);
+
+      if (workingHoursMap.containsKey(uid)) {
+        workingHoursMap[uid] = (workingHoursMap[uid] ?? Duration()) + workingHours;
+      } else {
+        workingHoursMap[uid] = workingHours;
+      }
+    }
+
+    // Print the calculated working hours for each employee
+    for (final entry in workingHoursMap.entries) {
+      final String uid = entry.key;
+      final Duration workingHours = entry.value ?? Duration();
+
+      print('Employee UID: $uid');
+      print('Working Hours: ${workingHours.inHours} hours ${workingHours.inMinutes.remainder(60)} minutes');
+      print('---------------------');
+    }
+  }
+
+
+
+
+/////////////////////////// test aria ///////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
 }
