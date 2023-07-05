@@ -193,11 +193,11 @@ class _loginScreenState extends State<loginScreen> {
                                 // check if the this user in an admin
                                 // true ==> he is
                                 // false ==>
-                                bool isAdmin =await  checkAdminStatus(_eamil);
+                             /*  bool isAdmin =await  checkAdminStatus(_eamil);
                                 if(!isAdmin){
                                   throw Exception('Unfortunately, the provided email ${_eamil} does not have the necessary permissions to access the admin panel');
                                 }
-
+*/
                                 dynamic res = await signInWithEmailAndPassword(
                                         _eamil, _passwd, context)
                                     .then((value) => null);

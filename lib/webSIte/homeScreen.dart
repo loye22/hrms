@@ -73,20 +73,20 @@ class _homeScreenState extends State<homeScreen> {
                   child: Column(
                 children: [
                   Text("HOMe screen for testing "),
-                  Button(
+                  /*Button(
                       icon: Icons.forward_to_inbox,
                       onPress: () async {
                         print('start');
-                        await insertDummyAttendanceData();
+                       // await insertDummyAttendanceData();
                         print('end');
                        // await newRequist("VIW12XiEaTY7cm91niDKEgvlRCv2", "IDkjkEURfUtxvyNG8ngZ");
                       },
                       txt: "New requist",
-                      isSelected: true) ,
+                      isSelected: true) ,*/
                   Button(icon: Icons.ac_unit, onPress: () async {
 
-                    final startDate = DateTime(2023,2, 22);
-                    final endDate = DateTime(2023, 3, 22);
+                    final startDate = DateTime(2022,1, 22);
+                    final endDate = DateTime(2024, 7, 22);
                     print('start');
                     await calculateWorkingHours2(startDate, endDate);
                     print('end');
@@ -207,7 +207,9 @@ class _homeScreenState extends State<homeScreen> {
   }
 
 // Function to insert dummy attendance data into Firestore
+/*
   Future<void> insertDummyAttendanceData() async {
+    int c = 0 ;
     final startDate = DateTime(2023, 1, 1); // Start date of the date range
     final endDate = DateTime(2023, 4, 2); // End date of the date range
     final employeeUids = [
@@ -224,11 +226,21 @@ class _homeScreenState extends State<homeScreen> {
     final dummyAttendanceData = <Map<String, dynamic>>[];
 
     for (var date = startDate; date.isBefore(endDate); date = date.add(Duration(days: 1))) {
+      if(c == 2){
+        print(dummyAttendanceData.length);
+        break ;
+      }
+
+
       for (final uid in employeeUids) {
         final attendanceRecord = generateAttendanceRecord(date, uid);
         dummyAttendanceData.add(attendanceRecord);
+
+
       }
+      c+=1 ;
     }
+
 
     final CollectionReference attendanceCollection = FirebaseFirestore.instance.collection('attendance');
     for (final attendanceRecord in dummyAttendanceData) {
@@ -237,9 +249,11 @@ class _homeScreenState extends State<homeScreen> {
 
     print('Dummy attendance data added to Firestore successfully!');
   }
+  */
 
 
-  Future<void> calculateWorkingHours2(DateTime startDate, DateTime endDate) async {
+
+  Future<Map<String, Duration>> calculateWorkingHours2(DateTime startDate, DateTime endDate) async {
     // Retrieve the attendance records from Firestore within the specified date range
     final CollectionReference attendanceCollection = FirebaseFirestore.instance.collection('attendance');
     final QuerySnapshot attendanceSnapshot = await attendanceCollection
@@ -247,16 +261,13 @@ class _homeScreenState extends State<homeScreen> {
         .where('checkInTimeStamp', isLessThanOrEqualTo: endDate.millisecondsSinceEpoch.toString())
         .get();
 
-    print('debig');
-
     // Map to store the total working hours for each employee
     final Map<String, Duration> workingHoursMap = {};
 
     // Calculate working hours for each attendance record
     for (final attendanceDoc in attendanceSnapshot.docs) {
       final attendanceData = attendanceDoc.data() as Map<String,dynamic>;
-
-      final String uid = attendanceData['uid'];
+      final String eName = attendanceData['name'];
       final int checkInTimestamp = int.parse(attendanceData['checkInTimeStamp']);
       final int checkOutTimestamp = int.parse(attendanceData['checkOutTimeStamp']);
 
@@ -265,22 +276,26 @@ class _homeScreenState extends State<homeScreen> {
 
       final Duration workingHours = checkOutDateTime.difference(checkInDateTime);
 
-      if (workingHoursMap.containsKey(uid)) {
-        workingHoursMap[uid] = (workingHoursMap[uid] ?? Duration()) + workingHours;
+      if (workingHoursMap.containsKey(eName)) {
+        workingHoursMap[eName] = (workingHoursMap[eName] ?? Duration()) + workingHours;
       } else {
-        workingHoursMap[uid] = workingHours;
+        workingHoursMap[eName] = workingHours;
       }
     }
 
+    Map<String,Duration> res = {}  ;
+
     // Print the calculated working hours for each employee
     for (final entry in workingHoursMap.entries) {
-      final String uid = entry.key;
+      final String eName = entry.key;
       final Duration workingHours = entry.value ?? Duration();
-
-      print('Employee UID: $uid');
-      print('Working Hours: ${workingHours.inHours} hours ${workingHours.inMinutes.remainder(60)} minutes');
-      print('---------------------');
+      res[eName] = workingHours;
+     // print('Employee UID: $uid');
+      //print('Working Hours: ${workingHours.inHours} hours ${workingHours.inMinutes.remainder(60)} minutes');
+      //print('---------------------');
     }
+    print(workingHoursMap);
+    return res ;
   }
 
 

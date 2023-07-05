@@ -9,6 +9,7 @@ import 'package:hrms/widgets/flutterMap.dart';
 import 'package:hrms/widgets/iconWiget.dart';
 import 'package:intl/intl.dart';
 import '../models/gloablVar.dart';
+import '../widgets/button.dart';
 import '../widgets/rightBar.dart';
 import '../widgets/sideBar.dart';
 import 'package:intl/intl.dart';
@@ -24,15 +25,17 @@ class attendanceScreen extends StatefulWidget {
 
 class _attendanceScreenState extends State<attendanceScreen> {
   Map<String, Map<String, String>> branshLocaions = {};
+  bool isLoading = false;
+  bool reportFlag = false;
+
+  DateTime selectedStartDate = DateTime.now();
+  DateTime selectedEndDate = DateTime.now();
 
   @override
   Widget build(BuildContext context) {
+    final DateFormat formatter = DateFormat('yyyy-MM-dd');
     return Scaffold(
-      body: /*attendincePopUpEditWindows(
-      item: i,
-    )*/
-
-          Stack(
+      body: Stack(
         children: [
           Container(
             width: double.infinity,
@@ -58,10 +61,111 @@ class _attendanceScreenState extends State<attendanceScreen> {
           rightBar(),
           Positioned(
               left: 280,
+              top: 15,
+              child: Container(
+                height: MediaQuery.of(context).size.height - 950 > 0
+                    ? MediaQuery.of(context).size.height - 950
+                    : 50,
+                width: MediaQuery.of(context).size.width - 650 > 0
+                    ? MediaQuery.of(context).size.width - 650
+                    : 500,
+                child: MediaQuery.of(context).size.width <= 1400
+                    ? Container()
+                    : Row(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(right: 10),
+                            child: Button(
+                              icon: Icons.keyboard_backspace,
+                              txt: 'Back',
+                              isSelected: true,
+                              onPress: () {
+                                if (!this.reportFlag) return;
+                                reportFlag = false;
+                                setState(() {});
+                              },
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(right: 10),
+                            child: Button(
+                              txt: 'Reports',
+                              isSelected: true,
+                              icon: Icons.report_gmailerrorred,
+                              onPress: () {
+                                try {
+                                  reportFlag = true;
+                                  setState(() {});
+                                  print('de');
+                                } catch (e) {
+                                  MyDialog.showAlert(context, e.toString());
+                                  print(e);
+                                }
+                              },
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(right: 10),
+                            child: Button(
+                              icon: Icons.filter_alt_outlined,
+                              txt: 'Filter By',
+                              isSelected: true,
+                              onPress: () async {},
+                            ),
+                          ),
+                          this.reportFlag
+                              ? Row(
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.only(right: 10),
+                                      child: Button(
+                                        icon: Icons.date_range,
+                                        txt:
+                                            'From ${formatter.format(selectedStartDate)}',
+                                        isSelected: true,
+                                        onPress: () =>
+                                            _selectStartDate(context),
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(right: 10),
+                                      child: Button(
+                                        icon: Icons.date_range,
+                                        txt:
+                                            'To ${formatter.format(selectedEndDate)}',
+                                        isSelected: true,
+                                        onPress: () => _selectEndDate(context),
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(right: 10),
+                                      child: Button(
+                                        icon: Icons.import_export,
+                                        txt: 'Export',
+                                        isSelected: true,
+                                        onPress: () {},
+                                      ),
+                                    ),
+                                  ],
+                                )
+                              : SizedBox.shrink(),
+                          /*Padding(
+                      padding: const EdgeInsets.only(right: 10),
+                      child: Button(icon: Icons.upload, onPress: (){}, txt: 'Publish', isSelected: true),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(right: 10),
+                      child: Button(icon: Icons.upload, onPress: (){}, txt: 'Publish', isSelected: true),
+                    ),*/
+                        ],
+                      ),
+              )),
+          Positioned(
+              left: 280,
               bottom: 15,
               child: Container(
                 width: MediaQuery.of(context).size.width - 650,
-                height: MediaQuery.of(context).size.height - 40,
+                height: MediaQuery.of(context).size.height - 100,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.all(Radius.circular(10)),
                   border: Border.all(color: Colors.white.withOpacity(0.13)),
@@ -72,88 +176,217 @@ class _attendanceScreenState extends State<attendanceScreen> {
                 //so it will load the employee locaion with his bransh loacion
                 // after that the fetchAttendanceData() function will load the attendince data from firebase .
                 //
-                child: FutureBuilder(
-                  future: fetchAttendanceData(),
-                  builder: (ctx, snapShot) {
-                    if (snapShot.hasError) {
-                      return Center(child: Text('Error : ${snapShot.error}'));
-                    }
-                    if (snapShot.connectionState == ConnectionState.waiting) {
-                      return Center(
-                        child: CircularProgressIndicator(),
-                      );
-                    } else {
-                      return DataTable2(
-                        columns: [
-                          DataColumn(
-                            label: Text('Name'),
-                          ),
-                          DataColumn(
-                            label: Center(child: Text('Schedule')),
-                          ),
-                          DataColumn(
-                            label: Center(child: Text('Check in')),
-                          ),
-                          DataColumn(
-                            label: Center(child: Text('Check out')),
-                          ),
-                          DataColumn(
-                            label: Center(child: Text('Status')),
-                          ),
-                        ],
-                        rows: snapShot.data!.map((e) {
-                          // get the current shift shecdual
-                          Map<String, dynamic> shift =
-                              modifySchedule(e['scedual']['shifts']);
+                child: this.reportFlag
+                    ? FutureBuilder(
+                        future: calculateWorkingHours2(
+                            selectedStartDate, selectedEndDate),
+                        builder: (ctx, snapShot) {
+                          if (snapShot.hasError) {
+                            return Center(
+                              child: Text(snapShot.error.toString()),
+                            );
+                          }
+                          if (snapShot.connectionState ==
+                              ConnectionState.waiting) {
+                            return Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          } else {
+                            return DataTable2(
+                              columns: [
+                                DataColumn(
+                                  label: Center(child: Text('Employee name')),
+                                ),
+                                DataColumn(
+                                  label: Center(child: Text('Working hours')),
+                                ),
+                              ],
+                              rows: snapShot.data!.map((e) {
+                                return DataRow2(cells: [
+                                  DataCell(Center(
+                                      child: Text(e['eName'] ?? '404Notfounbd'))),
+                                  DataCell(Center(child: Text('${e['workingHours'].inHours} hours and ${e['workingHours'].inMinutes.remainder(60)} minutes' ?? '404Notfounbd' )))
+                                ]);
+                              }).toList(),
+                            );
+                          }
+                        },
+                      )
+                    : FutureBuilder(
+                        future: fetchAttendanceData(),
+                        builder: (ctx, snapShot) {
+                          if (snapShot.hasError) {
+                            return Center(
+                                child: Text('Error : ${snapShot.error}'));
+                          }
+                          if (snapShot.connectionState ==
+                              ConnectionState.waiting) {
+                            return Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          } else {
+                            return DataTable2(
+                              columns: [
+                                DataColumn(
+                                  label: Text('Name'),
+                                ),
+                                DataColumn(
+                                  label: Center(child: Text('Schedule')),
+                                ),
+                                DataColumn(
+                                  label: Center(child: Text('Check in')),
+                                ),
+                                DataColumn(
+                                  label: Center(child: Text('Check out')),
+                                ),
+                                DataColumn(
+                                  label: Center(child: Text('Status')),
+                                ),
+                              ],
+                              rows: snapShot.data!.map((e) {
+                                // get the current shift shecdual
+                                Map<String, dynamic> shift =
+                                    modifySchedule(e['scedual']['shifts']);
 
-                          //from checkInTimeStamp attribute we will extract the current date and we will pass it for the map above
-                          // to get the current shedual
-                          int milliseconds = int.parse(e['checkInTimeStamp']);
-                          DateTime date =
-                              DateTime.fromMillisecondsSinceEpoch(milliseconds);
-                          String currentDayOfWeek =
-                              DateFormat('EEEE').format(date);
-                          return DataRow2(
-                            onTap: () async {
-                              await showDialog(
-                                context: context,
-                                builder: (BuildContext context) => AlertDialog(
-                                  backgroundColor: Colors.transparent,
-                                  content: attendincePopUpEditWindows(
-                                      item: e, bLoacions: this.branshLocaions),
-                                ),
-                              );
-                            },
-                            //  onSelectChanged: (s) {},
-                            cells: [
-                              DataCell(Text(e['name'] ?? 'notFound404')),
-                              DataCell(Text(
-                                  shift[currentDayOfWeek] ?? 'notFound404')),
-                              DataCell(Center(
-                                  child: Text(convertTimestampToTime(
-                                          e['checkInTimeStamp']) ??
-                                      ''))),
-                              DataCell(Center(
-                                  child: e['checkOutTimeStamp'] == ''
-                                      ? Text('---')
-                                      : Text(convertTimestampToTime(
-                                          e['checkOutTimeStamp'])))),
-                              DataCell(
-                                Center(
-                                  child: Text('present'),
-                                ),
-                              ),
-                            ],
-                          );
-                        }).toList(),
-                      );
-                    }
-                  },
-                ),
+                                //from checkInTimeStamp attribute we will extract the current date and we will pass it for the map above
+                                // to get the current shedual
+                                int milliseconds =
+                                    int.parse(e['checkInTimeStamp']);
+                                DateTime date =
+                                    DateTime.fromMillisecondsSinceEpoch(
+                                        milliseconds);
+                                String currentDayOfWeek =
+                                    DateFormat('EEEE').format(date);
+                                return DataRow2(
+                                  onTap: () async {
+                                    await showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) =>
+                                          AlertDialog(
+                                        backgroundColor: Colors.transparent,
+                                        content: attendincePopUpEditWindows(
+                                            item: e,
+                                            bLoacions: this.branshLocaions),
+                                      ),
+                                    );
+                                  },
+                                  //  onSelectChanged: (s) {},
+                                  cells: [
+                                    DataCell(Text(e['name'] ?? 'notFound404')),
+                                    DataCell(Text(shift[currentDayOfWeek] ??
+                                        'notFound404')),
+                                    DataCell(Center(
+                                        child: Text(convertTimestampToTime(
+                                                e['checkInTimeStamp']) ??
+                                            ''))),
+                                    DataCell(Center(
+                                        child: e['checkOutTimeStamp'] == ''
+                                            ? Text('---')
+                                            : Text(convertTimestampToTime(
+                                                e['checkOutTimeStamp'])))),
+                                    DataCell(
+                                      Center(
+                                        child: Text('present'),
+                                      ),
+                                    ),
+                                  ],
+                                );
+                              }).toList(),
+                            );
+                          }
+                        },
+                      ),
               ))
         ],
       ),
     );
+  }
+
+  Future<List<dynamic>> calculateWorkingHours2(
+      DateTime startDate, DateTime endDate) async {
+    // this function take date range and return the totall working hours for each employee
+
+    // Retrieve the attendance records from Firestore within the specified date range
+    final CollectionReference attendanceCollection =
+        FirebaseFirestore.instance.collection('attendance');
+    final QuerySnapshot attendanceSnapshot = await attendanceCollection
+        .where('checkInTimeStamp',
+            isGreaterThanOrEqualTo: startDate.millisecondsSinceEpoch.toString())
+        .where('checkInTimeStamp',
+            isLessThanOrEqualTo: endDate.millisecondsSinceEpoch.toString())
+        .get();
+
+    // Map to store the total working hours for each employee
+    final Map<String, Duration> workingHoursMap = {};
+
+    // Calculate working hours for each attendance record
+    for (final attendanceDoc in attendanceSnapshot.docs) {
+      final attendanceData = attendanceDoc.data() as Map<String, dynamic>;
+      final String eName = attendanceData['name'];
+      final int checkInTimestamp =
+          int.parse(attendanceData['checkInTimeStamp']);
+      final int checkOutTimestamp =
+          int.parse(attendanceData['checkOutTimeStamp']);
+
+      final DateTime checkInDateTime =
+          DateTime.fromMillisecondsSinceEpoch(checkInTimestamp);
+      final DateTime checkOutDateTime =
+          DateTime.fromMillisecondsSinceEpoch(checkOutTimestamp);
+
+      final Duration workingHours =
+          checkOutDateTime.difference(checkInDateTime);
+
+      if (workingHoursMap.containsKey(eName)) {
+        workingHoursMap[eName] =
+            (workingHoursMap[eName] ?? Duration()) + workingHours;
+      } else {
+        workingHoursMap[eName] = workingHours;
+      }
+    }
+
+    List<dynamic> res = [];
+
+    // Print the calculated working hours for each employee
+    for (final entry in workingHoursMap.entries) {
+      final String eName = entry.key;
+      final Duration workingHours = entry.value ?? Duration();
+      res.add({'eName': eName, 'workingHours': workingHours});
+      // print('Employee UID: $uid');
+      //print('Working Hours: ${workingHours.inHours} hours ${workingHours.inMinutes.remainder(60)} minutes');
+      //print('---------------------');
+    }
+    print(res);
+    return res;
+  }
+
+  Future<void> _selectStartDate(BuildContext context) async {
+    final DateTime? pickedStartDate = await showDatePicker(
+      context: context,
+      initialDate: selectedStartDate,
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2100),
+    );
+
+    if (pickedStartDate != null && pickedStartDate != selectedStartDate) {
+      setState(() {
+        selectedStartDate = pickedStartDate;
+      });
+    }
+  }
+
+  Future<void> _selectEndDate(BuildContext context) async {
+    final DateTime? pickedEndDate = await showDatePicker(
+      context: context,
+      initialDate: selectedEndDate,
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2100),
+    );
+
+    if (pickedEndDate != null && pickedEndDate != selectedEndDate) {
+      setState(() {
+        selectedEndDate = pickedEndDate;
+      });
+    }
   }
 
   Future<List<Map<String, dynamic>>> fetchAttendanceData() async {
@@ -236,7 +469,7 @@ class _attendanceScreenState extends State<attendanceScreen> {
 
 class attendincePopUpEditWindows extends StatefulWidget {
   final Map<String, dynamic> item;
-  final Map<String,dynamic> bLoacions;
+  final Map<String, dynamic> bLoacions;
 
   const attendincePopUpEditWindows(
       {super.key, required this.item, required this.bLoacions});
@@ -250,7 +483,6 @@ class _attendincePopUpEditWindowsState
     extends State<attendincePopUpEditWindows> {
   bool isLoding = false;
   String timeStamp = '';
-
 
   @override
   Widget build(BuildContext context) {
@@ -393,8 +625,10 @@ class _attendincePopUpEditWindowsState
                                         null
                                     ? Text('error404LocaionNotFound')
                                     : flutterMap(
-                                        centerLang:widget.bLoacions[widget.item['BranshName']]['checkInLong'],
-                                        centerLat: widget.bLoacions[widget.item['BranshName']]['checkInLat'],
+                                        centerLang: widget.bLoacions[widget
+                                            .item['BranshName']]['checkInLong'],
+                                        centerLat: widget.bLoacions[widget
+                                            .item['BranshName']]['checkInLat'],
                                         p2Lang: widget.item['checkInLong'],
                                         p2Lat: widget.item['checkInLat'])),
                           ],
@@ -526,8 +760,12 @@ class _attendincePopUpEditWindowsState
                                               borderRadius:
                                                   BorderRadius.circular(30)),
                                           child: flutterMap(
-                                              centerLang:widget.bLoacions[widget.item['BranshName']]['checkInLong'],
-                                              centerLat: widget.bLoacions[widget.item['BranshName']]['checkInLat'],
+                                              centerLang: widget.bLoacions[
+                                                      widget.item['BranshName']]
+                                                  ['checkInLong'],
+                                              centerLat: widget.bLoacions[
+                                                      widget.item['BranshName']]
+                                                  ['checkInLat'],
                                               p2Lang:
                                                   widget.item['checkOutLong'],
                                               p2Lat:

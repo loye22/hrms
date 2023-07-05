@@ -830,7 +830,7 @@ class _addNewEmployeeScreenState extends State<addNewEmployeeScreen> {
   }
 
   final FirebaseStorage _storage =
-      FirebaseStorage.instanceFor(bucket: 'gs://hrms-6c649.appspot.com');
+      FirebaseStorage.instanceFor(bucket:'gs://hrms-6c649.appspot.com' /*'gs://hrmststi.appspot.com'*/);
 
   Future<String> _uploadImageFile(String imageName) async {
     try {
