@@ -204,8 +204,12 @@ class _attendanceScreenState extends State<attendanceScreen> {
                               rows: snapShot.data!.map((e) {
                                 return DataRow2(cells: [
                                   DataCell(Center(
-                                      child: Text(e['eName'] ?? '404Notfounbd'))),
-                                  DataCell(Center(child: Text('${e['workingHours'].inHours} hours and ${e['workingHours'].inMinutes.remainder(60)} minutes' ?? '404Notfounbd' )))
+                                      child:
+                                          Text(e['eName'] ?? '404Notfounbd'))),
+                                  DataCell(Center(
+                                      child: Text(
+                                          '${e['workingHours'].inHours} hours and ${e['workingHours'].inMinutes.remainder(60)} minutes' ??
+                                              '404Notfounbd')))
                                 ]);
                               }).toList(),
                             );
@@ -325,8 +329,12 @@ class _attendanceScreenState extends State<attendanceScreen> {
       final String eName = attendanceData['name'];
       final int checkInTimestamp =
           int.parse(attendanceData['checkInTimeStamp']);
-      final int checkOutTimestamp =
-          int.parse(attendanceData['checkOutTimeStamp']);
+
+      // in the case we want to calc the working hours were some emplyee didnot check out yet
+      // in this matter the checkout will be equat to checkin to avoid any format errors
+      final int checkOutTimestamp = attendanceData['checkOutTimeStamp'] == ''
+          ? int.parse(attendanceData['checkInTimeStamp'])
+          : int.parse(attendanceData['checkOutTimeStamp']);
 
       final DateTime checkInDateTime =
           DateTime.fromMillisecondsSinceEpoch(checkInTimestamp);
