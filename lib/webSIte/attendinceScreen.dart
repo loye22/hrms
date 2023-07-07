@@ -27,12 +27,14 @@ class _attendanceScreenState extends State<attendanceScreen> {
   Map<String, Map<String, String>> branshLocaions = {};
   bool isLoading = false;
   bool reportFlag = false;
-
   DateTime selectedStartDate = DateTime.now();
   DateTime selectedEndDate = DateTime.now();
 
+
+
   @override
   Widget build(BuildContext context) {
+    double globalWidth = MediaQuery.of(context).size.width < 1920 ? 145 : 210 ;
     final DateFormat formatter = DateFormat('yyyy-MM-dd');
     return Scaffold(
       body: Stack(
@@ -65,7 +67,7 @@ class _attendanceScreenState extends State<attendanceScreen> {
               child: Container(
                 height: MediaQuery.of(context).size.height - 950 > 0
                     ? MediaQuery.of(context).size.height - 950
-                    : 50,
+                    : 60,
                 width: MediaQuery.of(context).size.width - 650 > 0
                     ? MediaQuery.of(context).size.width - 650
                     : 500,
@@ -73,7 +75,8 @@ class _attendanceScreenState extends State<attendanceScreen> {
                     ? Container()
                     : Row(
                         children: [
-                          Padding(
+                          Container(
+                            width: globalWidth,
                             padding: const EdgeInsets.only(right: 10),
                             child: Button(
                               icon: Icons.keyboard_backspace,
@@ -86,7 +89,8 @@ class _attendanceScreenState extends State<attendanceScreen> {
                               },
                             ),
                           ),
-                          Padding(
+                          Container(
+                            width: globalWidth,
                             padding: const EdgeInsets.only(right: 10),
                             child: Button(
                               txt: 'Reports',
@@ -104,7 +108,8 @@ class _attendanceScreenState extends State<attendanceScreen> {
                               },
                             ),
                           ),
-                          Padding(
+                          Container(
+                            width: globalWidth,
                             padding: const EdgeInsets.only(right: 10),
                             child: Button(
                               icon: Icons.filter_alt_outlined,
@@ -113,10 +118,11 @@ class _attendanceScreenState extends State<attendanceScreen> {
                               onPress: () async {},
                             ),
                           ),
-                          this.reportFlag
+                          !this.reportFlag
                               ? Row(
                                   children: [
-                                    Padding(
+                                    Container(
+                                      width: globalWidth ,
                                       padding: const EdgeInsets.only(right: 10),
                                       child: Button(
                                         icon: Icons.date_range,
@@ -127,7 +133,8 @@ class _attendanceScreenState extends State<attendanceScreen> {
                                             _selectStartDate(context),
                                       ),
                                     ),
-                                    Padding(
+                                    Container(
+                                      width: globalWidth,
                                       padding: const EdgeInsets.only(right: 10),
                                       child: Button(
                                         icon: Icons.date_range,
@@ -137,7 +144,8 @@ class _attendanceScreenState extends State<attendanceScreen> {
                                         onPress: () => _selectEndDate(context),
                                       ),
                                     ),
-                                    Padding(
+                                    Container(
+                                      width: globalWidth,
                                       padding: const EdgeInsets.only(right: 10),
                                       child: Button(
                                         icon: Icons.import_export,
