@@ -30,6 +30,7 @@ class _homeScreenState extends State<homeScreen> {
     'Reject': Colors.red,
     'Pending': Colors.grey,
   };
+  Map<String,String> empMap = {} ;
 
   @override
   Widget build(BuildContext context) {
@@ -64,7 +65,7 @@ class _homeScreenState extends State<homeScreen> {
               height: MediaQuery.of(context).size.height - 50,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.all(Radius.circular(10)),
-                border: Border.all(color: Colors.black),
+                //border: Border.all(color: Colors.black),
                 //color: Colors.grey.shade200.withOpacity(0.23),
               ),
               child: SingleChildScrollView(
@@ -75,50 +76,90 @@ class _homeScreenState extends State<homeScreen> {
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Container(
-                          width:MediaQuery.of(context).size.width <1920 ? 420:  800,
-                          height: 200,
-                          clipBehavior: Clip.antiAlias,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.all(Radius.circular(10)),
-                            border:
-                                Border.all(color: Colors.white.withOpacity(0.13)),
-                            color: Colors.grey.shade200.withOpacity(0.25),
-                          ),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      'Welcome louie',
-                                      style: TextStyle(
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                    Expanded(
-                                      child: Text(
-                                        ' manage all the things from single dashboard',
-                                        style: TextStyle(fontSize: 16),
-                                      ),
-                                    ),
-                                  ],
-                                ),
+                        Column(
+                          children: [
+                            Container(
+                              width:MediaQuery.of(context).size.width <1920 ? 420:  800,
+                              height: 200,
+                              clipBehavior: Clip.antiAlias,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.all(Radius.circular(10)),
+                                border:
+                                    Border.all(color: Colors.white.withOpacity(0.13)),
+                                color: Colors.grey.shade200.withOpacity(0.25),
                               ),
-                              MediaQuery.of(context).size.width <1920 ?SizedBox.shrink(): Container(
-                                height: double.infinity,
-                                alignment: Alignment.center, // This is needed
-                                child: Image.asset(
-                                  'assests/last.png',
-                                  fit: BoxFit.contain,
-                                ),
-                              )
-                            ],
-                          ),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          'Welcome Admin',
+                                          style: TextStyle(
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        Expanded(
+                                          child: Text(
+                                            ' manage all the things from single dashboard',
+                                            style: TextStyle(fontSize: 16),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  MediaQuery.of(context).size.width <1920 ?SizedBox.shrink(): Container(
+                                    height: double.infinity,
+                                    alignment: Alignment.center, // This is needed
+                                    child: Image.asset(
+                                      'assests/last.png',
+                                      fit: BoxFit.contain,
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
+                            SizedBox(height: 20,),
+                            Container(
+                              width:MediaQuery.of(context).size.width <1920 ? 420:  800,
+                              height: 500,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.all(Radius.circular(10)),
+                                //border: Border.all(color: Colors.black),
+                                color: Colors.grey.shade200.withOpacity(0.23),
+                              ),
+                              child: FutureBuilder(
+                                future: _loadData(),
+                                  builder: (ctx,snapShot){
+                                  if(snapShot.connectionState == ConnectionState.waiting){
+                                    return Center(child: CircularProgressIndicator(),);
+                                  }
+                                  if(snapShot.hasError){
+                                    print(snapShot.error.toString());
+                                    return Center(child: Text(snapShot.error.toString()),);
+                                  }
+                                  return Padding(
+                                    padding: EdgeInsets.all(8.0),
+                                    child: SfCartesianChart(
+                                      primaryXAxis: CategoryAxis(),
+                                      series: <ChartSeries>[
+                                        ColumnSeries<WorkExperienceData, String>(
+                                          dataSource: snapShot.data!,
+                                          xValueMapper: (WorkExperienceData data, _) => this.empMap[data.eid] ?? 'Notfound',
+                                          yValueMapper: (WorkExperienceData data, _) => data.amount,
+                                          dataLabelSettings: DataLabelSettings(isVisible: true),
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                  },
+                              ),
+                            )
+                          ],
                         ),
                         SizedBox(
                           width: 20,
@@ -308,6 +349,45 @@ class _homeScreenState extends State<homeScreen> {
 
 
   /////////////////////////// test aria ///////////////////////////////////////////////////////////////////////////////////////////////
+
+  Future<List<WorkExperienceData>> _loadData() async {
+    // extract the emplyee data {eid:name}
+    final snap = await FirebaseFirestore.instance.collection('Employee').get();
+    Map<String, String> employeeUserNames = {};
+    snap.docs.forEach((doc) {
+      String docId = doc.id;
+      String userName = doc.data()['userName'];
+
+      employeeUserNames[docId] = userName;
+    });
+    this.empMap = employeeUserNames ;
+
+
+
+
+
+    final snapshot = await FirebaseFirestore.instance.collection('workExp').get();
+    Map<String, double> employeeAmounts = {};
+
+    snapshot.docs.forEach((doc) {
+      String eid = doc.data()['eid'];
+      double amount = double.parse(doc.data()['amount']);
+
+
+      if (employeeAmounts.containsKey(eid)) {
+        employeeAmounts[eid] = employeeAmounts[eid]! + amount;
+      } else {
+        employeeAmounts[eid] = amount;
+      }
+    });
+
+    List<WorkExperienceData> data = employeeAmounts.entries.map((entry) {
+      return WorkExperienceData(eid: entry.key, amount: entry.value);
+    }).toList();
+
+    return data;
+  }
+
 
   Future<void> newRequist(String userId, String workflowId) async {
     try {
@@ -525,3 +605,15 @@ class ChartData {
 
   ChartData(this.attribute, this.value);
 }
+
+class WorkExperienceData {
+  final String eid;
+  final double amount;
+
+  WorkExperienceData({
+    required this.eid,
+    required this.amount,
+  });
+}
+
+

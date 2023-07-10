@@ -118,7 +118,7 @@ class _attendanceScreenState extends State<attendanceScreen> {
                               onPress: () async {},
                             ),
                           ),
-                          !this.reportFlag
+                          this.reportFlag
                               ? Row(
                                   children: [
                                     Container(
