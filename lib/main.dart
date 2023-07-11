@@ -17,6 +17,7 @@ import 'package:hrms/webSIte/shiftScedual.dart';
 import 'package:hrms/webSIte/singUpScreen.dart';
 import 'package:hrms/webSIte/timeOffMangeScreen.dart';
 import 'package:hrms/webSIte/weekEndMangerScreen.dart';
+import 'package:hrms/webSIte/workExpScreen.dart';
 import 'package:hrms/webSIte/workFlowMangeScreen.dart';
 import 'package:hrms/widgets/workflow.dart';
 import 'package:provider/provider.dart';
@@ -85,7 +86,7 @@ class _MyAppState extends State<MyApp> {
               //  print(snapshot.data.uid);
                 //Provider.of<AuthProvider>(context, listen: false).setUid(snapshot.data.uid);
               //  global.set(snapshot.data.uid);
-                return homeScreen();
+                return workExpScreen();
               } else {
                 return loginScreen();
               }
@@ -107,6 +108,7 @@ class _MyAppState extends State<MyApp> {
             workFlowMangeScreen.routeName: (ctx) => workFlowMangeScreen(),
             requistScreen.routeName: (ctx) => requistScreen(),
             attendanceScreen.routeName: (ctx) => attendanceScreen(),
+            workExpScreen.routeName: (ctx) => workExpScreen(),
 
           },
         ),

@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hrms/webSIte/companyDocScreen.dart';
 import 'package:hrms/webSIte/homeScreen.dart';
+import 'package:hrms/webSIte/workExpScreen.dart';
 import 'package:hrms/webSIte/workFlowMangeScreen.dart';
 
 import '../webSIte/attendinceScreen.dart';
@@ -127,22 +128,26 @@ class _sideBarState extends State<sideBar> {
             SizedBox(
               height: this.spaceBetween,
             ),
-            /*Button(
+            Button(
               icon: Icons.attach_money_sharp,
               txt: "Work expensive",
               onPress: () {
                // _handleButtonTap(5);
+                if(mounted){
+                  Navigator.of(context).pushNamed(workExpScreen.routeName);
+                }
               },
               isSelected: 5 == widget.index,
             ),
             SizedBox(
               height: this.spaceBetween,
             ),
-            Button(
+            /*Button(
               icon: Icons.description,
               txt: "Employee claim ",
               onPress: () {
                // _handleButtonTap(6);
+
               },
               isSelected: 6 == widget.index,
             ),*/
