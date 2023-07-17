@@ -60,7 +60,7 @@ class _documentTabState extends State<documentTab> {
       FilePickerResult? result = await FilePicker.platform.pickFiles();
       if (result != null) {
         final FirebaseStorage storage =
-            FirebaseStorage.instanceFor(bucket: 'gs://hrms-6c649.appspot.com');
+            FirebaseStorage.instanceFor(bucket: 'gs://hrmststi.appspot.com'  /*'gs://hrms-6c649.appspot.com'*/);
         final String fileName =
             DateTime.now().microsecondsSinceEpoch.toString() +
                 "__" +

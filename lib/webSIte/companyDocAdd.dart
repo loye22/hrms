@@ -63,6 +63,7 @@ class _companyDocAddState extends State<companyDocAdd> {
   Widget build(BuildContext context) {
     double w = MediaQuery.of(context).size.width - 1250;
 
+
     return Scaffold(
       body: Stack(
         children: [
@@ -126,7 +127,7 @@ class _companyDocAddState extends State<companyDocAdd> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Container(
-                          width:  MediaQuery.of(context).size.width - 1400,
+                          width: MediaQuery.of(context).size.width < 1920 ?  400 :  MediaQuery.of(context).size.width - 1400,
                           decoration: BoxDecoration(
                             border: Border.all(color: Colors.white, width: 2),
                             borderRadius: BorderRadius.circular(30),
@@ -324,8 +325,8 @@ class _companyDocAddState extends State<companyDocAdd> {
                                                     final FirebaseStorage
                                                         _storage =
                                                         FirebaseStorage.instanceFor(
-                                                            bucket:
-                                                                'gs://hrms-6c649.appspot.com');
+                                                            bucket:'gs://hrmststi.appspot.com'
+                                                                /*'gs://hrms-6c649.appspot.com'*/);
                                                     Reference storageRef =
                                                         _storage.ref().child(
                                                             'companyDocs/${DateTime.now().microsecondsSinceEpoch.toString()  +"__"+this.file.name }');

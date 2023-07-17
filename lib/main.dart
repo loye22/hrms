@@ -30,17 +30,17 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
       options: FirebaseOptions(
-          /*apiKey: "AIzaSyDDVXm6Kz8IfTP7GdBVYpYZevFaz0-pcvM",
+          apiKey: "AIzaSyDDVXm6Kz8IfTP7GdBVYpYZevFaz0-pcvM",
           projectId: "hrmststi",
           storageBucket: "hrmststi.appspot.com",
           messagingSenderId: "562816180886",
-          appId: "1:562816180886:web:dcd2db1282ef89593c98b7",*/
+          appId: "1:562816180886:web:dcd2db1282ef89593c98b7",
 
-    apiKey: "AIzaSyAv9Ob74QE4fAeFbzMxB-13UtYrerwdzj4",
+   /* apiKey: "AIzaSyAv9Ob74QE4fAeFbzMxB-13UtYrerwdzj4",
     appId: "1:110127987253:web:10e85384a44c447dec8f7c",
     messagingSenderId: "110127987253",
     projectId: "hrms-6c649",
-    storageBucket: "myapp.appspot.com",
+    storageBucket: "myapp.appspot.com",*/
   ));
 
 
@@ -86,7 +86,7 @@ class _MyAppState extends State<MyApp> {
               //  print(snapshot.data.uid);
                 //Provider.of<AuthProvider>(context, listen: false).setUid(snapshot.data.uid);
               //  global.set(snapshot.data.uid);
-                return workExpScreen();
+                return homeScreen();
               } else {
                 return loginScreen();
               }

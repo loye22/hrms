@@ -69,148 +69,154 @@ class _workFlowMangeScreenState extends State<workFlowMangeScreen> {
           Positioned(
             left: 280,
             bottom: 15,
-            child: FutureBuilder(
-              future: getWorkflowDataWithEmployeeNames(),
-              // Replace with your function to load workflow data
-              builder: (ctx, snapshot) => snapshot.connectionState ==
-                      ConnectionState.waiting
-                  ? Center(child: CircularProgressIndicator())
-                  : Container(
-                      width: MediaQuery.of(context).size.width - 650,
-                      height: MediaQuery.of(context).size.height - 130,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(10)),
-                        border:
-                            Border.all(color: Colors.white.withOpacity(0.13)),
-                        color: Colors.grey.shade200.withOpacity(0.23),
-                      ),
-                      child: SingleChildScrollView(
-                        scrollDirection: Axis.vertical,
-                        child: Container(
-                          width: MediaQuery.of(context).size.width - 650,
-                          height: MediaQuery.of(context).size.height - 150,
-                          padding: EdgeInsets.all(12),
-                          child: isLoading
-                              ? Center(child: CircularProgressIndicator())
-                              : DataTable(
-                                  columnSpacing: 202,
-                                  columns: [
-                                    DataColumn(
-                                      label: Text('Title'),
-                                    ),
-                                    DataColumn(
-                                      label: Text('The flow'),
-                                    ),
-                                    DataColumn(
-                                      label: Text('More Options'),
-                                    ),
-                                  ],
-                                  rows: (snapshot.data != null)
-                                      ? snapshot.data!.entries
-                                          .map<DataRow>((entry) {
-                                          final workflowId = entry.key;
-                                          final workflowData = entry.value
-                                              as Map<String, dynamic>;
-                                          final title =
-                                              workflowData['title'] ?? '';
-                                          final flow = workflowData['flow']
-                                              as Map<String, String>?;
+            child: Container(
+                width: MediaQuery
+                    .of(context)
+                    .size
+                    .width - 650,
+                height: MediaQuery
+                    .of(context)
+                    .size
+                    .height - 130,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(10)),
+                  border:
+                  Border.all(color: Colors.white.withOpacity(0.13)),
+                  color: Colors.grey.shade200.withOpacity(0.23),
+                ),
+              child: FutureBuilder(
+                future: getWorkflowDataWithEmployeeNames(),
+                // Replace with your function to load workflow data
+                builder: (ctx, snapshot) => snapshot.connectionState ==
+                        ConnectionState.waiting
+                    ? Center(child: CircularProgressIndicator())
+                    : SingleChildScrollView(
+                      scrollDirection: Axis.vertical,
+                      child: Container(
+                        width: MediaQuery.of(context).size.width - 650,
+                        height: MediaQuery.of(context).size.height - 150,
+                        padding: EdgeInsets.all(12),
+                        child: isLoading
+                            ? Center(child: CircularProgressIndicator())
+                            : DataTable(
+                                columnSpacing: 202,
+                                columns: [
+                                  DataColumn(
+                                    label: Text('Title'),
+                                  ),
+                                  DataColumn(
+                                    label: Text('The flow'),
+                                  ),
+                                  DataColumn(
+                                    label: Text('More Options'),
+                                  ),
+                                ],
+                                rows: (snapshot.data != null)
+                                    ? snapshot.data!.entries
+                                        .map<DataRow>((entry) {
+                                        final workflowId = entry.key;
+                                        final workflowData = entry.value
+                                            as Map<String, dynamic>;
+                                        final title =
+                                            workflowData['title'] ?? '';
+                                        final flow = workflowData['flow']
+                                            as Map<String, String>?;
 
-                                          return DataRow(
-                                            cells: [
-                                              DataCell(Text(title)),
-                                              DataCell(Text(flow != null
-                                                  ? flow.values.join('>>> ')
-                                                  : '')),
-                                              DataCell(
-                                                Row(
-                                                  children: [
-                                                    IconButton(
-                                                      onPressed: () async {
-                                                        // Delete workflow logic here
-                                                        try {
-                                                          // Show confirmation dialog before deleting
-                                                          MyAlertDialog
-                                                              .showConfirmationDialog(
+                                        return DataRow(
+                                          cells: [
+                                            DataCell(Text(title)),
+                                            DataCell(Text(flow != null
+                                                ? flow.values.join('>>> ')
+                                                : '')),
+                                            DataCell(
+                                              Row(
+                                                children: [
+                                                  IconButton(
+                                                    onPressed: () async {
+                                                      // Delete workflow logic here
+                                                      try {
+                                                        // Show confirmation dialog before deleting
+                                                        MyAlertDialog
+                                                            .showConfirmationDialog(
+                                                          context,
+                                                          "Are you sure you want to delete this workflow?",
+                                                          () async {
+                                                            try {
+                                                              await FirebaseFirestore.instance
+                                                                  .collection('workflow')
+                                                                  .doc(workflowId)
+                                                                  .delete();
+                                                              print('Workflow deleted successfully');
+                                                              MyDialog.showAlert(context, 'Workflow deleted successfully');
+                                                              setState(() {});
+                                                            } catch (e) {
+                                                              print('Error deleting workflow: $e');
+                                                              MyDialog.showAlert(context, 'error  $e');
+
+                                                            }
+                                                          },
+                                                          () {},
+                                                        );
+                                                      } catch (e) {
+                                                        MyDialog.showAlert(
                                                             context,
-                                                            "Are you sure you want to delete this workflow?",
-                                                            () async {
-                                                              try {
-                                                                await FirebaseFirestore.instance
-                                                                    .collection('workflow')
-                                                                    .doc(workflowId)
-                                                                    .delete();
-                                                                print('Workflow deleted successfully');
-                                                                MyDialog.showAlert(context, 'Workflow deleted successfully');
-                                                                setState(() {});
-                                                              } catch (e) {
-                                                                print('Error deleting workflow: $e');
-                                                                MyDialog.showAlert(context, 'error  $e');
-
-                                                              }
-                                                            },
-                                                            () {},
-                                                          );
-                                                        } catch (e) {
-                                                          MyDialog.showAlert(
-                                                              context,
-                                                              e.toString());
-                                                        }
-                                                      },
-                                                      icon: Icon(
-                                                        Icons.delete,
-                                                        color: Colors.red,
-                                                      ),
+                                                            e.toString());
+                                                      }
+                                                    },
+                                                    icon: Icon(
+                                                      Icons.delete,
+                                                      color: Colors.red,
                                                     ),
-                                                  ],
-                                                ),
+                                                  ),
+                                                ],
                                               ),
-                                            ],
-                                          );
-                                        }).toList()
-                                      : [],
-                                ),
+                                            ),
+                                          ],
+                                        );
+                                      }).toList()
+                                    : [],
+                              ),
 
-                          /*map<DataRow>((item) {
-                                    return DataRow(
-                                      cells: [
-                                        DataCell(Text(item['title'] ?? '')),
-                                        DataCell(
-                                            Text(item['employeeId'] ?? '')),
-                                        DataCell(
-                                          Row(
-                                            children: [
-                                              IconButton(
-                                                onPressed: () async {
-                                                  // Delete workflow logic here
-                                                  try {
-                                                    // Show confirmation dialog before deleting
-                                                    MyAlertDialog
-                                                        .showConfirmationDialog(
-                                                      context,
-                                                      "Are you sure you want to delete this workflow?",
-                                                      () {},
-                                                      () {},
-                                                    );
-                                                  } catch (e) {
-                                                    MyDialog.showAlert(
-                                                        context, e.toString());
-                                                  }
-                                                },
-                                                icon: Icon(
-                                                  Icons.delete,
-                                                  color: Colors.red,
-                                                ),
+                        /*map<DataRow>((item) {
+                                  return DataRow(
+                                    cells: [
+                                      DataCell(Text(item['title'] ?? '')),
+                                      DataCell(
+                                          Text(item['employeeId'] ?? '')),
+                                      DataCell(
+                                        Row(
+                                          children: [
+                                            IconButton(
+                                              onPressed: () async {
+                                                // Delete workflow logic here
+                                                try {
+                                                  // Show confirmation dialog before deleting
+                                                  MyAlertDialog
+                                                      .showConfirmationDialog(
+                                                    context,
+                                                    "Are you sure you want to delete this workflow?",
+                                                    () {},
+                                                    () {},
+                                                  );
+                                                } catch (e) {
+                                                  MyDialog.showAlert(
+                                                      context, e.toString());
+                                                }
+                                              },
+                                              icon: Icon(
+                                                Icons.delete,
+                                                color: Colors.red,
                                               ),
-                                            ],
-                                          ),
+                                            ),
+                                          ],
                                         ),
-                                      ],
-                                    );
-                                  }).toList(),*/
-                        ),
+                                      ),
+                                    ],
+                                  );
+                                }).toList(),*/
                       ),
                     ),
+              ),
             ),
           ),
           Positioned(

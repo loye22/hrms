@@ -68,97 +68,103 @@ class _timeOffMangeScreenState extends State<timeOffMangeScreen> {
           Positioned(
             left: 280,
             bottom: 15,
-            child: FutureBuilder(
-              future: this.loadTimeOffData(),
-              builder: (ctx, response) => response.connectionState ==
-                      ConnectionState.waiting
-                  ? CircularProgressIndicator()
-                  : Container(
-                      width: MediaQuery.of(context).size.width - 650,
-                      height: MediaQuery.of(context).size.height - 130,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(10)),
-                        border:
-                            Border.all(color: Colors.white.withOpacity(0.13)),
-                        color: Colors.grey.shade200.withOpacity(0.23),
-                      ),
-                      child: SingleChildScrollView(
-                        scrollDirection: Axis.vertical,
-                        child: Container(
-                          width: MediaQuery.of(context).size.width - 650,
-                          height: MediaQuery.of(context).size.height - 150,
-                          padding: EdgeInsets.all(12),
-                          child: isLOading
-                              ? Center(child: CircularProgressIndicator())
-                              : DataTable2(
-                                  columnSpacing: 12,
-                                  horizontalMargin: 12,
-                                  minWidth: 600,
-                                  columns: [
-                                    DataColumn2(
-                                      label: Text('Title'),
-                                      size: ColumnSize.L,
-                                    ),
-                                    DataColumn2(
-                                      label: Text('Duration'),
-                                      size: ColumnSize.L,
-                                    ),
-                                    DataColumn2(
-                                      label: Text('More Options'),
-                                      size: ColumnSize.S,
-                                    ),
-                                  ],
-                                  rows: response.data!.map((item) {
-                                    return DataRow2(
-                                      //  onSelectChanged: (s) {},
-                                      cells: [
-                                        DataCell(Text(item['title'] ?? '')),
-                                        DataCell(Text(item['duration'] ?? '')),
-                                        DataCell(
-                                          Row(
-                                            children: [
-                                              IconButton(
+            child: Container(
+                width: MediaQuery
+                    .of(context)
+                    .size
+                    .width - 650,
+                height: MediaQuery
+                    .of(context)
+                    .size
+                    .height - 130,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(10)),
+                  border:
+                  Border.all(color: Colors.white.withOpacity(0.13)),
+                  color: Colors.grey.shade200.withOpacity(0.23),
+                ),
+              child: FutureBuilder(
+                future: this.loadTimeOffData(),
+                builder: (ctx, response) => response.connectionState ==
+                        ConnectionState.waiting
+                    ? Center(child: CircularProgressIndicator())
+                    : SingleChildScrollView(
+                      scrollDirection: Axis.vertical,
+                      child: Container(
+                        width: MediaQuery.of(context).size.width - 650,
+                        height: MediaQuery.of(context).size.height - 150,
+                        padding: EdgeInsets.all(12),
+                        child: isLOading
+                            ? Center(child: CircularProgressIndicator())
+                            : DataTable2(
+                                columnSpacing: 12,
+                                horizontalMargin: 12,
+                                minWidth: 600,
+                                columns: [
+                                  DataColumn2(
+                                    label: Text('Title'),
+                                    size: ColumnSize.L,
+                                  ),
+                                  DataColumn2(
+                                    label: Text('Duration'),
+                                    size: ColumnSize.L,
+                                  ),
+                                  DataColumn2(
+                                    label: Text('More Options'),
+                                    size: ColumnSize.S,
+                                  ),
+                                ],
+                                rows: response.data!.map((item) {
+                                  return DataRow2(
+                                    //  onSelectChanged: (s) {},
+                                    cells: [
+                                      DataCell(Text(item['title'] ?? '')),
+                                      DataCell(Text(item['duration'] ?? '')),
+                                      DataCell(
+                                        Row(
+                                          children: [
+                                            IconButton(
+                                              onPressed: () async {
+                                                try {
+                                                  print('xxx');
+                                                  //  MyAlertDialog.showConfirmationDialog(context, "Are you sure you want to delete this document ? ", (){}, (){});
+                                                  //html.window.location.reload();
+                                                  //     setState(() {});
+                                                } catch (e) {
+                                                  MyDialog.showAlert(
+                                                      context, e.toString());
+                                                  //    print(e.toString());
+                                                } finally {}
+                                              },
+                                              icon: Icon(
+                                                Icons.delete,
+                                                color: Colors.red,
+                                              ),
+                                            ),
+                                            Tooltip(
+                                              child: IconButton(
                                                 onPressed: () async {
-                                                  try {
-                                                    print('xxx');
-                                                    //  MyAlertDialog.showConfirmationDialog(context, "Are you sure you want to delete this document ? ", (){}, (){});
-                                                    //html.window.location.reload();
-                                                    //     setState(() {});
-                                                  } catch (e) {
-                                                    MyDialog.showAlert(
-                                                        context, e.toString());
-                                                    //    print(e.toString());
-                                                  } finally {}
+                                                  await addTimeOffCollectionToEmployees(
+                                                      item['title'],
+                                                      item['duration']);
                                                 },
                                                 icon: Icon(
-                                                  Icons.delete,
-                                                  color: Colors.red,
+                                                  Icons.publish,
+                                                  color: Colors.green,
                                                 ),
                                               ),
-                                              Tooltip(
-                                                child: IconButton(
-                                                  onPressed: () async {
-                                                    await addTimeOffCollectionToEmployees(
-                                                        item['title'],
-                                                        item['duration']);
-                                                  },
-                                                  icon: Icon(
-                                                    Icons.publish,
-                                                    color: Colors.green,
-                                                  ),
-                                                ),
-                                                message: "publish",
-                                              ),
-                                            ],
-                                          ),
+                                              message: "publish",
+                                            ),
+                                          ],
                                         ),
-                                      ],
-                                    );
-                                  }).toList(),
-                                ),
-                        ),
+                                      ),
+                                    ],
+                                  );
+                                }).toList(),
+                              ),
                       ),
                     ),
+              ),
             ),
           ),
           Positioned(

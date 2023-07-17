@@ -5,9 +5,11 @@ import 'package:hrms/webSIte/companyDocScreen.dart';
 import 'package:hrms/webSIte/homeScreen.dart';
 import 'package:hrms/webSIte/workExpScreen.dart';
 import 'package:hrms/webSIte/workFlowMangeScreen.dart';
+import 'package:path_provider/path_provider.dart';
 
 import '../webSIte/attendinceScreen.dart';
 import '../webSIte/employeesPage.dart';
+import '../webSIte/loginScreen.dart';
 import '../webSIte/requistScreen.dart';
 import '../webSIte/shiftScedual.dart';
 import '../webSIte/timeOffMangeScreen.dart';
@@ -196,6 +198,9 @@ class _sideBarState extends State<sideBar> {
               onPress: () async {
               //  _handleButtonTap(10);
                 await FirebaseAuth.instance.signOut();
+                Navigator.popUntil(context, ModalRoute.withName("/"));
+
+
 
               },
               isSelected: 10 == widget.index,

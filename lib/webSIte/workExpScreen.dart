@@ -76,14 +76,7 @@ class _workExpScreenState extends State<workExpScreen> {
           Positioned(
             left: 280,
             bottom: 15,
-            child: FutureBuilder(
-              future: initt(),
-              // Replace with your function to load workflow data
-              builder: (ctx, snapshot) =>
-              snapshot.connectionState ==
-                  ConnectionState.waiting
-                  ? CircularProgressIndicator()
-                  : Container(
+            child: Container(
                 width: MediaQuery
                     .of(context)
                     .size
@@ -97,95 +90,102 @@ class _workExpScreenState extends State<workExpScreen> {
                   border:
                   Border.all(color: Colors.white.withOpacity(0.13)),
                   color: Colors.grey.shade200.withOpacity(0.23),
-                ),
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.vertical,
-                  child: Container(
-                    width: MediaQuery
-                        .of(context)
-                        .size
-                        .width - 650,
-                    height: MediaQuery
-                        .of(context)
-                        .size
-                        .height - 150,
-                    padding: EdgeInsets.all(12),
-                    child: isLoading
-                        ? Center(child: CircularProgressIndicator())
-                        : DataTable2(
-                      columnSpacing:
-                      MediaQuery
-                          .of(context)
-                          .size
-                          .width - 650 <
-                          1000
-                          ? 5
-                          : 202,
+                ) ,
+              child: FutureBuilder(
+                future: initt(),
+                // Replace with your function to load workflow data
+                builder: (ctx, snapshot) =>
+                snapshot.connectionState ==
+                    ConnectionState.waiting
+                    ? Center(child: CircularProgressIndicator())
+                    : SingleChildScrollView(
+                      scrollDirection: Axis.vertical,
+                      child: Container(
+                        width: MediaQuery
+                            .of(context)
+                            .size
+                            .width - 650,
+                        height: MediaQuery
+                            .of(context)
+                            .size
+                            .height - 150,
+                        padding: EdgeInsets.all(12),
+                        child: isLoading
+                            ? Center(child: CircularProgressIndicator())
+                            : DataTable2(
+                          columnSpacing:
+                          MediaQuery
+                              .of(context)
+                              .size
+                              .width - 650 <
+                              1000
+                              ? 5
+                              : 202,
 
-                      columns: [
-                        DataColumn(
-                          label: Text('Title'),
-                        ), DataColumn(
-                          label: Text('Amount'),
+                          columns: [
+                            DataColumn(
+                              label: Text('Title'),
+                            ), DataColumn(
+                              label: Text('Amount'),
+                            ),
+                            DataColumn(
+                              label: Text('Requisted by'),
+                            ),
+                            DataColumn(
+                              label: Text('Requisted date'),
+                            ),
+                            DataColumn(
+                              label: Text('Options'),
+                            ),
+                          ],
+                          rows: widget.dataTable.map((e) {
+                            return DataRow2(
+                                onTap: () {
+                                  try {
+                                    html.window.open(e['docUrl'], 'new tab');
+                                  }
+                                  catch (e) {
+                                    print('error $e');
+                                  }
+                                },
+                                cells: [
+                                  DataCell(Text(
+                                      e['title'] ??
+                                          '404 not found!')), DataCell(Text(
+                                      e['amount'] ??
+                                          '404 not found!')),
+                                  DataCell(Text(
+                                      widget.empNamesMap[e['eid']] ??
+                                          '404 not found!')),
+                                  DataCell(
+                                    Text(
+                                      timestampToDate(e['date']).toString(),
+                                    ),
+                                  ),
+                                  e['finalStatus'] == null ? DataCell(
+                                    AcceptRejectButtonRow(
+                                        onAcceptPressed: () {
+                                          MyAlertDialog.showConfirmationDialog(
+                                              context,
+                                              "Are you certain that you wish to proceed with accepting this payment?",
+                                                  () async {
+                                                await addFinalStatusToWorkExperience(e['docId'] ,'accepted');
+                                              }, () {});
+                                        },
+                                        onRejectPressed: () {
+                                          MyAlertDialog.showConfirmationDialog(
+                                              context,
+                                              "Are you certain that you wish to reject with accepting this payment?",
+                                                  () async {
+                                                await addFinalStatusToWorkExperience(e['docId'] ,'reject');
+                                              }, () {});
+                                        }),
+                                    ) : DataCell(Text(e['finalStatus'] )),
+                                ]);
+                          }).toList(),
                         ),
-                        DataColumn(
-                          label: Text('Requisted by'),
-                        ),
-                        DataColumn(
-                          label: Text('Requisted date'),
-                        ),
-                        DataColumn(
-                          label: Text('Options'),
-                        ),
-                      ],
-                      rows: widget.dataTable.map((e) {
-                        return DataRow2(
-                            onTap: () {
-                              try {
-                                html.window.open(e['docUrl'], 'new tab');
-                              }
-                              catch (e) {
-                                print('error $e');
-                              }
-                            },
-                            cells: [
-                              DataCell(Text(
-                                  e['title'] ??
-                                      '404 not found!')), DataCell(Text(
-                                  e['amount'] ??
-                                      '404 not found!')),
-                              DataCell(Text(
-                                  widget.empNamesMap[e['eid']] ??
-                                      '404 not found!')),
-                              DataCell(
-                                Text(
-                                  timestampToDate(e['date']).toString(),
-                                ),
-                              ),
-                              e['finalStatus'] == null ? DataCell(
-                                AcceptRejectButtonRow(
-                                    onAcceptPressed: () {
-                                      MyAlertDialog.showConfirmationDialog(
-                                          context,
-                                          "Are you certain that you wish to proceed with accepting this payment?",
-                                              () async {
-                                            await addFinalStatusToWorkExperience(e['docId'] ,'accepted');
-                                          }, () {});
-                                    },
-                                    onRejectPressed: () {
-                                      MyAlertDialog.showConfirmationDialog(
-                                          context,
-                                          "Are you certain that you wish to reject with accepting this payment?",
-                                              () async {
-                                            await addFinalStatusToWorkExperience(e['docId'] ,'reject');
-                                          }, () {});
-                                    }),
-                                ) : DataCell(Text(e['finalStatus'] )),
-                            ]);
-                      }).toList(),
+                      ),
                     ),
-                  ),
-                ),
               ),
             ),
           ),

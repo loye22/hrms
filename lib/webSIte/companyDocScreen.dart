@@ -79,18 +79,25 @@ class _companyDocScreenState extends State<companyDocScreen> {
           Positioned(
             left: 280,
             bottom: 15,
-            child: FutureBuilder(
-              future: this.loadCompanyDocsFromFirestore(),
-              builder: (ctx ,response ) =>response.connectionState == ConnectionState.waiting ? CircularProgressIndicator() :
-              Container(
-                width: MediaQuery.of(context).size.width - 650,
-                height: MediaQuery.of(context).size.height - 130,
+            child: Container(
+                width: MediaQuery
+                    .of(context)
+                    .size
+                    .width - 650,
+                height: MediaQuery
+                    .of(context)
+                    .size
+                    .height - 130,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.all(Radius.circular(10)),
-                  border: Border.all(color: Colors.white.withOpacity(0.13)),
+                  border:
+                  Border.all(color: Colors.white.withOpacity(0.13)),
                   color: Colors.grey.shade200.withOpacity(0.23),
                 ),
-                child: SingleChildScrollView(
+              child: FutureBuilder(
+                future: this.loadCompanyDocsFromFirestore(),
+                builder: (ctx ,response ) =>response.connectionState == ConnectionState.waiting ? Center(child: CircularProgressIndicator()) :
+                SingleChildScrollView(
                   scrollDirection: Axis.vertical,
                   child:Container(
                     width:  MediaQuery.of(context).size.width - 650,
@@ -129,7 +136,7 @@ class _companyDocScreenState extends State<companyDocScreen> {
                          //
 
                           },
-                          
+
                         //  onSelectChanged: (s) {},
                           cells: [
                             DataCell(Text(item['title'] ?? '')),
@@ -200,9 +207,9 @@ class _companyDocScreenState extends State<companyDocScreen> {
 
 
 
-                ),
-              ) ,
+                ) ,
 
+              ),
             ),
           ),
           Positioned(

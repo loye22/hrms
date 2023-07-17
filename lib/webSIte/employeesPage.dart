@@ -75,147 +75,147 @@ class _employeesPageState extends State<employeesPage> {
           Positioned(
             left: 280,
             bottom: 15,
-            child: Center(
-              child: FutureBuilder(
-                future: loadEmployeeListFromFirestore(),
-                builder: (ctx, response) =>
-                response.connectionState ==
-                    ConnectionState.waiting
-                    ? CircularProgressIndicator()
-                    : Container(
-                  width: MediaQuery
-                      .of(context)
-                      .size
-                      .width - 650,
-                  height: MediaQuery
-                      .of(context)
-                      .size
-                      .height - 130,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(10)),
-                    border:
-                    Border.all(color: Colors.white.withOpacity(0.13)),
-                    color: Colors.grey.shade200.withOpacity(0.23),
-                  ),
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.vertical,
-                    child: Container(
-                      width: MediaQuery
-                          .of(context)
-                          .size
-                          .width - 650,
-                      height: MediaQuery
-                          .of(context)
-                          .size
-                          .height - 150,
-                      padding: EdgeInsets.all(12),
-                      child: DataTable2(
-                        columnSpacing: 12,
-                        horizontalMargin: 12,
-                        columns: [
-                          DataColumn2(
-                            label: Text('Name'),
-                          ),
-                          DataColumn2(
-                            label: Text('Hiring Date'),
-                          ),
-                          DataColumn2(
-                            label: Text('Job Title'),
-                          ),
-                          DataColumn2(
-                            label: Text('Department'),
-                          ),
-                          DataColumn2(
-                            label: Text('More options '),
-                          ),
-                        ],
-                        rows: response.data!.map((employee) {
-                          return DataRow2(onTap: () {
-
-                            EmployeeProfile employeeProfileFromMap(Map<String, dynamic> data) {
-                              return EmployeeProfile(
-                                eId:  employee.id.toString(),
-                                departmentID: data['departmentID'],
-                                dob: data['dob'].toDate(),
-                                email: data['email'],
-                                gender: data['gender'],
-                                hiringDate: data['hiringDate'].toDate(),
-                                nationality: data['nationality'],
-                                phoneNr: data['phoneNr'],
-                                photo: data['photo'],
-                                position: data['position'],
-                                userName: data['userName'],
-                                weekendId: data['weekendId'],
-                              );
-                            }
-                            EmployeeProfile employeeProfile = employeeProfileFromMap(employee.data() as Map<String, dynamic>);
-                            EmployeeProfilesProvider employeeProvider =
-                            Provider.of<EmployeeProfilesProvider>(context, listen: false);
-                            employeeProvider.addEmployeeProfile(employeeProfile);
-                            print(employeeProvider.getEmployeeProfilesLength());
-                            Navigator.pushNamed(context, emplyeeProfile.routeName , arguments:{"eId" : employee.id.toString() , "index" :employeeProvider.getEmployeeProfilesLength() - 1    });
-                          }, cells: [
-                            DataCell(Row(
-                              children: [
-
-
-                               CircleAvatar(
-                                  radius: 20,
-                                  backgroundImage:
-                                  NetworkImage(employee['photo']),
-                                ),
-                                SizedBox(width: 10),
-                                Expanded(child: Text(employee['userName'])),
-                              ],
-                            )),
-                            DataCell(Text(employee['hiringDate']
-                                ?.toDate()
-                                .toString()
-                                .substring(0, 10) ??
-                                '')),
-                            DataCell(Text(employee['position'] ?? '')),
-                            DataCell(
-                              FutureBuilder(
-                                future: getDepartmentTitle(
-                                    employee["departmentID"]),
-                                builder: (ctx, snapshot) {
-                                  if (snapshot.connectionState ==
-                                      ConnectionState.waiting) {
-                                    return Text('Loading...');
-                                  }
-                                  return Text(snapshot.data ?? '');
-                                },
-
+            child: Container(
+              width: MediaQuery
+                  .of(context)
+                  .size
+                  .width - 650,
+              height: MediaQuery
+                  .of(context)
+                  .size
+                  .height - 130,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(10)),
+                border:
+                Border.all(color: Colors.white.withOpacity(0.13)),
+                color: Colors.grey.shade200.withOpacity(0.23),
+              ),
+              child: Center(
+                child: FutureBuilder(
+                  future: loadEmployeeListFromFirestore(),
+                  builder: (ctx, response) =>
+                  response.connectionState ==
+                      ConnectionState.waiting
+                      ? CircularProgressIndicator()
+                      : SingleChildScrollView(
+                        scrollDirection: Axis.vertical,
+                        child: Container(
+                          width: MediaQuery
+                              .of(context)
+                              .size
+                              .width - 650,
+                          height: MediaQuery
+                              .of(context)
+                              .size
+                              .height - 150,
+                          padding: EdgeInsets.all(12),
+                          child: DataTable2(
+                            columnSpacing: 12,
+                            horizontalMargin: 12,
+                            columns: [
+                              DataColumn2(
+                                label: Text('Name'),
                               ),
-                            ),
-                            DataCell(IconButton(
-                              icon: Icon(
-                                Icons.delete,
+                              DataColumn2(
+                                label: Text('Hiring Date'),
                               ),
-                              color: Colors.red,
-                              onPressed: () async {
-                                await MyAlertDialog.showConfirmationDialog(context,
-                                    "Are you certain that you want to remove this employee from the system?", () async {
-                                      try {
-                                        await FirebaseFirestore.instance
-                                            .collection('Employee')
-                                            .doc(employee.id)
-                                            .delete();
-                                         MyDialog.showAlert(context, 'Employee deleted successfully.') ;
-                                         setState(() {});
-                                      } catch (error) {
-                                        print('Failed to delete employee: $error');
+                              DataColumn2(
+                                label: Text('Job Title'),
+                              ),
+                              DataColumn2(
+                                label: Text('Department'),
+                              ),
+                              DataColumn2(
+                                label: Text('More options '),
+                              ),
+                            ],
+                            rows: response.data!.map((employee) {
+                              return DataRow2(onTap: () {
+
+                                EmployeeProfile employeeProfileFromMap(Map<String, dynamic> data) {
+                                  return EmployeeProfile(
+                                    eId:  employee.id.toString(),
+                                    departmentID: data['departmentID'],
+                                    dob: data['dob'].toDate(),
+                                    email: data['email'],
+                                    gender: data['gender'],
+                                    hiringDate: data['hiringDate'].toDate(),
+                                    nationality: data['nationality'],
+                                    phoneNr: data['phoneNr'],
+                                    photo: data['photo'],
+                                    position: data['position'],
+                                    userName: data['userName'],
+                                    weekendId: data['weekendId'],
+                                  );
+                                }
+                                EmployeeProfile employeeProfile = employeeProfileFromMap(employee.data() as Map<String, dynamic>);
+                                EmployeeProfilesProvider employeeProvider =
+                                Provider.of<EmployeeProfilesProvider>(context, listen: false);
+                                employeeProvider.addEmployeeProfile(employeeProfile);
+                                print(employeeProvider.getEmployeeProfilesLength());
+                                Navigator.pushNamed(context, emplyeeProfile.routeName , arguments:{"eId" : employee.id.toString() , "index" :employeeProvider.getEmployeeProfilesLength() - 1    });
+                              }, cells: [
+                                DataCell(Row(
+                                  children: [
+
+
+                                   CircleAvatar(
+                                      radius: 20,
+                                      backgroundImage:
+                                      NetworkImage(employee['photo']),
+                                    ),
+                                    SizedBox(width: 10),
+                                    Expanded(child: Text(employee['userName'])),
+                                  ],
+                                )),
+                                DataCell(Text(employee['hiringDate']
+                                    ?.toDate()
+                                    .toString()
+                                    .substring(0, 10) ??
+                                    '')),
+                                DataCell(Text(employee['position'] ?? '')),
+                                DataCell(
+                                  FutureBuilder(
+                                    future: getDepartmentTitle(
+                                        employee["departmentID"]),
+                                    builder: (ctx, snapshot) {
+                                      if (snapshot.connectionState ==
+                                          ConnectionState.waiting) {
+                                        return Text('Loading...');
                                       }
-                                    }, () {
-                                      print("no");
-                                    }) ;
-                              },
-                            ))
-                          ]);
-                        }).toList(),
+                                      return Text(snapshot.data ?? '');
+                                    },
+
+                                  ),
+                                ),
+                                DataCell(IconButton(
+                                  icon: Icon(
+                                    Icons.delete,
+                                  ),
+                                  color: Colors.red,
+                                  onPressed: () async {
+                                    await MyAlertDialog.showConfirmationDialog(context,
+                                        "Are you certain that you want to remove this employee from the system?", () async {
+                                          try {
+                                            await FirebaseFirestore.instance
+                                                .collection('Employee')
+                                                .doc(employee.id)
+                                                .delete();
+                                             MyDialog.showAlert(context, 'Employee deleted successfully.') ;
+                                             setState(() {});
+                                          } catch (error) {
+                                            print('Failed to delete employee: $error');
+                                          }
+                                        }, () {
+                                          print("no");
+                                        }) ;
+                                  },
+                                ))
+                              ]);
+                            }).toList(),
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
                 ),
               ),
             ),
