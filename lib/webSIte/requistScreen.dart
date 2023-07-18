@@ -25,6 +25,7 @@ class requistScreen extends StatefulWidget {
 class _requistScreenState extends State<requistScreen> {
   bool isLoading = false;
   // this var to help show the requsit details or not
+  final TextEditingController _textEditingControllerRejectReason = TextEditingController();
 
 
   @override
@@ -484,7 +485,81 @@ class _requistScreenState extends State<requistScreen> {
                                                       ),
                                                       SizedBox(width: 5.0),
                                                       ElevatedButton(
-                                                        onPressed: () {
+                                                        onPressed: () async {
+                                                          await showDialog(context: context,  builder: (BuildContext context) =>
+                                                              AlertDialog(
+                                                                content: Container(
+                                                                  width: 500,
+                                                                  height: 200,
+                                                                  decoration: BoxDecoration(
+                                                                    borderRadius: BorderRadius.circular(30)
+                                                                  ),
+                                                                  child: Animate(
+                                                                    effects: [FadeEffect(), ScaleEffect()],
+                                                                    child: Column(
+                                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                                      children: [
+                                                                        Text(
+                                                                          'Please type the reason for this',
+                                                                          style: TextStyle(
+                                                                            color: Colors.white,
+                                                                            fontSize: 16,
+                                                                          ),
+                                                                        ),
+                                                                        SizedBox(
+                                                                          height: 15,
+                                                                        ),
+                                                                        Container(
+                                                                          width: 400,
+                                                                          height: 100,
+                                                                          padding: EdgeInsets.all(10.0),
+                                                                          decoration: BoxDecoration(
+                                                                            color: Colors.white,
+                                                                            borderRadius:
+                                                                            BorderRadius.all(Radius.circular(8.0)),
+                                                                          ),
+                                                                          child: TextFormField(
+                                                                            maxLines: null,
+                                                                            controller: _textEditingControllerRejectReason,
+                                                                            decoration: InputDecoration(
+                                                                              border: InputBorder.none,
+                                                                              hintText: 'Type your reason here',
+                                                                            ),
+                                                                          ),
+                                                                        ),
+                                                                        SizedBox(
+                                                                          height: 15,
+                                                                        ),
+                                                                        ElevatedButton(
+                                                                          onPressed: () {
+                                                                            Navigator.of(context).pop();
+                                                                          },
+                                                                          style: ElevatedButton.styleFrom(
+                                                                            primary: Colors.red,
+                                                                            shape: RoundedRectangleBorder(
+                                                                              borderRadius:
+                                                                              BorderRadius.circular(8.0),
+                                                                            ),
+                                                                          ),
+                                                                          child: Text(
+                                                                            'Continue',
+                                                                            style: TextStyle(
+                                                                              fontSize: 16.0,
+                                                                              fontWeight: FontWeight.bold,
+                                                                            ),
+                                                                          ),
+                                                                        )
+                                                                      ],
+                                                                    ),
+                                                                  ),
+                                                                ),
+
+                                                              ));
+                                                          if(_textEditingControllerRejectReason.text.trim() == ""){
+                                                            MyDialog.showAlert(context, 'Please you need to provide reason for your your rejection');
+                                                            return;
+                                                          }
+
                                                           String documentId =
                                                               e['docId']; // Assuming this is the document ID where the data is stored
                                                           FirebaseFirestore
@@ -495,7 +570,8 @@ class _requistScreenState extends State<requistScreen> {
                                                               .update({
                                                             'status':
                                                                 'reject',
-                                                            'flow': {}
+                                                            'flow': {},
+                                                            'rejectReason': _textEditingControllerRejectReason.text.trim()
                                                           }).then((value) {
                                                             MyDialog.showAlert(
                                                                 context,
