@@ -9,6 +9,7 @@ import 'package:easy_web_view/easy_web_view.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:hrms/models/gloablVar.dart';
+import 'package:hrms/models/staticVars.dart';
 import 'package:hrms/widgets/rightBar.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:native_pdf_view/native_pdf_view.dart';
@@ -70,13 +71,13 @@ class _companyDocAddState extends State<companyDocAdd> {
           Container(
             width: double.infinity,
             height: double.infinity,
-            decoration: BoxDecoration(
+            decoration:  staticVars.tstiBackGround, /*BoxDecoration(
                 color: Colors.red,
                 gradient: LinearGradient(colors: [
                   Color.fromRGBO(90, 137, 214, 1),
                   Color.fromRGBO(95, 167, 210, 1),
                   Color.fromRGBO(49, 162, 202, 1)
-                ])),
+                ])),*/
             child: Container(
               decoration: BoxDecoration(
                 // borderRadius: BorderRadius.circular(30),

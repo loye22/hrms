@@ -6,6 +6,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hrms/models/gloablVar.dart';
+import 'package:hrms/models/staticVars.dart';
 import 'package:hrms/provider/companyDoc.dart';
 import 'package:hrms/webSIte/singUpScreen.dart';
 import 'package:hrms/widgets/rightBar.dart';
@@ -40,13 +41,7 @@ class _homeScreenState extends State<homeScreen> {
           Container(
             width: double.infinity,
             height: double.infinity,
-            decoration: BoxDecoration(
-                color: Colors.red,
-                gradient: LinearGradient(colors: [
-                  Color.fromRGBO(90, 137, 214, 1),
-                  Color.fromRGBO(95, 167, 210, 1),
-                  Color.fromRGBO(49, 162, 202, 1)
-                ])),
+            decoration:  staticVars.tstiBackGround,
             child: Container(
               decoration: BoxDecoration(
                 // borderRadius: BorderRadius.circular(30),

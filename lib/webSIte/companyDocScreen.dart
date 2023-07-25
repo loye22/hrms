@@ -9,6 +9,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hrms/models/Dialog.dart';
+import 'package:hrms/models/staticVars.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:hrms/provider/UserData.dart';
@@ -38,13 +39,13 @@ class _companyDocScreenState extends State<companyDocScreen> {
           Container(
             width: double.infinity,
             height: double.infinity,
-            decoration: BoxDecoration(
+            decoration:  staticVars.tstiBackGround , /*BoxDecoration(
                 color: Colors.red,
                 gradient: LinearGradient(colors: [
                   Color.fromRGBO(90, 137, 214, 1),
                   Color.fromRGBO(95, 167, 210, 1),
                   Color.fromRGBO(49, 162, 202, 1)
-                ])),
+                ])),*/
             child: Container(
               decoration: BoxDecoration(
                 // borderRadius: BorderRadius.circular(30),

@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hrms/models/gloablVar.dart';
+import 'package:hrms/models/staticVars.dart';
 import 'package:hrms/provider/UserData.dart';
 import 'package:hrms/webSIte/homeScreen.dart';
 import 'package:provider/provider.dart';
@@ -48,13 +49,13 @@ class _loginScreenState extends State<loginScreen> {
           Container(
             width: double.infinity,
             height: double.infinity,
-            decoration: BoxDecoration(
+            decoration:  staticVars.tstiBackGround,/*BoxDecoration(
                 color: Colors.red,
                 gradient: LinearGradient(colors: [
                   Color.fromRGBO(90, 137, 214, 1),
                   Color.fromRGBO(95, 167, 210, 1),
                   Color.fromRGBO(49, 162, 202, 1)
-                ])),
+                ])),*/
             child: Container(
               decoration: BoxDecoration(
                 // borderRadius: BorderRadius.circular(30),
@@ -74,7 +75,7 @@ class _loginScreenState extends State<loginScreen> {
                     ),
                 CircleAvatar(
                   radius: 90,
-                  backgroundImage: AssetImage("assests/momo.jfif"),
+                  backgroundImage: AssetImage("assests/logo.png"),
                 ),
                 SizedBox(
                   height: 20,

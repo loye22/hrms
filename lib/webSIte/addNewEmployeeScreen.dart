@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gender_picker/source/enums.dart';
 import 'package:gender_picker/source/gender_picker.dart';
+import 'package:hrms/models/staticVars.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:country_list_pick/country_list_pick.dart';
 import 'package:universal_html/html.dart';
@@ -62,13 +63,13 @@ class _addNewEmployeeScreenState extends State<addNewEmployeeScreen> {
           Container(
             width: double.infinity,
             height: double.infinity,
-            decoration: BoxDecoration(
+            decoration:  staticVars.tstiBackGround,/*BoxDecoration(
                 color: Colors.red,
                 gradient: LinearGradient(colors: [
                   Color.fromRGBO(90, 137, 214, 1),
                   Color.fromRGBO(95, 167, 210, 1),
                   Color.fromRGBO(49, 162, 202, 1)
-                ])),
+                ])),*/
             child: Container(
               decoration: BoxDecoration(
                 // borderRadius: BorderRadius.circular(30),

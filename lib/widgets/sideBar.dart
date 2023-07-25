@@ -44,16 +44,17 @@ class _sideBarState extends State<sideBar> {
           borderRadius: BorderRadius.only(
               topRight: Radius.circular(30), bottomRight: Radius.circular(30)),
           border: Border.all(color: Colors.white.withOpacity(0.3)),
-          gradient: LinearGradient(colors: [
+          /*gradient: LinearGradient(colors: [
             Color.fromRGBO(90, 137, 214, 1),
             Color.fromRGBO(95, 167, 210, 1),
             Color.fromRGBO(49, 162, 202, 1)
-          ])),
+          ])*/
+      ),
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.only(
               topRight: Radius.circular(30), bottomRight: Radius.circular(30)),
-          border: Border.all(color: Colors.white.withOpacity(0.3)),
+          border: Border.all(color: Colors.white.withOpacity(0.13)),
           color: Colors.grey.shade200.withOpacity(0.45),
         ),
         child: Column(

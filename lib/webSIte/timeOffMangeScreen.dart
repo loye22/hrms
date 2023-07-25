@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:data_table_2/data_table_2.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:hrms/models/staticVars.dart';
 
 import '../models/Dialog.dart';
 import '../widgets/rightBar.dart';
@@ -27,13 +28,13 @@ class _timeOffMangeScreenState extends State<timeOffMangeScreen> {
           Container(
             width: double.infinity,
             height: double.infinity,
-            decoration: BoxDecoration(
+            decoration:  staticVars.tstiBackGround , /*BoxDecoration(
                 color: Colors.red,
                 gradient: LinearGradient(colors: [
                   Color.fromRGBO(90, 137, 214, 1),
                   Color.fromRGBO(95, 167, 210, 1),
                   Color.fromRGBO(49, 162, 202, 1)
-                ])),
+                ])),*/
             child: Container(
               decoration: BoxDecoration(
                 // borderRadius: BorderRadius.circular(30),
