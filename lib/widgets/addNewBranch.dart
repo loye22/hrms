@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:hrms/models/staticVars.dart';
 
 import 'button.dart';
 
@@ -25,13 +26,13 @@ class _addNewBranchState extends State<addNewBranch> {
       child: Stack(
         children: [
           Container(
-            decoration: BoxDecoration(
+            decoration: staticVars.tstiPobUpBackGround , /*BoxDecoration(
                 borderRadius: BorderRadius.circular(30),
                 gradient: LinearGradient(colors: [
                   Color.fromRGBO(90, 137, 214, 1),
                   Color.fromRGBO(95, 167, 210, 1),
                   Color.fromRGBO(49, 162, 202, 1)
-                ])),
+                ])),*/
             child: Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(30),

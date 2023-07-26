@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:hrms/models/Dialog.dart';
+import 'package:hrms/models/staticVars.dart';
 
 import 'button.dart';
 
@@ -196,13 +197,13 @@ class _WorkflowExecutionPageState extends State<WorkflowExecutionPage> {
       child: Stack(
         children: [
           Container(
-            decoration: BoxDecoration(
+            decoration: staticVars.tstiPobUpBackGround , /*BoxDecoration(
                 borderRadius: BorderRadius.all(Radius.circular(30)),
                 gradient: LinearGradient(colors: [
                   Color.fromRGBO(90, 137, 214, 1),
                   Color.fromRGBO(95, 167, 210, 1),
                   Color.fromRGBO(49, 162, 202, 1)
-                ])),
+                ])),*/
           ),
           Container(
             decoration: BoxDecoration(

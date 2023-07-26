@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:hrms/models/Dialog.dart';
+import 'package:hrms/models/staticVars.dart';
 import 'package:hrms/widgets/sideBar.dart';
 import 'package:latlong2/latlong.dart' as latLng;
 import 'button.dart';
@@ -25,7 +26,7 @@ class _addLocationsState extends State<addLocations> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: MediaQuery.of(context).size.width - 1200,
+      width: MediaQuery.of(context).size.width - 1000,
       height: 500,
       child: FutureBuilder(
         future: _fetchBranches(),
@@ -41,13 +42,13 @@ class _addLocationsState extends State<addLocations> {
               alignment: Alignment.center,
               children: [
                 Container(
-                  decoration: BoxDecoration(
+                  decoration:staticVars.tstiPobUpBackGround ,  /* BoxDecoration(
                       borderRadius: BorderRadius.circular(30),
                       gradient: LinearGradient(colors: [
                         Color.fromRGBO(90, 137, 214, 1),
                         Color.fromRGBO(95, 167, 210, 1),
                         Color.fromRGBO(49, 162, 202, 1)
-                      ])),
+                      ])),*/
                   child: Container(
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(30),
@@ -86,7 +87,7 @@ class _addLocationsState extends State<addLocations> {
                   child: StatefulBuilder(
                     builder: (BuildContext context, StateSetter setState) =>
                         Container(
-                      width: MediaQuery.of(context).size.width - 1500,
+                      width: MediaQuery.of(context).size.width - 1200,
                       child: DropdownButtonFormField<String>(
                         value: _selectedBranch,
                         hint: Text('Select a branch'),

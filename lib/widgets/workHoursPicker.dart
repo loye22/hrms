@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:hrms/models/Dialog.dart';
+import 'package:hrms/models/staticVars.dart';
 import 'package:intl/intl.dart';
 
 class WorkHoursPicker extends StatefulWidget {
@@ -51,14 +52,14 @@ class _WorkHoursPickerState extends State<WorkHoursPicker> {
       child: Stack(
         children: [
           Container(
-            decoration: BoxDecoration(
+            decoration: staticVars.tstiPobUpBackGround , /*BoxDecoration(
               borderRadius: BorderRadius.circular(30),
               gradient: LinearGradient(colors: [
                 Color.fromRGBO(90, 137, 214, 1),
                 Color.fromRGBO(95, 167, 210, 1),
                 Color.fromRGBO(49, 162, 202, 1),
               ]),
-            ),
+            ),*/
             child: Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(30),
