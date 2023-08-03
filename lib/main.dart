@@ -67,6 +67,7 @@ class _MyAppState extends State<MyApp> {
           ChangeNotifierProvider<EmployeeProfilesProvider>( create: (_) => EmployeeProfilesProvider(),)
         ],
         child: MaterialApp(
+          title: 'Bayanati',
           scrollBehavior: MaterialScrollBehavior().copyWith(
             dragDevices: {
               PointerDeviceKind.mouse,

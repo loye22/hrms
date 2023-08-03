@@ -9,6 +9,7 @@ import 'package:hrms/models/staticVars.dart';
 import 'package:hrms/widgets/flutterMap.dart';
 import 'package:hrms/widgets/iconWiget.dart';
 import 'package:intl/intl.dart';
+import 'package:table_calendar/table_calendar.dart';
 import '../models/gloablVar.dart';
 import '../widgets/button.dart';
 import '../widgets/rightBar.dart';
@@ -26,16 +27,28 @@ class attendanceScreen extends StatefulWidget {
 
 class _attendanceScreenState extends State<attendanceScreen> {
   Map<String, Map<String, String>> branshLocaions = {};
+  List<Map<String, dynamic>> emplyeeDataForFilter = [];
+  List<Map<String, dynamic>> globalAttendanceList = [];
+
   bool isLoading = false;
   bool reportFlag = false;
+  bool filterFlag = false;
+
+  // this range for calculate the working hours
   DateTime selectedStartDate = DateTime.now();
   DateTime selectedEndDate = DateTime.now();
+
+  // this for date filter
+  DateTime filterStartDate = DateTime.now();
+  DateTime filterEndDate = DateTime.now();
 
 
 
   @override
   Widget build(BuildContext context) {
-    double globalWidth = MediaQuery.of(context).size.width < 1920 ? 145 : 210 ;
+
+    print(this.filterFlag);
+    double globalWidth = MediaQuery.of(context).size.width < 1920 ? 145 : 210;
     final DateFormat formatter = DateFormat('yyyy-MM-dd');
     return Scaffold(
       body: Stack(
@@ -43,7 +56,8 @@ class _attendanceScreenState extends State<attendanceScreen> {
           Container(
             width: double.infinity,
             height: double.infinity,
-            decoration:  staticVars.tstiBackGround ,/*BoxDecoration(
+            decoration: staticVars.tstiBackGround,
+            /*BoxDecoration(
                 color: Colors.red,
                 gradient: LinearGradient(colors: [
                   Color.fromRGBO(90, 137, 214, 1),
@@ -84,8 +98,14 @@ class _attendanceScreenState extends State<attendanceScreen> {
                               txt: 'Back',
                               isSelected: true,
                               onPress: () {
-                                if (!this.reportFlag) return;
-                                reportFlag = false;
+                                this.filterFlag = false ;
+                                setState(() {});
+                                if (!this.reportFlag){
+                                  return;
+                                  this.reportFlag = false;
+                                }
+
+
                                 setState(() {});
                               },
                             ),
@@ -109,21 +129,32 @@ class _attendanceScreenState extends State<attendanceScreen> {
                               },
                             ),
                           ),
-                          Container(
+                          this.reportFlag ? SizedBox.shrink(): Container(
                             width: globalWidth,
                             padding: const EdgeInsets.only(right: 10),
                             child: Button(
                               icon: Icons.filter_alt_outlined,
-                              txt: 'Filter By',
+                              txt: 'Filter By date ',
                               isSelected: true,
-                              onPress: () async {},
+                              onPress: () async {
+                                if(this.filterFlag){
+                                  this.emplyeeDataForFilter = this.globalAttendanceList ;
+                                }
+                                await _filterDateRange(context);
+                                filterAttendanceDataWithRange(fromDate: this.filterStartDate , toDate:  this.filterEndDate , attendanceDataList:  this.emplyeeDataForFilter);
+                                this.filterFlag = true ;
+                                setState(() {});
+
+
+
+                              },
                             ),
                           ),
                           this.reportFlag
                               ? Row(
                                   children: [
                                     Container(
-                                      width: globalWidth ,
+                                      width: globalWidth,
                                       padding: const EdgeInsets.only(right: 10),
                                       child: Button(
                                         icon: Icons.date_range,
@@ -184,7 +215,7 @@ class _attendanceScreenState extends State<attendanceScreen> {
                 // to load the beanshes names with there locaions to be used in the popup window
                 //so it will load the employee locaion with his bransh loacion
                 // after that the fetchAttendanceData() function will load the attendince data from firebase .
-                //
+                // we will handel the filter event using the filterFlag varuable
                 child: this.reportFlag
                     ? FutureBuilder(
                         future: calculateWorkingHours2(
@@ -225,94 +256,255 @@ class _attendanceScreenState extends State<attendanceScreen> {
                           }
                         },
                       )
-                    : FutureBuilder(
-                        future: fetchAttendanceData(),
-                        builder: (ctx, snapShot) {
-                          if (snapShot.hasError) {
-                            return Center(
-                                child: Text('Error : ${snapShot.error}'));
-                          }
-                          if (snapShot.connectionState ==
-                              ConnectionState.waiting) {
-                            return Center(
-                              child: CircularProgressIndicator(),
-                            );
-                          } else {
-                            return DataTable2(
-                              columns: [
-                                DataColumn(
-                                  label: Text('Name'),
-                                ),
-                                DataColumn(
-                                  label: Center(child: Text('Schedule')),
-                                ),
-                                DataColumn(
-                                  label: Center(child: Text('Check in')),
-                                ),
-                                DataColumn(
-                                  label: Center(child: Text('Check out')),
-                                ),
-                                DataColumn(
-                                  label: Center(child: Text('Status')),
-                                ),
-                              ],
-                              rows: snapShot.data!.map((e) {
-                                // get the current shift shecdual
-                                Map<String, dynamic> shift =
-                                    modifySchedule(e['scedual']['shifts']);
+                    : (this.filterFlag
+                        ? DataTable2(
+                            columns: [
+                              DataColumn(
+                                label: Text('Namex'),
+                              ),
+                              DataColumn(
+                                label: Center(child: Text('Schedule')),
+                              ),
+                              DataColumn(
+                                label: Center(child: Text('Check in')),
+                              ),
+                              DataColumn(
+                                label: Center(child: Text('Check out')),
+                              ),
+                              DataColumn(
+                                label: Center(child: Text('Status')),
+                              ),
+                            ],
+                            rows: this.emplyeeDataForFilter.map((e) {
+                              // get the current shift shecdual
+                              Map<String, dynamic> shift =
+                                  modifySchedule(e['scedual']['shifts']);
 
-                                //from checkInTimeStamp attribute we will extract the current date and we will pass it for the map above
-                                // to get the current shedual
-                                int milliseconds =
-                                    int.parse(e['checkInTimeStamp']);
-                                DateTime date =
-                                    DateTime.fromMillisecondsSinceEpoch(
-                                        milliseconds);
-                                String currentDayOfWeek =
-                                    DateFormat('EEEE').format(date);
-                                return DataRow2(
-                                  onTap: () async {
-                                    await showDialog(
-                                      context: context,
-                                      builder: (BuildContext context) =>
-                                          AlertDialog(
-                                        backgroundColor: Colors.transparent,
-                                        content: attendincePopUpEditWindows(
-                                            item: e,
-                                            bLoacions: this.branshLocaions),
-                                      ),
-                                    );
-                                  },
-                                  //  onSelectChanged: (s) {},
-                                  cells: [
-                                    DataCell(Text(e['name'] ?? 'notFound404')),
-                                    DataCell(Text(shift[currentDayOfWeek] ??
-                                        'notFound404')),
-                                    DataCell(Center(
-                                        child: Text(convertTimestampToTime(
-                                                e['checkInTimeStamp']) ??
-                                            ''))),
-                                    DataCell(Center(
-                                        child: e['checkOutTimeStamp'] == ''
-                                            ? Text('---')
-                                            : Text(convertTimestampToTime(
-                                                e['checkOutTimeStamp'])))),
-                                    DataCell(
-                                      Center(
-                                        child: Text('present'),
-                                      ),
+                              //from checkInTimeStamp attribute we will extract the current date and we will pass it for the map above
+                              // to get the current shedual
+                              int milliseconds =
+                                  int.parse(e['checkInTimeStamp']);
+                              DateTime date =
+                                  DateTime.fromMillisecondsSinceEpoch(
+                                      milliseconds);
+                              String currentDayOfWeek =
+                                  DateFormat('EEEE').format(date);
+                              return DataRow2(
+                                onTap: () async {
+                                  await showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) =>
+                                        AlertDialog(
+                                      backgroundColor: Colors.transparent,
+                                      content: attendincePopUpEditWindows(
+                                          item: e,
+                                          bLoacions: this.branshLocaions),
+                                    ),
+                                  );
+                                },
+                                //  onSelectChanged: (s) {},
+                                cells: [
+                                  DataCell(Text(e['name'] ?? 'notFound404')),
+                                  DataCell(Text(shift[currentDayOfWeek] ??
+                                      'notFound404')),
+                                  DataCell(Center(
+                                      child: Text(convertTimestampToTime(
+                                              e['checkInTimeStamp']) ??
+                                          ''))),
+                                  DataCell(Center(
+                                      child: e['checkOutTimeStamp'] == ''
+                                          ? Text('---')
+                                          : Text(convertTimestampToTime(
+                                              e['checkOutTimeStamp'])))),
+                                  DataCell(
+                                    Center(
+                                      child: Text('present'),
+                                    ),
+                                  ),
+                                ],
+                              );
+                            }).toList(),
+                          )
+                        : FutureBuilder(
+                            future: fetchAttendanceData(),
+                            builder: (ctx, snapShot) {
+                              if (snapShot.hasError) {
+                                return Center(
+                                    child: Text('Error : ${snapShot.error}'));
+                              }
+                              if (snapShot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return Center(
+                                  child: CircularProgressIndicator(),
+                                );
+                              } else {
+                                return DataTable2(
+                                  columns: [
+                                    DataColumn(
+                                      label: Text('Name'),
+                                    ),
+                                    DataColumn(
+                                      label: Center(child: Text('Schedule')),
+                                    ),
+                                    DataColumn(
+                                      label: Center(child: Text('Check in')),
+                                    ),
+                                    DataColumn(
+                                      label: Center(child: Text('Check out')),
+                                    ),
+                                    DataColumn(
+                                      label: Center(child: Text('Status')),
                                     ),
                                   ],
+                                  rows: snapShot.data!.map((e) {
+                                    print('snapShot.data! ${snapShot.data!.length}');
+                                    // get the current shift shecdual
+                                    Map<String, dynamic> shift =
+                                        modifySchedule(e['scedual']['shifts']);
+
+                                    //from checkInTimeStamp attribute we will extract the current date and we will pass it for the map above
+                                    // to get the current shedual
+                                    int milliseconds =
+                                        int.parse(e['checkInTimeStamp']);
+                                    DateTime date =
+                                        DateTime.fromMillisecondsSinceEpoch(
+                                            milliseconds);
+                                    String currentDayOfWeek =
+                                        DateFormat('EEEE').format(date);
+                                    return DataRow2(
+                                      onTap: () async {
+                                        await showDialog(
+                                          context: context,
+                                          builder: (BuildContext context) =>
+                                              AlertDialog(
+                                            backgroundColor: Colors.transparent,
+                                            content: attendincePopUpEditWindows(
+                                                item: e,
+                                                bLoacions: this.branshLocaions),
+                                          ),
+                                        );
+                                      },
+                                      //  onSelectChanged: (s) {},
+                                      cells: [
+                                        DataCell(
+                                            Text(e['name'] ?? 'notFound404')),
+                                        DataCell(Text(shift[currentDayOfWeek] ??
+                                            'notFound404')),
+                                        DataCell(Center(
+                                            child: Text(convertTimestampToTime(
+                                                    e['checkInTimeStamp']) ??
+                                                ''))),
+                                        DataCell(Center(
+                                            child: e['checkOutTimeStamp'] == ''
+                                                ? Text('---')
+                                                : Text(convertTimestampToTime(
+                                                    e['checkOutTimeStamp'])))),
+                                        DataCell(
+                                          Center(
+                                            child: Text('present'),
+                                          ),
+                                        ),
+                                      ],
+                                    );
+                                  }).toList(),
                                 );
-                              }).toList(),
-                            );
-                          }
-                        },
-                      ),
+                              }
+                            },
+                          )),
               ))
         ],
       ),
     );
+  }
+
+
+ /* List<Map<String, dynamic>> filterAttendanceDataWithRange({
+    DateTime? fromDate,
+    DateTime? toDate,
+    required List<Map<String, dynamic>> attendanceDataList,
+  }) {
+    List<Map<String, dynamic>> filteredData = attendanceDataList;
+
+    if (fromDate != null && toDate != null) {
+      filteredData = filteredData.where((entry) {
+        int checkInTimeStamp = int.parse(entry["checkInTimeStamp"]);
+        DateTime checkInDate = DateTime.fromMillisecondsSinceEpoch(checkInTimeStamp);
+
+        // Extract date part from the DateTime objects for comparison
+        DateTime fromDateDatePart = DateTime(fromDate.year, fromDate.month, fromDate.day);
+        DateTime toDateDatePart = DateTime(toDate.year, toDate.month, toDate.day);
+
+        return checkInDate.isAfter(fromDateDatePart.subtract(Duration(days: 1))) &&
+            checkInDate.isBefore(toDateDatePart.add(Duration(days: 1)));
+      }).toList();
+    }
+
+    this.emplyeeDataForFilter = filteredData;
+    return filteredData;
+  }
+
+*/
+
+
+  List<Map<String, dynamic>> filterAttendanceDataWithRange({
+    DateTime? fromDate,
+    DateTime? toDate,
+    required List<Map<String, dynamic>> attendanceDataList
+  }) {
+    List<Map<String, dynamic>> filteredData = attendanceDataList;
+
+
+    if (fromDate != null && toDate != null) {
+      filteredData = filteredData.where((entry) {
+        int checkInTimeStamp = int.parse(entry["checkInTimeStamp"]);
+        return DateTime.fromMillisecondsSinceEpoch(checkInTimeStamp).isAfter(fromDate) &&
+            DateTime.fromMillisecondsSinceEpoch(checkInTimeStamp).isBefore(toDate.add(Duration(days: 1)));
+      }).toList();
+    }
+
+    this.emplyeeDataForFilter = filteredData ;
+    return filteredData;
+  }
+
+
+  Future<void> _filterDateRange(BuildContext context) async {
+    final DateTimeRange? picked = await showDateRangePicker(
+      context: context,
+      firstDate: DateTime(2020),
+      lastDate: DateTime(2025),
+      initialDateRange: DateTimeRange(
+        start: filterStartDate ?? DateTime.now(),
+        end: filterEndDate ?? DateTime.now(),
+      ),
+        builder: (context, child) {
+          return Theme(
+            data: ThemeData.light().copyWith(
+              colorScheme: ColorScheme.light(primary: Colors.green), // Customize the color of the header
+              buttonTheme: ButtonThemeData(textTheme: ButtonTextTheme.primary), // Customize the text style of buttons
+              // Add any other customizations here...
+            ),
+            child: Column(
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.only(top: 50.0),
+                  child: Container(
+                    height: MediaQuery.of(context).size.height * 0.9,
+                    width: MediaQuery.of(context).size.width * 0.5,
+                    child: child,
+                  ),
+                ),
+              ],
+            ),
+          );
+        }
+    );
+
+    if (picked != null && picked.start != null && picked.end != null) {
+        filterStartDate = picked.start;
+        filterEndDate = picked.end;
+      print('filterStartDate $filterStartDate');
+      print('filterEndDate $filterEndDate');
+    }
   }
 
   Future<List<dynamic>> calculateWorkingHours2(
@@ -420,6 +612,10 @@ class _attendanceScreenState extends State<attendanceScreen> {
         attendanceData['documentId'] = doc.id;
         attendanceList.add(attendanceData);
       });
+
+      this.emplyeeDataForFilter = attendanceList;
+      this.globalAttendanceList = attendanceList ;
+
       return attendanceList;
     } catch (error) {
       print('Error retrieving attendance data: $error');
