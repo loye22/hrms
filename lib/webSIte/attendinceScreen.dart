@@ -357,7 +357,7 @@ class _attendanceScreenState extends State<attendanceScreen> {
                                     ),
                                   ],
                                   rows: snapShot.data!.map((e) {
-                                    print('snapShot.data! ${snapShot.data!.length}');
+                                 //   print('snapShot.data! ${snapShot.data!.length}');
                                     // get the current shift shecdual
                                     Map<String, dynamic> shift =
                                         modifySchedule(e['scedual']['shifts']);

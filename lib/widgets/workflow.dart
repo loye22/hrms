@@ -137,9 +137,9 @@ class _WorkflowExecutionPageState extends State<WorkflowExecutionPage> {
         return;
       }
 
-      String key = titleController.text.length > 9
+      String key = /*titleController.text.length > 9
           ? titleController.text.trim().substring(0, 10)
-          : titleController.text.trim();
+          : */titleController.text.trim();
       Map<String, dynamic> data = {'title' : key,'flow': selectedEmployeeMap};
 
       isLodaing = true;
