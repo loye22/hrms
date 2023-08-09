@@ -99,8 +99,8 @@ class _workFlowMangeScreenState extends State<workFlowMangeScreen> {
                         padding: EdgeInsets.all(12),
                         child: isLoading
                             ? Center(child: CircularProgressIndicator())
-                            : DataTable(
-                                columnSpacing: 202,
+                            : DataTable2(
+                                columnSpacing: 50,
                                 columns: [
                                   DataColumn(
                                     label: Text('Title'),
