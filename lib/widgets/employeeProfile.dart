@@ -51,7 +51,7 @@ class _ProfileWidgetState extends State<ProfileWidget>
           .height - 50,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.all(Radius.circular(10)),
-        border: Border.all(color: Colors.white.withOpacity(0.13)),
+        border: Border.all(color: Colors.black.withOpacity(0.33)),
         color: Colors.grey.shade200.withOpacity(0.13),
       ),
       child: Column(
@@ -121,7 +121,7 @@ class _ProfileWidgetState extends State<ProfileWidget>
                                     documentNames: snapshot.data!.toList(),
                                     eid: widget.empId,
                                   ),
-                                  Container(
+                                  /*Container(
                                     width: MediaQuery
                                         .of(context)
                                         .size
@@ -142,7 +142,7 @@ class _ProfileWidgetState extends State<ProfileWidget>
                                       'Remind this employee to upload ? ',
                                       isSelected: true,
                                     ),
-                                  )
+                                  )*/
                                 ],
                               ),
                             ),

@@ -149,7 +149,7 @@ class _shiftScedualState extends State<shiftScedual> {
                                     )
                                   : Button(
                                       txt: 'Publish',
-                                      isSelected: true,
+                                      isSelected: false,
                                       icon: Icons.upload,
                                       onPress: () async {
                                         try {
@@ -185,7 +185,7 @@ class _shiftScedualState extends State<shiftScedual> {
                             child: Button(
                               icon: Icons.schedule,
                               txt: 'Secdual for all emplyee',
-                              isSelected: true,
+                              isSelected: false,
                               onPress: () async {
                                 // ['Abu Dabi', 'ajman']
                                 //['On duty', 'Off']
@@ -562,94 +562,101 @@ class EmployeeCalendarWidget extends StatelessWidget {
       weekDates.add(currentWeekMonday.add(Duration(days: i)));
     }
 
-    return DataTable2(
-      dataRowHeight: 120,
-      columnSpacing: 10,
-      columns: List.generate(
-        8,
-        (index) {
-          if (index == 0) {
-            return DataColumn(label: SizedBox.shrink());
-          } else {
-            return DataColumn(
-                label: Row(
-              children: [
-                SizedBox(
-                  width: MediaQuery.of(context).size.width * 0.02,
-                ),
-                Text(
-                    '${weekdays[index - 1]} ${DateFormat.d().format(weekDates[index - 1])}'),
-              ],
-            ));
-          }
-        },
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(30),
+        border: Border.all(color: Colors.black.withOpacity(0.33)) ,
+        color: staticVars.c1
       ),
-      rows: this
-          .employeeData
-          .map(
-            (e) => DataRow2(cells: [
-              DataCell(
-                Container(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      CircleAvatar(
-                          backgroundImage: NetworkImage(e['photoUrl'] ??
-                              'https://imglarger.com/Images/before-after/ai-image-enlarger-1-after-2.jpg'),
-                          radius: 30),
-                      Expanded(
-                          child: Center(
-                        child: Text(
-                          e['name'],
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 16,
+      child: DataTable2(
+        dataRowHeight: 120,
+        columnSpacing: 10,
+        columns: List.generate(
+          8,
+          (index) {
+            if (index == 0) {
+              return DataColumn(label: SizedBox.shrink());
+            } else {
+              return DataColumn(
+                  label: Row(
+                children: [
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.02,
+                  ),
+                  Text(
+                      '${weekdays[index - 1]} ${DateFormat.d().format(weekDates[index - 1])}'),
+                ],
+              ));
+            }
+          },
+        ),
+        rows: this
+            .employeeData
+            .map(
+              (e) => DataRow2(cells: [
+                DataCell(
+                  Container(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        CircleAvatar(
+                            backgroundImage: NetworkImage(e['photoUrl'] ??
+                                'https://imglarger.com/Images/before-after/ai-image-enlarger-1-after-2.jpg'),
+                            radius: 30),
+                        Expanded(
+                            child: Center(
+                          child: Text(
+                            e['name'],
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                            ),
                           ),
-                        ),
-                      ))
-                    ],
+                        ))
+                      ],
+                    ),
                   ),
                 ),
-              ),
-              ...List.generate(
-                  7,
-                  (index) => DataCell(StatefulBuilder(
-                        builder: (BuildContext context, StateSetter setState) =>
-                            HoverContainer(
-                          empName: e['name'] ?? 'NotFound 404',
-                          firstDropDownList: ['On duty', 'Off'],
-                          secondDropDownList: ['Abu Dabi', 'ajman'],
-                          text: e['shifts'][daysGon[index].toString()] ??
-                              'not found 404',
-                          text2: e['shifts']['bransh'] ?? 'not found 404',
-                          shiftDate:
-                              '${DateFormat("MMMM").format(DateTime.now())} ${weekdays[index]} ${DateFormat.d().format(weekDates[index])}',
-                          onSelectedItems: (x, y, z) {
-                            setState(() {
-                              try {
-                                // x onduty/off
-                                // y bransh
-                                // z timing
-                                x.toString().toLowerCase() != 'off'
-                                    ? e['shifts'][daysGon[index].toString()] =
-                                        z.toString() + " " + y.toString()
-                                    : e['shifts'][daysGon[index].toString()] =
-                                        x;
+                ...List.generate(
+                    7,
+                    (index) => DataCell(StatefulBuilder(
+                          builder: (BuildContext context, StateSetter setState) =>
+                              HoverContainer(
+                            empName: e['name'] ?? 'NotFound 404',
+                            firstDropDownList: ['On duty', 'Off'],
+                            secondDropDownList: ['Abu Dabi', 'ajman'],
+                            text: e['shifts'][daysGon[index].toString()] ??
+                                'not found 404',
+                            text2: e['shifts']['bransh'] ?? 'not found 404',
+                            shiftDate:
+                                '${DateFormat("MMMM").format(DateTime.now())} ${weekdays[index]} ${DateFormat.d().format(weekDates[index])}',
+                            onSelectedItems: (x, y, z) {
+                              setState(() {
+                                try {
+                                  // x onduty/off
+                                  // y bransh
+                                  // z timing
+                                  x.toString().toLowerCase() != 'off'
+                                      ? e['shifts'][daysGon[index].toString()] =
+                                          z.toString() + " " + y.toString()
+                                      : e['shifts'][daysGon[index].toString()] =
+                                          x;
 
-                                // e['shifts'][daysGon[index].toString()] = x;
-                                e['shifts']['bransh'] = y;
-                              } catch (e) {
-                                print(e);
-                                MyDialog.showAlert(context, e.toString());
-                              }
-                            });
-                          },
-                        ),
-                      ) /* Text('Shift data for ${weekdays[index]}')  */)),
-            ]),
-          )
-          .toList(),
+                                  // e['shifts'][daysGon[index].toString()] = x;
+                                  e['shifts']['bransh'] = y;
+                                } catch (e) {
+                                  print(e);
+                                  MyDialog.showAlert(context, e.toString());
+                                }
+                              });
+                            },
+                          ),
+                        ) /* Text('Shift data for ${weekdays[index]}')  */)),
+              ]),
+            )
+            .toList(),
+      ),
     );
   }
 }
@@ -807,15 +814,15 @@ class _HoverContainerState extends State<HoverContainer> {
                                           ),
                                         ),
                                         Container(
-                                          decoration: BoxDecoration(
+                                          decoration: staticVars.tstiPobUpBackGround,/*BoxDecoration(
                                             borderRadius: BorderRadius.all(
                                                 Radius.circular(30)),
                                             border: Border.all(
                                                 color: Colors.white
                                                     .withOpacity(0.13)),
-                                            color: Colors.grey.shade200
+                                            color: Colors.red.shade200
                                                 .withOpacity(0.23),
-                                          ),
+                                          ),*/
                                           child: Padding(
                                             padding: EdgeInsets.all(16.0),
                                             child: Column(

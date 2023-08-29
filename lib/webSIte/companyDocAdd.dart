@@ -87,7 +87,7 @@ class _companyDocAddState extends State<companyDocAdd> {
             ),
           ),
           rightBar(),
-          Positioned(
+          /*Positioned(
             left: 290,
             top: 50,
             child: Container(
@@ -108,17 +108,17 @@ class _companyDocAddState extends State<companyDocAdd> {
                 ),
               ),
             ),
-          ),
+          ),*/
           Positioned(
               left: 290,
-              top: 150,
+              top: 20,
               child: Container(
                 width: MediaQuery.of(context).size.width - 650,
-                height: MediaQuery.of(context).size.height - 200,
+                height: MediaQuery.of(context).size.height - 30,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.all(Radius.circular(10)),
-                  border: Border.all(color: Colors.white.withOpacity(0.13)),
-                  color: Colors.grey.shade200.withOpacity(0.23),
+                  border: Border.all(color: Colors.black.withOpacity(0.33)),
+                  color: staticVars.c1,
                 ),
                 child: Container(
                   padding: EdgeInsets.all(16),

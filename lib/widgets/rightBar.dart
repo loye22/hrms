@@ -59,7 +59,7 @@ class rightBar extends StatelessWidget {
             SizedBox(
               height: 15,
             ),
-            Container(
+          /*  Container(
               width: 300,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -78,7 +78,7 @@ class rightBar extends StatelessWidget {
                   )
                 ],
               ),
-            ),
+            ),*/
             SizedBox(
               height: 15,
             ),
@@ -87,7 +87,7 @@ class rightBar extends StatelessWidget {
               child: Button(
                 txt: "Add new employee",
                 icon: Icons.add,
-                isSelected: true,
+                isSelected: false,
                 onPress: () {
                   Navigator.pushNamed(context, addNewEmployeeScreen.routeName);
                   //  setState(() {});
@@ -102,7 +102,7 @@ class rightBar extends StatelessWidget {
               child: Button(
                 txt: "Add new company doc",
                 icon: Icons.add,
-                isSelected: true,
+                isSelected: false,
                 onPress: () {
                   Navigator.of(context).pushNamed(companyDocAdd.routeName);
                 },
@@ -116,7 +116,7 @@ class rightBar extends StatelessWidget {
               child: Button(
                 txt: "Add new Adminstrator",
                 icon: Icons.add,
-                isSelected: true,
+                isSelected: false,
                 onPress: () {
                   Navigator.of(context).pushNamed(singUpScreen.routeName);
                 },
@@ -130,7 +130,7 @@ class rightBar extends StatelessWidget {
               child: Button(
                 txt: "Mange the weekend",
                 icon: Icons.weekend,
-                isSelected: true,
+                isSelected: false,
                 onPress: () {
                   Navigator.pushNamed(context, weekEndMangerScreen.routeName);
                 },
@@ -144,7 +144,7 @@ class rightBar extends StatelessWidget {
               child: Button(
                 txt: "Add new department",
                 icon: Icons.business,
-                isSelected: true,
+                isSelected: false,
                 onPress: () async {
                   await showDialog(
                     context: context,
@@ -163,7 +163,7 @@ class rightBar extends StatelessWidget {
               child: Button(
                 txt: "Make a required employee document",
                 icon: Icons.description,
-                isSelected: true,
+                isSelected: false,
                 onPress: () async {
                   await showDialog(
                     context: context,
@@ -182,7 +182,7 @@ class rightBar extends StatelessWidget {
               child: Button(
                 txt: "Add new time off ",
                 icon: Icons.more_time_rounded,
-                isSelected: true,
+                isSelected: false,
                 onPress: () async {
                   await showDialog(
                     context: context,
@@ -201,7 +201,7 @@ class rightBar extends StatelessWidget {
               child: Button(
                 txt: "Add new branch",
                 icon: Icons.star_border,
-                isSelected: true,
+                isSelected: false,
                 onPress: () async {
                   await showDialog(
                     context: context,
@@ -220,7 +220,7 @@ class rightBar extends StatelessWidget {
               child: Button(
                 txt: "Add working hours",
                 icon: Icons.hourglass_bottom,
-                isSelected: true,
+                isSelected: false,
                 onPress: () async {
                   await showDialog(
                     context: context,
@@ -242,7 +242,7 @@ class rightBar extends StatelessWidget {
               child: Button(
                 txt: "Add new work flow",
                 icon: Icons.device_hub,
-                isSelected: true,
+                isSelected: false,
                 onPress: () async {
                   await showDialog(
                     context: context,
@@ -262,7 +262,7 @@ class rightBar extends StatelessWidget {
               child: Button(
                 txt: "Add office location ",
                 icon: Icons.location_on,
-                isSelected: true,
+                isSelected: false,
                 onPress: ()  async {
                   await showDialog(
                     context: context,

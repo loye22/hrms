@@ -1,4 +1,6 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class staticVars {
   static BoxDecoration tstiBackGround = BoxDecoration(
@@ -24,4 +26,28 @@ class staticVars {
     /*image: DecorationImage(
         image: AssetImage("assests/popUpWindow.jpg"), fit: BoxFit.fill),*/
   );
+
+
+  static TextStyle textStyle1 = GoogleFonts.montserratAlternates(
+      fontSize: 20,
+      color: Color.fromRGBO(0, 81, 45, 100),
+      fontWeight: FontWeight.bold);
+
+  static TextStyle textStyle2 = GoogleFonts.montserratAlternates(
+      fontSize: 20,
+      color: Color.fromRGBO(0, 81, 45, 100),
+      fontWeight: FontWeight.bold);
+
+
+  static TextStyle textStyle3 = GoogleFonts.montserratAlternates(
+      fontSize: 15,
+      color: Colors.white,
+      fontWeight: FontWeight.bold);
+
+  static Color c1 =  Color.fromRGBO(0, 81, 45, 100) ;
+
+
+
+
+
 }

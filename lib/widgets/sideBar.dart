@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:hrms/models/staticVars.dart';
 import 'package:hrms/webSIte/companyDocScreen.dart';
 import 'package:hrms/webSIte/homeScreen.dart';
 import 'package:hrms/webSIte/workExpScreen.dart';
@@ -55,7 +56,7 @@ class _sideBarState extends State<sideBar> {
           borderRadius: BorderRadius.only(
               topRight: Radius.circular(30), bottomRight: Radius.circular(30)),
           border: Border.all(color: Colors.white.withOpacity(0.13)),
-          color: Colors.grey.shade200.withOpacity(0.45),
+          color: staticVars.c1  ,
         ),
         child: Column(
           // mainAxisAlignment: MainAxisAlignment.spaceBetween,

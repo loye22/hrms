@@ -41,6 +41,7 @@ class _loginScreenState extends State<loginScreen> {
     }
   }
 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -73,36 +74,47 @@ class _loginScreenState extends State<loginScreen> {
                 SizedBox(
                     //        height: 150,
                     ),
-                CircleAvatar(
-                  radius: 90,
-                  backgroundImage: AssetImage("assests/logo.png"),
+                Container(
+                  height: 200.0,
+                  width: 200.0,
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage(
+                          'assests/newlogo.png'),
+                      fit: BoxFit.fill,
+                    ),
+                    shape: BoxShape.circle,
+                  ),
                 ),
                 SizedBox(
                   height: 20,
                 ),
+                Text('BAYANATI' , style: staticVars.textStyle1,),
+                SizedBox(height: 20,),
                 Container(
                   height: 40,
                   width: 300,
                   child: TextFormField(
+
                       key: ValueKey('username'),
-                      style: TextStyle(color: Colors.white),
+                      style: TextStyle(color: staticVars.c1),
                       keyboardType: TextInputType.emailAddress,
                       decoration: InputDecoration(
-                        prefixIcon: Icon(Icons.email, color: Colors.white),
+                        prefixIcon: Icon(Icons.email, color: staticVars.c1),
                         labelText: 'email',
-                        labelStyle: TextStyle(color: Colors.white),
+                        labelStyle: TextStyle(color: staticVars.c1),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(25.0),
                           borderSide: BorderSide(
-                            color: Colors.white,
+                            color: staticVars.c1,
                             width: 2.0,
                           ),
                         ),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(25.0),
                           borderSide: BorderSide(
-                            color: Colors.white,
-                            width: 2.0,
+                            color: staticVars.c1,
+                            width: 3.0,
                           ),
                         ),
                         filled: true,
@@ -110,7 +122,7 @@ class _loginScreenState extends State<loginScreen> {
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(25.0),
                           borderSide: BorderSide(
-                            color: Colors.white.withOpacity(0.7),
+                            color: staticVars.c1,
                           ),
                         ),
                         contentPadding: EdgeInsets.symmetric(
@@ -135,25 +147,25 @@ class _loginScreenState extends State<loginScreen> {
                   width: 300,
                   child: TextFormField(
                     key: ValueKey('password'),
-                    style: TextStyle(color: Colors.white),
+                    style: TextStyle(color: staticVars.c1),
                     obscureText: true,
                     keyboardType: TextInputType.emailAddress,
                     decoration: InputDecoration(
-                      prefixIcon: Icon(Icons.password, color: Colors.white),
+                      prefixIcon: Icon(Icons.password, color: staticVars.c1),
                       labelText: 'Password',
-                      labelStyle: TextStyle(color: Colors.white),
+                      labelStyle: TextStyle(color: staticVars.c1),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(25.0),
                         borderSide: BorderSide(
-                          color: Colors.white,
-                          width: 2.0,
+                          color: staticVars.c1,
+                          width: 3.0,
                         ),
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(25.0),
                         borderSide: BorderSide(
-                          color: Colors.white,
-                          width: 2.0,
+                          color: staticVars.c1,
+                          width:3.0,
                         ),
                       ),
                       filled: true,
@@ -161,7 +173,7 @@ class _loginScreenState extends State<loginScreen> {
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(25.0),
                         borderSide: BorderSide(
-                          color: Colors.white.withOpacity(0.7),
+                          color: staticVars.c1,
                         ),
                       ),
                       contentPadding: EdgeInsets.symmetric(
@@ -186,7 +198,7 @@ class _loginScreenState extends State<loginScreen> {
                         : Button(
                             txt: "Log in ",
                             icon: Icons.login,
-                            isSelected: true,
+                            isSelected: false,
                             onPress: () async {
                               try {
                                 _submit();

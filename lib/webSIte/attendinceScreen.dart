@@ -243,6 +243,11 @@ class _attendanceScreenState extends State<attendanceScreen> {
                           );
                         } else {
                           return Container(
+                            decoration: BoxDecoration(
+                              border: Border.all(color: Colors.black.withOpacity(.33)) ,
+                              borderRadius: BorderRadius.circular(30) ,
+                              color: staticVars.c1
+                            ),
                             child: Center(
                               child: DataTable2(
                                 columns: [
@@ -283,99 +288,113 @@ class _attendanceScreenState extends State<attendanceScreen> {
                                 child: CircularProgressIndicator(),
                               );
                             } else {
-                              return DataTable2(
-                                columns: [
-                                  DataColumn(
-                                    label: Center(child: Text('Employee name')),
+                              return Container(
+                                  decoration: BoxDecoration(
+                                      border: Border.all(color: Colors.black.withOpacity(.33)) ,
+                                      borderRadius: BorderRadius.circular(30) ,
+                                      color: staticVars.c1
                                   ),
-                                  DataColumn(
-                                    label: Center(child: Text('Working hours')),
-                                  ),
-                                ],
-                                rows: snapShot.data!.map((e) {
-                                  return DataRow2(cells: [
-                                    DataCell(Center(
-                                        child: Text(
-                                            e['eName'] ?? '404Notfounbd'))),
-                                    DataCell(Center(
-                                        child: Text(
-                                            '${e['workingHours'].inHours} hours and ${e['workingHours'].inMinutes.remainder(60)} minutes' ??
-                                                '404Notfounbd')))
-                                  ]);
-                                }).toList(),
+                                child: DataTable2(
+                                  columns: [
+                                    DataColumn(
+                                      label: Center(child: Text('Employee name')),
+                                    ),
+                                    DataColumn(
+                                      label: Center(child: Text('Working hours')),
+                                    ),
+                                  ],
+                                  rows: snapShot.data!.map((e) {
+                                    return DataRow2(cells: [
+                                      DataCell(Center(
+                                          child: Text(
+                                              e['eName'] ?? '404Notfounbd'))),
+                                      DataCell(Center(
+                                          child: Text(
+                                              '${e['workingHours'].inHours} hours and ${e['workingHours'].inMinutes.remainder(60)} minutes' ??
+                                                  '404Notfounbd')))
+                                    ]);
+                                  }).toList(),
+                                ),
                               );
                             }
                           },
                         )
                       : (this.filterFlag
-                          ? DataTable2(
-                              columns: [
-                                DataColumn(
-                                  label: Text('Namex'),
-                                ),
-                                DataColumn(
-                                  label: Center(child: Text('Schedule')),
-                                ),
-                                DataColumn(
-                                  label: Center(child: Text('Check in')),
-                                ),
-                                DataColumn(
-                                  label: Center(child: Text('Check out')),
-                                ),
-                                DataColumn(
-                                  label: Center(child: Text('Status')),
-                                ),
-                              ],
-                              rows: this.emplyeeDataForFilter.map((e) {
-                                // get the current shift shecdual
-                                Map<String, dynamic> shift =
-                                    modifySchedule(e['scedual']['shifts']);
+                          ? Container(
+                  decoration: BoxDecoration(
+                      border: Border.all(color: Colors.black.withOpacity(.33)) ,
+                      borderRadius: BorderRadius.circular(30) ,
+                      color: staticVars.c1
+                  ),
+                            child: DataTable2(
+                                columns: [
+                                  DataColumn(
+                                    label: Text('Namex'),
+                                  ),
+                                  DataColumn(
+                                    label: Center(child: Text('Schedule')),
+                                  ),
+                                  DataColumn(
+                                    label: Center(child: Text('Check in')),
+                                  ),
+                                  DataColumn(
+                                    label: Center(child: Text('Check out')),
+                                  ),
+                                  DataColumn(
+                                    label: Center(child: Text('Status')),
+                                  ),
+                                ],
+                                rows: this.emplyeeDataForFilter.map((e) {
+                                  // get the current shift shecdual
+                                  Map<String, dynamic> shift =
+                                      modifySchedule(e['scedual']['shifts']);
 
-                                //from checkInTimeStamp attribute we will extract the current date and we will pass it for the map above
-                                // to get the current shedual
-                                int milliseconds =
-                                    int.parse(e['checkInTimeStamp']);
-                                DateTime date =
-                                    DateTime.fromMillisecondsSinceEpoch(
-                                        milliseconds);
-                                String currentDayOfWeek =
-                                    DateFormat('EEEE').format(date);
-                                return DataRow2(
-                                  onTap: () async {
-                                    await showDialog(
-                                      context: context,
-                                      builder: (BuildContext context) =>
-                                          AlertDialog(
-                                        backgroundColor: Colors.transparent,
-                                        content: attendincePopUpEditWindows(
-                                            item: e,
-                                            bLoacions: this.branshLocaions),
+                                  //from checkInTimeStamp attribute we will extract the current date and we will pass it for the map above
+                                  // to get the current shedual
+                                  int milliseconds =
+                                      int.parse(e['checkInTimeStamp']);
+                                  DateTime date =
+                                      DateTime.fromMillisecondsSinceEpoch(
+                                          milliseconds);
+                                  String currentDayOfWeek =
+                                      DateFormat('EEEE').format(date);
+                                  return DataRow2(
+                                    onTap: () async {
+                                      await showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) =>
+                                            AlertDialog(
+                                          backgroundColor: Colors.transparent,
+                                          content: attendincePopUpEditWindows(
+                                              item: e,
+                                              bLoacions: this.branshLocaions),
+                                        ),
+                                      );
+                                    },
+                                    //  onSelectChanged: (s) {},
+                                    cells: [
+                                      DataCell(Text(e['name'] ?? 'notFound404')),
+                                      DataCell(Text(shift[currentDayOfWeek] ??
+                                          'notFound404')),
+                                      DataCell(Center(
+                                          child: Text(convertTimestampToTime(
+                                                  e['checkInTimeStamp']) ??
+                                              ''))),
+                                      DataCell(Center(
+                                          child: e['checkOutTimeStamp'] == ''
+                                              ? Text('---')
+                                              : Text(convertTimestampToTime(
+                                                  e['checkOutTimeStamp'])))),
+                                      DataCell(
+                                        Center(
+                                          child: Text('present'),
+                                        ),
                                       ),
-                                    );
-                                  },
-                                  //  onSelectChanged: (s) {},
-                                  cells: [
-                                    DataCell(Text(e['name'] ?? 'notFound404')),
-                                    DataCell(Text(shift[currentDayOfWeek] ??
-                                        'notFound404')),
-                                    DataCell(Center(
-                                        child: Text(convertTimestampToTime(
-                                                e['checkInTimeStamp']) ??
-                                            ''))),
-                                    DataCell(Center(
-                                        child: e['checkOutTimeStamp'] == ''
-                                            ? Text('---')
-                                            : Text(convertTimestampToTime(
-                                                e['checkOutTimeStamp'])))),
-                                    DataCell(
-                                      Center(
-                                        child: Text('present'),
-                                      ),
-                                    ),
-                                  ],
-                                );
-                              }).toList(),
-                            )
+                                    ],
+                                  );
+                                }).toList(),
+                              ),
+                          )
                           : FutureBuilder(
                               future: fetchAttendanceData(),
                               builder: (ctx, snapShot) {
@@ -389,81 +408,88 @@ class _attendanceScreenState extends State<attendanceScreen> {
                                     child: CircularProgressIndicator(),
                                   );
                                 } else {
-                                  return DataTable2(
-                                    columns: [
-                                      DataColumn(
-                                        label: Text('Name'),
+                                  return Container(
+                                      decoration: BoxDecoration(
+                                          border: Border.all(color: Colors.black.withOpacity(.33)) ,
+                                          borderRadius: BorderRadius.circular(30) ,
+                                          color: staticVars.c1
                                       ),
-                                      DataColumn(
-                                        label: Center(child: Text('Schedule')),
-                                      ),
-                                      DataColumn(
-                                        label: Center(child: Text('Check in')),
-                                      ),
-                                      DataColumn(
-                                        label: Center(child: Text('Check out')),
-                                      ),
-                                      DataColumn(
-                                        label: Center(child: Text('Status')),
-                                      ),
-                                    ],
-                                    rows: snapShot.data!.map((e) {
-                                      //   print('snapShot.data! ${snapShot.data!.length}');
-                                      // get the current shift shecdual
-                                      Map<String, dynamic> shift =
-                                          modifySchedule(
-                                              e['scedual']['shifts']);
+                                    child: DataTable2(
+                                      columns: [
+                                        DataColumn(
+                                          label: Text('Name'),
+                                        ),
+                                        DataColumn(
+                                          label: Center(child: Text('Schedule')),
+                                        ),
+                                        DataColumn(
+                                          label: Center(child: Text('Check in')),
+                                        ),
+                                        DataColumn(
+                                          label: Center(child: Text('Check out')),
+                                        ),
+                                        DataColumn(
+                                          label: Center(child: Text('Status')),
+                                        ),
+                                      ],
+                                      rows: snapShot.data!.map((e) {
+                                        //   print('snapShot.data! ${snapShot.data!.length}');
+                                        // get the current shift shecdual
+                                        Map<String, dynamic> shift =
+                                            modifySchedule(
+                                                e['scedual']['shifts']);
 
-                                      //from checkInTimeStamp attribute we will extract the current date and we will pass it for the map above
-                                      // to get the current shedual
-                                      int milliseconds =
-                                          int.parse(e['checkInTimeStamp']);
-                                      DateTime date =
-                                          DateTime.fromMillisecondsSinceEpoch(
-                                              milliseconds);
-                                      String currentDayOfWeek =
-                                          DateFormat('EEEE').format(date);
-                                      return DataRow2(
-                                        onTap: () async {
-                                          await showDialog(
-                                            context: context,
-                                            builder: (BuildContext context) =>
-                                                AlertDialog(
-                                              backgroundColor:
-                                                  Colors.transparent,
-                                              content:
-                                                  attendincePopUpEditWindows(
-                                                      item: e,
-                                                      bLoacions:
-                                                          this.branshLocaions),
+                                        //from checkInTimeStamp attribute we will extract the current date and we will pass it for the map above
+                                        // to get the current shedual
+                                        int milliseconds =
+                                            int.parse(e['checkInTimeStamp']);
+                                        DateTime date =
+                                            DateTime.fromMillisecondsSinceEpoch(
+                                                milliseconds);
+                                        String currentDayOfWeek =
+                                            DateFormat('EEEE').format(date);
+                                        return DataRow2(
+                                          onTap: () async {
+                                            await showDialog(
+                                              context: context,
+                                              builder: (BuildContext context) =>
+                                                  AlertDialog(
+                                                backgroundColor:
+                                                    Colors.transparent,
+                                                content:
+                                                    attendincePopUpEditWindows(
+                                                        item: e,
+                                                        bLoacions:
+                                                            this.branshLocaions),
+                                              ),
+                                            );
+                                          },
+                                          //  onSelectChanged: (s) {},
+                                          cells: [
+                                            DataCell(
+                                                Text(e['name'] ?? 'notFound404' ,) ,),
+                                            DataCell(Text(
+                                                shift[currentDayOfWeek] ??
+                                                    'notFound404')),
+                                            DataCell(Center(
+                                                child: Text(convertTimestampToTime(
+                                                        e['checkInTimeStamp']) ??
+                                                    ''))),
+                                            DataCell(Center(
+                                                child: e['checkOutTimeStamp'] ==
+                                                        ''
+                                                    ? Text('---')
+                                                    : Text(convertTimestampToTime(
+                                                        e['checkOutTimeStamp'])))),
+                                            DataCell(
+                                              Center(
+                                                child: Text('present'),
+                                              ),
                                             ),
-                                          );
-                                        },
-                                        //  onSelectChanged: (s) {},
-                                        cells: [
-                                          DataCell(
-                                              Text(e['name'] ?? 'notFound404')),
-                                          DataCell(Text(
-                                              shift[currentDayOfWeek] ??
-                                                  'notFound404')),
-                                          DataCell(Center(
-                                              child: Text(convertTimestampToTime(
-                                                      e['checkInTimeStamp']) ??
-                                                  ''))),
-                                          DataCell(Center(
-                                              child: e['checkOutTimeStamp'] ==
-                                                      ''
-                                                  ? Text('---')
-                                                  : Text(convertTimestampToTime(
-                                                      e['checkOutTimeStamp'])))),
-                                          DataCell(
-                                            Center(
-                                              child: Text('present'),
-                                            ),
-                                          ),
-                                        ],
-                                      );
-                                    }).toList(),
+                                          ],
+                                        );
+                                      }).toList(),
+                                    ),
                                   );
                                 }
                               },
@@ -794,13 +820,7 @@ class _attendincePopUpEditWindowsState
       child: Stack(
         children: [
           Container(
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.all(Radius.circular(30)),
-                gradient: LinearGradient(colors: [
-                  Color.fromRGBO(90, 137, 214, 1),
-                  Color.fromRGBO(95, 167, 210, 1),
-                  Color.fromRGBO(49, 162, 202, 1)
-                ])),
+            decoration: staticVars.tstiPobUpBackGround,
           ),
           Container(
             decoration: BoxDecoration(

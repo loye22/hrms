@@ -85,7 +85,7 @@ class _MyAppState extends State<MyApp> {
 
 
               //  print(snapshot.data.uid);
-                //Provider.of<AuthProvider>(context, listen: false).setUid(snapshot.data.uid);
+                // Provider.of<AuthProvider>(context, listen: false).setUid(snapshot.data.uid);
               //  global.set(snapshot.data.uid);
                 return homeScreen();
               } else {
@@ -106,7 +106,6 @@ class _MyAppState extends State<MyApp> {
             emplyeeProfile.routeName: (ctx) => emplyeeProfile(),
             timeOffMangeScreen.routeName: (ctx) => timeOffMangeScreen(),
             shiftScedual.routeName: (ctx) => shiftScedual(),
-
             workFlowMangeScreen.routeName: (ctx) => workFlowMangeScreen(),
             requistScreen.routeName: (ctx) => requistScreen(),
             attendanceScreen.routeName: (ctx) => attendanceScreen(),

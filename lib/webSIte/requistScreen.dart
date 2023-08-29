@@ -54,7 +54,7 @@ class _requistScreenState extends State<requistScreen> {
             ),
           ),
           rightBar(),
-          Positioned(
+         /* Positioned(
             left: 280,
             top: 15,
             child: Container(
@@ -75,7 +75,7 @@ class _requistScreenState extends State<requistScreen> {
                 ),
               ),
             ),
-          ),
+          ),*/
           Positioned(
             left: 280,
             bottom: 15,
@@ -87,11 +87,11 @@ class _requistScreenState extends State<requistScreen> {
                 height: MediaQuery
                     .of(context)
                     .size
-                    .height - 130,
+                    .height - 30,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.all(Radius.circular(10)),
                   border:
-                  Border.all(color: Colors.white.withOpacity(0.13)),
+                  Border.all(color: Colors.black.withOpacity(0.33)),
                   color: Colors.grey.shade200.withOpacity(0.23),
                 ),
               child: FutureBuilder(

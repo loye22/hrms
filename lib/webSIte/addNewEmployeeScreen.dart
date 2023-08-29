@@ -79,7 +79,7 @@ class _addNewEmployeeScreenState extends State<addNewEmployeeScreen> {
             ),
           ),
           rightBar(),
-          Positioned(
+          /*Positioned(
             left: 280,
             top: 15,
             child: Container(
@@ -87,7 +87,7 @@ class _addNewEmployeeScreenState extends State<addNewEmployeeScreen> {
               height: 80,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.all(Radius.circular(10)),
-                border: Border.all(color: Colors.white.withOpacity(0.13)),
+                border: Border.all(color: Colors.black.withOpacity(0.33)),
                 color: Colors.grey.shade200.withOpacity(0.23),
               ),
               child: Center(
@@ -100,7 +100,7 @@ class _addNewEmployeeScreenState extends State<addNewEmployeeScreen> {
                 ),
               ),
             ),
-          ),
+          ),*/
           Positioned(
             left: 280,
             bottom: 15,
@@ -109,11 +109,11 @@ class _addNewEmployeeScreenState extends State<addNewEmployeeScreen> {
 
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(30),
-                border: Border.all(color: Colors.white.withOpacity(0.13)),
-                color: Colors.grey.shade200.withOpacity(0.25),
+                border: Border.all(color: Colors.black.withOpacity(0.33)),
+                color: staticVars.c1,
               ),
               width: MediaQuery.of(context).size.width - 650,
-              height: MediaQuery.of(context).size.height - 120,
+              height: MediaQuery.of(context).size.height - 30,
               child: Form(
                   key: _key2,
                   child: SingleChildScrollView(
@@ -622,8 +622,9 @@ class _addNewEmployeeScreenState extends State<addNewEmployeeScreen> {
                                 color: Colors.grey.shade200.withOpacity(0.23),
                               ),
                               child: CountryListPick(
+
                                   appBar: AppBar(
-                                    backgroundColor: Colors.blue,
+                                    backgroundColor: Colors.white,
                                     title: Text('Chose you county '),
                                   ),
 
@@ -643,6 +644,7 @@ class _addNewEmployeeScreenState extends State<addNewEmployeeScreen> {
 
                                   // To disable option set to false
                                   theme: CountryTheme(
+
                                     isShowFlag: true,
                                     isShowTitle: true,
                                     isShowCode: true,

@@ -44,7 +44,7 @@ class _timeOffMangeScreenState extends State<timeOffMangeScreen> {
             ),
           ),
           rightBar(),
-          Positioned(
+          /*Positioned(
             left: 280,
             top: 15,
             child: Container(
@@ -65,7 +65,7 @@ class _timeOffMangeScreenState extends State<timeOffMangeScreen> {
                 ),
               ),
             ),
-          ),
+          ),*/
           Positioned(
             left: 280,
             bottom: 15,
@@ -77,11 +77,11 @@ class _timeOffMangeScreenState extends State<timeOffMangeScreen> {
                 height: MediaQuery
                     .of(context)
                     .size
-                    .height - 130,
+                    .height - 30,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.all(Radius.circular(10)),
                   border:
-                  Border.all(color: Colors.white.withOpacity(0.13)),
+                  Border.all(color: Colors.black.withOpacity(0.33)),
                   color: Colors.grey.shade200.withOpacity(0.23),
                 ),
               child: FutureBuilder(
@@ -93,7 +93,7 @@ class _timeOffMangeScreenState extends State<timeOffMangeScreen> {
                       scrollDirection: Axis.vertical,
                       child: Container(
                         width: MediaQuery.of(context).size.width - 650,
-                        height: MediaQuery.of(context).size.height - 150,
+                        height: MediaQuery.of(context).size.height - 30,
                         padding: EdgeInsets.all(12),
                         child: isLOading
                             ? Center(child: CircularProgressIndicator())

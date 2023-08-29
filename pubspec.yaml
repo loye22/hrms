@@ -73,6 +73,7 @@ dependencies:
   latlong2: ^0.8.2
   table_calendar: ^3.0.8
   path_provider: ^2.0.15
+  google_fonts: ^4.0.4
 
 
 

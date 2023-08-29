@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:hrms/models/staticVars.dart';
 import 'package:image_picker/image_picker.dart';
 
 class emplyeeCard extends StatelessWidget {
@@ -28,7 +29,7 @@ class emplyeeCard extends StatelessWidget {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.all(Radius.circular(30)),
         border: Border.all(color: Colors.white.withOpacity(0.13)),
-        color: Colors.grey.shade200.withOpacity(0.25),
+        color:staticVars.c1,
       ),
       child: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -40,11 +41,11 @@ class emplyeeCard extends StatelessWidget {
               backgroundImage: Image.network(url).image,//NetworkImage(url),
             ),
             SizedBox(height: 20,),
-            Text(name , style: TextStyle(color: Colors.white , fontWeight: FontWeight.bold ,fontSize: 18),),
+            Text(name , style: staticVars.textStyle3),
             SizedBox(height: 5,),
-            Text(occupation , style: TextStyle(color: Colors.black54 ),),
+            Text(occupation , style:staticVars.textStyle3),
             SizedBox(height: 5),
-            Text(email , style: TextStyle(color: Colors.black54 ),)
+            Text(email , style: staticVars.textStyle3)
           ],
         ),
       ),

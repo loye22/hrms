@@ -84,11 +84,11 @@ class _employeesPageState extends State<employeesPage> {
               height: MediaQuery
                   .of(context)
                   .size
-                  .height - 130,
+                  .height - 30,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.all(Radius.circular(10)),
                 border:
-                Border.all(color: Colors.white.withOpacity(0.13)),
+                Border.all(color: Colors.black.withOpacity(0.33)),
                 color: Colors.grey.shade200.withOpacity(0.23),
               ),
               child: Center(
@@ -108,7 +108,7 @@ class _employeesPageState extends State<employeesPage> {
                           height: MediaQuery
                               .of(context)
                               .size
-                              .height - 150,
+                              .height - 30,
                           padding: EdgeInsets.all(12),
                           child: DataTable2(
                             columnSpacing: 12,

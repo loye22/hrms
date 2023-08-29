@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:hrms/models/staticVars.dart';
 
 class Button extends StatefulWidget {
   dynamic them = null;
@@ -30,8 +31,7 @@ class _ButtonState extends State<Button> {
         decoration: BoxDecoration(
             borderRadius: BorderRadius.all(Radius.circular(10)),
           //  border: Border.all(color: Colors.white.withOpacity(0.3)),
-            color: this.widget.isSelected ? Colors.grey.shade200.withOpacity(
-                0.45) : null
+            color: this.widget.isSelected ? Colors.black: staticVars.c1
         ),
         width: 200,
         //height: 30,
@@ -46,7 +46,7 @@ class _ButtonState extends State<Button> {
                     color: Colors.white,
                   ),
                   SizedBox(width: 20,),
-                  Expanded(child: Text(this.widget.txt.toString() , style: TextStyle(color: Colors.white),))
+                  Expanded(child: Text(this.widget.txt.toString() , style: staticVars.textStyle3,))
                 ],
               )),
         ),

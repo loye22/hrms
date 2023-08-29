@@ -55,7 +55,7 @@ class _companyDocScreenState extends State<companyDocScreen> {
             ),
           ),
           rightBar(),
-          Positioned(
+          /*Positioned(
             left: 280,
             top: 15,
             child: Container(
@@ -76,7 +76,7 @@ class _companyDocScreenState extends State<companyDocScreen> {
                 ),
               ),
             ),
-          ),
+          ),*/
           Positioned(
             left: 280,
             bottom: 15,
@@ -88,11 +88,11 @@ class _companyDocScreenState extends State<companyDocScreen> {
                 height: MediaQuery
                     .of(context)
                     .size
-                    .height - 130,
+                    .height - 30,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.all(Radius.circular(10)),
                   border:
-                  Border.all(color: Colors.white.withOpacity(0.13)),
+                  Border.all(color: Colors.black.withOpacity(0.33)),
                   color: Colors.grey.shade200.withOpacity(0.23),
                 ),
               child: FutureBuilder(
