@@ -275,7 +275,8 @@ class rightBar extends StatelessWidget {
 
                 },
               ),
-            ), SizedBox(
+            ),
+            /*SizedBox(
               height: 15,
             ),
             Container(
@@ -296,7 +297,7 @@ class rightBar extends StatelessWidget {
 
                 },
               ),
-            ),
+            ),*/
 
 
             /*SizedBox(
