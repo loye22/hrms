@@ -47,75 +47,75 @@ class _WorkflowExecutionPageState extends State<WorkflowExecutionPage> {
 
         return Animate(
           effects: [FadeEffect(), ScaleEffect()],
-          child: Row(
-            children: [
-              Text(
-                stepTitle,
-                style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white),
-              ),
-              SizedBox(width: 10),
-              Theme(
-                data: Theme.of(context).copyWith(
-                  canvasColor:
-                      Colors.black12, // Set the desired background color here
+          child: Container(
+            width: 300,
+            height: 50,
+            child: Row(
+              children: [
+                Text(
+                  stepTitle,
+                  style: staticVars.textStyle2,
                 ),
-                child: Expanded(
-                  child: DropdownButton<String>(
-                    iconEnabledColor: Colors.white,
-                    isExpanded: true,
-                    value: selectedEmployeeMap[stepTitle],
-                    hint: Text('Select Employee',
-                        style: TextStyle(
-                            color: Colors.white, fontWeight: FontWeight.bold)),
-                    onChanged: (String? newValue) {
-                      setState(() {
-                        if (selectedEmployeeMap.containsValue(newValue!)) {
-                          MyDialog.showAlert(context,
-                              "This emplye is already selected above!");
-                          return;
-                        }
+                SizedBox(width: 10),
+                Theme(
+                  data: Theme.of(context).copyWith(
+                    canvasColor:
+                        Colors.black12, // Set the desired background color here
+                  ),
+                  child: Expanded(
+                    child: DropdownButton<String>(
+                      iconEnabledColor: staticVars.c1 ,
+                      isExpanded: true,
+                      value: selectedEmployeeMap[stepTitle],
+                      hint: Text('Select Employee',
+                        style: staticVars.textStyle2,),
+                      onChanged: (String? newValue) {
+                        setState(() {
+                          if (selectedEmployeeMap.containsValue(newValue!)) {
+                            MyDialog.showAlert(context,
+                                "This emplye is already selected above!");
+                            return;
+                          }
 
-                        selectedEmployeeMap[stepTitle] = newValue!;
-                        //print(selectedEmployeeMap);
-                      });
-                    },
-                    items: employeeMap.entries
-                        .map((MapEntry<String, String> entry) {
-                      return DropdownMenuItem<String>(
-                        value: entry.value,
-                        child: Text(
-                          entry.key,
-                          style: TextStyle(color: Colors.white),
-                        ),
-                      );
-                    }).toList(),
+                          selectedEmployeeMap[stepTitle] = newValue!;
+                          //print(selectedEmployeeMap);
+                        });
+                      },
+                      items: employeeMap.entries
+                          .map((MapEntry<String, String> entry) {
+                        return DropdownMenuItem<String>(
+                          value: entry.value,
+                          child: Text(
+                            entry.key,
+                            style: staticVars.textStyle2,
+                          ),
+                        );
+                      }).toList(),
+                    ),
                   ),
                 ),
-              ),
-              IconButton(
-                onPressed: () {
-                  if (selectedEmployeeMap[stepTitle] == null) {
-                    //print('Select employee first');
-                    MyDialog.showAlert(context, 'Select employee first');
-                    return;
-                  }
-                  setState(() {
-                    if (index == workflowSteps.length - 1) {
-                      workflowSteps.add('Process ${index + 2}');
+                IconButton(
+                  onPressed: () {
+                    if (selectedEmployeeMap[stepTitle] == null) {
+                      //print('Select employee first');
+                      MyDialog.showAlert(context, 'Select employee first');
+                      return;
                     }
-                  });
+                    setState(() {
+                      if (index == workflowSteps.length - 1) {
+                        workflowSteps.add('Process ${index + 2}');
+                      }
+                    });
 
-                  //widget.fun()
-                },
-                icon: Icon(
-                  Icons.add,
-                  color: Colors.white,
+                    //widget.fun()
+                  },
+                  icon: Icon(
+                    Icons.add,
+                    color: staticVars.c1 ,
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         );
       },
@@ -191,19 +191,19 @@ class _WorkflowExecutionPageState extends State<WorkflowExecutionPage> {
     //print( MediaQuery.of(context).size.width - 1200);
     return Container(
       width: MediaQuery.of(context).size.width - 800 < 0
-          ? MediaQuery.of(context).size.width - 800
-          : MediaQuery.of(context).size.width - 400,
+          ? MediaQuery.of(context).size.width - 600
+          : MediaQuery.of(context).size.width - 200,
       height: 500,
       child: Stack(
         children: [
           Container(
-            decoration: staticVars.tstiPobUpBackGround , /*BoxDecoration(
-                borderRadius: BorderRadius.all(Radius.circular(30)),
-                gradient: LinearGradient(colors: [
-                  Color.fromRGBO(90, 137, 214, 1),
-                  Color.fromRGBO(95, 167, 210, 1),
-                  Color.fromRGBO(49, 162, 202, 1)
-                ])),*/
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.all(Radius.circular(30)),
+              image: DecorationImage(
+                image: AssetImage('assests/tstiBackGround.jpg'),
+                fit: BoxFit.fill,
+              ),
+            ),
           ),
           Container(
             decoration: BoxDecoration(
@@ -222,19 +222,16 @@ class _WorkflowExecutionPageState extends State<WorkflowExecutionPage> {
                 ),
                 Text(
                   'Workflow Steps',
-                  style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white),
+                  style: staticVars.textStyle2,
                 ),
                 SizedBox(height: 16),
                 Container(
                   width: 400,
                   child: TextField(
-                    style: TextStyle(color: Colors.white),
+                    style: staticVars.textStyle2,
                     controller: titleController,
                     decoration: InputDecoration(
-                      hintStyle: TextStyle(color: Colors.white),
+                      hintStyle: TextStyle(color: Colors.black),
                       labelText: 'Title',
                       border: OutlineInputBorder(
                         borderSide: BorderSide(color: Colors.white),
@@ -244,19 +241,13 @@ class _WorkflowExecutionPageState extends State<WorkflowExecutionPage> {
                 ),
                 Row(
                   children: [
-                    MediaQuery.of(context).size.width - 1200 == 720
-                        ? SizedBox(
-                            width: 400,
-                          )
-                        : SizedBox(
-                            width: 400,
-                          ),
+                    SizedBox(width: 350,),
                     SingleChildScrollView(
                       scrollDirection: Axis.vertical,
                       child: Container(
                         width: MediaQuery.of(context).size.width - 1250 > 0
-                            ? MediaQuery.of(context).size.width - 1250
-                            : 400,
+                            ? MediaQuery.of(context).size.width - 950
+                            : 500,
                         padding: EdgeInsets.all(20),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(30),

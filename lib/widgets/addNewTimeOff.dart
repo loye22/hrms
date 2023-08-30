@@ -21,18 +21,18 @@ class _addNewTimeOffState extends State<addNewTimeOff> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: MediaQuery.of(context).size.width - 1200,
+      width: MediaQuery.of(context).size.width - 700,
       height: 500,
       child: Stack(
         children: [
           Container(
-            decoration: staticVars.tstiPobUpBackGround , /*BoxDecoration(
-                borderRadius: BorderRadius.circular(30),
-                gradient: LinearGradient(colors: [
-                  Color.fromRGBO(90, 137, 214, 1),
-                  Color.fromRGBO(95, 167, 210, 1),
-                  Color.fromRGBO(49, 162, 202, 1)
-                ])),*/
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.all(Radius.circular(30)),
+              image: DecorationImage(
+                image: AssetImage('assests/tstiBackGround.jpg'),
+                fit: BoxFit.fill,
+              ),
+            ),
             child: Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(30),
@@ -55,10 +55,7 @@ class _addNewTimeOffState extends State<addNewTimeOff> {
                 children: [
                   Text(
                     'Add new time off ',
-                    style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white),
+                    style: staticVars.textStyle2,
                   ),
                   SizedBox(height: 16),
                   TextField(

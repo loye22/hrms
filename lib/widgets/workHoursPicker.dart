@@ -47,19 +47,18 @@ class _WorkHoursPickerState extends State<WorkHoursPicker> {
 
 
     return Container(
-      width: MediaQuery.of(context).size.width - 1200,
+      width: MediaQuery.of(context).size.width - 700,
       height: 500,
       child: Stack(
         children: [
           Container(
-            decoration: staticVars.tstiPobUpBackGround , /*BoxDecoration(
-              borderRadius: BorderRadius.circular(30),
-              gradient: LinearGradient(colors: [
-                Color.fromRGBO(90, 137, 214, 1),
-                Color.fromRGBO(95, 167, 210, 1),
-                Color.fromRGBO(49, 162, 202, 1),
-              ]),
-            ),*/
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.all(Radius.circular(30)),
+              image: DecorationImage(
+                image: AssetImage('assests/tstiBackGround.jpg'),
+                fit: BoxFit.fill,
+              ),
+            ),
             child: Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(30),
@@ -85,20 +84,12 @@ class _WorkHoursPickerState extends State<WorkHoursPicker> {
                 children: [
                   Text(
                     widget.title,
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
+                    style: staticVars.textStyle2,
                   ),
                   SizedBox(height: 16,),
                   Text(
                     'Please add title',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
+                    style: staticVars.textStyle2,
                   ),
                   SizedBox(height: 10,),
                   TextField(
@@ -130,11 +121,7 @@ class _WorkHoursPickerState extends State<WorkHoursPicker> {
                           children: [
                             Text(
                               'Start Time',
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
-                              ),
+                              style: staticVars.textStyle2,
                             ),
                             SizedBox(height: 8),
                             GestureDetector(
@@ -162,11 +149,7 @@ class _WorkHoursPickerState extends State<WorkHoursPicker> {
                                           0,
                                           _startTime.hour,
                                           _startTime.minute)),
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.black,
-                                      ),
+                                      style: staticVars.textStyle2,
                                     ),
                                   ],
                                 ),
@@ -182,11 +165,7 @@ class _WorkHoursPickerState extends State<WorkHoursPicker> {
                           children: [
                             Text(
                               'End Time',
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
-                              ),
+                              style: staticVars.textStyle2,
                             ),
                             SizedBox(height: 8),
                             GestureDetector(
@@ -214,11 +193,7 @@ class _WorkHoursPickerState extends State<WorkHoursPicker> {
                                           0,
                                           _endTime.hour,
                                           _endTime.minute)),
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.black,
-                                      ),
+                                      style: staticVars.textStyle2,
                                     ),
                                   ],
                                 ),

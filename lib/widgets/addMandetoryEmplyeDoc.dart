@@ -1,7 +1,3 @@
-
-
-
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -19,7 +15,7 @@ class addMandetoryEmplyeDoc extends StatefulWidget {
 class _addMandetoryEmplyeDocState extends State<addMandetoryEmplyeDoc> {
   String title = '';
 
-  bool isLoding = false ;
+  bool isLoding = false;
 
   void _onTitleChanged(String value) {
     setState(() {
@@ -27,25 +23,22 @@ class _addMandetoryEmplyeDocState extends State<addMandetoryEmplyeDoc> {
     });
   }
 
-
-
-
-
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: MediaQuery.of(context).size.width - 1200,
+      width: MediaQuery.of(context).size.width - 700,
       height: 500,
       child: Stack(
         children: [
           Container(
-            decoration:staticVars.tstiPobUpBackGround, /*BoxDecoration(
-                borderRadius: BorderRadius.all(Radius.circular(30)),
-                gradient: LinearGradient(colors: [
-                  Color.fromRGBO(90, 137, 214, 1),
-                  Color.fromRGBO(95, 167, 210, 1),
-                  Color.fromRGBO(49, 162, 202, 1)
-                ])),*/
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.all(Radius.circular(30)),
+              image: DecorationImage(
+                image: AssetImage('assests/tstiBackGround.jpg'),
+                fit: BoxFit.fill,
+              ),
+
+            ),
             child: Container(
               decoration: BoxDecoration(
                 // borderRadius: BorderRadius.circular(30),
@@ -69,10 +62,7 @@ class _addMandetoryEmplyeDocState extends State<addMandetoryEmplyeDoc> {
                 children: [
                   Text(
                     'Add required employee document.',
-                    style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white),
+                    style: staticVars.textStyle2,
                   ),
                   SizedBox(height: 16),
                   TextField(
@@ -82,7 +72,6 @@ class _addMandetoryEmplyeDocState extends State<addMandetoryEmplyeDoc> {
                       border: OutlineInputBorder(),
                     ),
                   ),
-
                 ],
               ),
             ),
@@ -95,40 +84,43 @@ class _addMandetoryEmplyeDocState extends State<addMandetoryEmplyeDoc> {
               width: 120,
               height: 50,
               child: Center(
-                child:isLoding ? CircularProgressIndicator() :  Button(
-                  txt: 'submit',
-                  icon: Icons.subdirectory_arrow_left,
-                  isSelected: true,
-                  onPress: () async {
-                    if(title == '' ){
-                      Navigator.pop(context);
-                      return ;
-                    }
-                    try{
-                      setState(() {isLoding = true ; });
-                      FirebaseFirestore firestore = FirebaseFirestore.instance;
-                      DocumentReference docRef = await firestore.collection('EmployeesMandatoryDocs').add({
-                        'title': title,
-                      });
-                      setState(() {isLoding = false ; });
-
-
-
-
-
-                    }
-                    catch(e){
-                      print(e);
-
-                    }
-                    finally{
-                      setState(() {isLoding = false ; });
-                      Navigator.pop(context);
-                    }
-
-
-                  },
-                ),),),
+                child: isLoding
+                    ? CircularProgressIndicator()
+                    : Button(
+                        txt: 'submit',
+                        icon: Icons.subdirectory_arrow_left,
+                        isSelected: true,
+                        onPress: () async {
+                          if (title == '') {
+                            Navigator.pop(context);
+                            return;
+                          }
+                          try {
+                            setState(() {
+                              isLoding = true;
+                            });
+                            FirebaseFirestore firestore =
+                                FirebaseFirestore.instance;
+                            DocumentReference docRef = await firestore
+                                .collection('EmployeesMandatoryDocs')
+                                .add({
+                              'title': title,
+                            });
+                            setState(() {
+                              isLoding = false;
+                            });
+                          } catch (e) {
+                            print(e);
+                          } finally {
+                            setState(() {
+                              isLoding = false;
+                            });
+                            Navigator.pop(context);
+                          }
+                        },
+                      ),
+              ),
+            ),
           ),
         ],
       ),

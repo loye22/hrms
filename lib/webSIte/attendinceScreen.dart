@@ -45,7 +45,7 @@ class _attendanceScreenState extends State<attendanceScreen> {
 
   @override
   Widget build(BuildContext context) {
-    double globalWidth = MediaQuery.of(context).size.width < 1920 ? 145 : 210;
+    double globalWidth = MediaQuery.of(context).size.width < 1920 ? 175 : 210;
     final DateFormat formatter = DateFormat('yyyy-MM-dd');
     return Scaffold(
       body: Stack(
@@ -93,7 +93,7 @@ class _attendanceScreenState extends State<attendanceScreen> {
                             child: Button(
                               icon: Icons.keyboard_backspace,
                               txt: 'Back',
-                              isSelected: true,
+                              isSelected: false,
                               onPress: () {
                                 this.reportFlag = false;
                                 this.filterFlag = false;
@@ -107,7 +107,7 @@ class _attendanceScreenState extends State<attendanceScreen> {
                             padding: const EdgeInsets.only(right: 10),
                             child: Button(
                               txt: 'Reports',
-                              isSelected: true,
+                              isSelected: false,
                               icon: Icons.report_gmailerrorred,
                               onPress: () {
                                 try {
@@ -128,7 +128,7 @@ class _attendanceScreenState extends State<attendanceScreen> {
                                   child: Button(
                                     icon: Icons.filter_alt_outlined,
                                     txt: 'Filter By date ',
-                                    isSelected: true,
+                                    isSelected: false,
                                     onPress: () async {
                                       if (this.filterFlag) {
                                         this.emplyeeDataForFilter =
@@ -153,7 +153,7 @@ class _attendanceScreenState extends State<attendanceScreen> {
                                   child: Button(
                                     icon: Icons.near_me_disabled,
                                     txt: 'Absence ',
-                                    isSelected: true,
+                                    isSelected: false,
                                     onPress: () async {
                                       this.absenceFlag = true;
                                       setState(() {});
@@ -171,7 +171,7 @@ class _attendanceScreenState extends State<attendanceScreen> {
                                         icon: Icons.date_range,
                                         txt:
                                             'From ${formatter.format(selectedStartDate)}',
-                                        isSelected: true,
+                                        isSelected: false,
                                         onPress: () =>
                                             _selectStartDate(context),
                                       ),
@@ -183,7 +183,7 @@ class _attendanceScreenState extends State<attendanceScreen> {
                                         icon: Icons.date_range,
                                         txt:
                                             'To ${formatter.format(selectedEndDate)}',
-                                        isSelected: true,
+                                        isSelected: false,
                                         onPress: () => _selectEndDate(context),
                                       ),
                                     ),
@@ -193,7 +193,7 @@ class _attendanceScreenState extends State<attendanceScreen> {
                                       child: Button(
                                         icon: Icons.import_export,
                                         txt: 'Export',
-                                        isSelected: true,
+                                        isSelected: false,
                                         onPress: () {},
                                       ),
                                     ),
@@ -815,12 +815,20 @@ class _attendincePopUpEditWindowsState
     final double h = 10;
     //  print(widget.bLoacions[widget.item['BranshName']]);
     return Container(
-      width: 700,
+      width: 900,
       height: 600,
       child: Stack(
         children: [
           Container(
-            decoration: staticVars.tstiPobUpBackGround,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(30),
+                image: DecorationImage(
+                  image: AssetImage(
+                      'assests/tstiBackGround.jpg'),
+                  fit: BoxFit.fill,
+                ),
+
+              )
           ),
           Container(
             decoration: BoxDecoration(
@@ -836,7 +844,7 @@ class _attendincePopUpEditWindowsState
                 children: [
                   Text(
                     widget.item['name'].toString(),
-                    style: global.txtStyle1,
+                    style:staticVars.textStyle2,
                   ),
                   SizedBox(
                     height: h,
@@ -845,7 +853,7 @@ class _attendincePopUpEditWindowsState
                     children: [
                       Text(
                         'Check in detals',
-                        style: global.txtStyle1,
+                        style:staticVars.textStyle2,
                       ),
                       SizedBox(
                         width: 10,
@@ -890,7 +898,7 @@ class _attendincePopUpEditWindowsState
                         },
                         icon: Icon(
                           Icons.edit,
-                          color: Colors.white,
+                          color: staticVars.c1 ,
                         ),
                       )
                     ],
@@ -916,7 +924,7 @@ class _attendincePopUpEditWindowsState
                           child: Text(
                             timeStampToDate(widget.item['checkInTimeStamp']) ??
                                 '404 notfound',
-                            style: global.txtStyle1,
+                            style:staticVars.textStyle2,
                           ),
                         ),
                         SizedBox(
@@ -928,11 +936,11 @@ class _attendincePopUpEditWindowsState
                             widget.item['checkInIsHeIn'] == 'true'
                                 ? Text(
                                     'Inside',
-                                    style: global.txtStyle1,
+                              style:staticVars.textStyle2,
                                   )
                                 : Text(
                                     'Outside',
-                                    style: global.txtStyle1,
+                              style:staticVars.textStyle2,
                                   ),
                             Container(
                                 clipBehavior: Clip.antiAlias,
@@ -967,7 +975,7 @@ class _attendincePopUpEditWindowsState
                     children: [
                       Text(
                         'Check Out detals',
-                        style: global.txtStyle1,
+                        style:staticVars.textStyle2,
                       ),
                       IconButton(
                         onPressed: () async {
@@ -1010,7 +1018,7 @@ class _attendincePopUpEditWindowsState
                         },
                         icon: Icon(
                           Icons.edit,
-                          color: Colors.white,
+                          color: staticVars.c1,
                         ),
                       )
                     ],
@@ -1024,7 +1032,7 @@ class _attendincePopUpEditWindowsState
                                 widget.item['checkOutPhoto'] == ''
                             ? Text(
                                 '----',
-                                style: global.txtStyle1,
+                          style:staticVars.textStyle2,
                               )
                             : CircleAvatar(
                                 backgroundImage:
@@ -1038,14 +1046,14 @@ class _attendincePopUpEditWindowsState
                                 widget.item['checkOutTimeStamp'] == ''
                             ? Text(
                                 '----',
-                                style: global.txtStyle1,
+                          style:staticVars.textStyle2,
                               )
                             : Expanded(
                                 child: Text(
                                 timeStampToDate(
                                     widget.item['checkOutTimeStamp']),
                                 // widget.item['checkOutTimeStamp'],
-                                style: global.txtStyle1,
+                                  style:staticVars.textStyle2,
                               )),
                         SizedBox(
                           width: 20,
@@ -1053,24 +1061,23 @@ class _attendincePopUpEditWindowsState
                         widget.item['checkOutLat'] == null
                             ? Text(
                                 '-----',
-                                style: global.txtStyle1,
+                          style:staticVars.textStyle2,
                               )
                             : Column(
                                 children: [
                                   widget.item['checkOutIsHeIn'] == 'true'
                                       ? Text(
                                           'Inside',
-                                          style: global.txtStyle1,
-                                        )
+                                    style:staticVars.textStyle2,                                        )
                                       : Text(
                                           'Outside',
-                                          style: global.txtStyle1,
+                                    style:staticVars.textStyle2,
                                         ),
                                   widget.item['checkOutLong'] == '' ||
                                           widget.item['checkOutLong'] == null
                                       ? Text(
                                           '----',
-                                          style: global.txtStyle1,
+                                    style:staticVars.textStyle2,
                                         )
                                       : Container(
                                           clipBehavior: Clip.antiAlias,

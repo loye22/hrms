@@ -44,6 +44,12 @@ class staticVars {
       color: Colors.white,
       fontWeight: FontWeight.bold);
 
+  static TextStyle textStyle4 = GoogleFonts.montserratAlternates(
+      fontSize: 16,
+      color: Color.fromRGBO(0, 81, 45, 100),
+      fontWeight: FontWeight.bold);
+
+
   static Color c1 =  Color.fromRGBO(0, 81, 45, 100) ;
 
 

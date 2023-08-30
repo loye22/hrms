@@ -14,25 +14,23 @@ class _addNewBranchState extends State<addNewBranch> {
   String title = '';
   bool isLoding = false;
 
-
   final titleController = TextEditingController();
-
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: MediaQuery.of(context).size.width - 1200,
+      width: MediaQuery.of(context).size.width - 900,
       height: 500,
       child: Stack(
         children: [
           Container(
-            decoration: staticVars.tstiPobUpBackGround , /*BoxDecoration(
-                borderRadius: BorderRadius.circular(30),
-                gradient: LinearGradient(colors: [
-                  Color.fromRGBO(90, 137, 214, 1),
-                  Color.fromRGBO(95, 167, 210, 1),
-                  Color.fromRGBO(49, 162, 202, 1)
-                ])),*/
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.all(Radius.circular(30)),
+              image: DecorationImage(
+                image: AssetImage('assests/tstiBackGround.jpg'),
+                fit: BoxFit.fill,
+              ),
+            ),
             child: Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(30),
@@ -55,10 +53,7 @@ class _addNewBranchState extends State<addNewBranch> {
                 children: [
                   Text(
                     'Please enter the new branch name',
-                    style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white),
+                    style:staticVars.textStyle2,
                   ),
                   SizedBox(height: 16),
                   TextField(
@@ -68,7 +63,6 @@ class _addNewBranchState extends State<addNewBranch> {
                       border: OutlineInputBorder(),
                     ),
                   ),
-
                 ],
               ),
             ),
@@ -84,42 +78,41 @@ class _addNewBranchState extends State<addNewBranch> {
                 child: isLoding
                     ? CircularProgressIndicator()
                     : Button(
-                  txt: 'submit',
-                  icon: Icons.subdirectory_arrow_left,
-                  isSelected: true,
-                  onPress: () async {
-                    if (titleController.text == '') {
-                      Navigator.pop(context);
-                      print("invalid input");
-                      return;
-                    }
-                    try {
-                      setState(() {
-                        isLoding = true;
-                      });
-                      FirebaseFirestore firestore =
-                          FirebaseFirestore.instance;
+                        txt: 'submit',
+                        icon: Icons.subdirectory_arrow_left,
+                        isSelected: true,
+                        onPress: () async {
+                          if (titleController.text == '') {
+                            Navigator.pop(context);
+                            print("invalid input");
+                            return;
+                          }
+                          try {
+                            setState(() {
+                              isLoding = true;
+                            });
+                            FirebaseFirestore firestore =
+                                FirebaseFirestore.instance;
 
-                      // Create a new document with an auto-generated ID
-                      DocumentReference docRef =
-                      await firestore.collection('branchs').add({
-                        'title': titleController.text.replaceAll(' ', ''),
-
-                      });
-                      setState(() {
-                        isLoding = false;
-                      });
-                      //print(title  + " " +  description  + " " +  selectedDays.toString());
-                    } catch (e) {
-                      print(e);
-                    } finally {
-                      setState(() {
-                        isLoding = false;
-                      });
-                      Navigator.pop(context);
-                    }
-                  },
-                ),
+                            // Create a new document with an auto-generated ID
+                            DocumentReference docRef =
+                                await firestore.collection('branchs').add({
+                              'title': titleController.text.replaceAll(' ', ''),
+                            });
+                            setState(() {
+                              isLoding = false;
+                            });
+                            //print(title  + " " +  description  + " " +  selectedDays.toString());
+                          } catch (e) {
+                            print(e);
+                          } finally {
+                            setState(() {
+                              isLoding = false;
+                            });
+                            Navigator.pop(context);
+                          }
+                        },
+                      ),
               ),
             ),
           ),

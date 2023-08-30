@@ -51,37 +51,16 @@ class _weekEndMangerScreenState extends State<weekEndMangerScreen> {
             ),
           ),
           rightBar(),
+
           Positioned(
             left: 280,
-            top: 15,
+            top: 40,
             child: Container(
               width: MediaQuery.of(context).size.width - 650,
-              height: 80,
+              height: MediaQuery.of(context).size.height - 130,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.all(Radius.circular(10)),
-                border: Border.all(color: Colors.white.withOpacity(0.13)),
-                color: Colors.grey.shade200.withOpacity(0.23),
-              ),
-              child: Center(
-                child: Text(
-                  'Weekends manger screen',
-                  style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white),
-                ),
-              ),
-            ),
-          ),
-          Positioned(
-            left: 280,
-            top: 115,
-            child: Container(
-              width: MediaQuery.of(context).size.width - 650,
-              height: MediaQuery.of(context).size.height - 230,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.all(Radius.circular(10)),
-                border: Border.all(color: Colors.white.withOpacity(0.13)),
+                border: Border.all(color: Colors.black.withOpacity(0.33)),
                 color: Colors.grey.shade200.withOpacity(0.23),
               ),
               child: SingleChildScrollView(

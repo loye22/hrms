@@ -275,6 +275,27 @@ class rightBar extends StatelessWidget {
 
                 },
               ),
+            ), SizedBox(
+              height: 15,
+            ),
+            Container(
+              width: 300,
+              child: Button(
+                txt: "Add office location ",
+                icon: Icons.location_on,
+                isSelected: false,
+                onPress: ()  async {
+                  await showDialog(
+                    context: context,
+                    builder: (BuildContext context) => AlertDialog(
+                      backgroundColor: Colors.transparent,
+                      content: addLocations(),
+                    ),
+                  );
+                 // await _determinePosition();
+
+                },
+              ),
             ),
 
 

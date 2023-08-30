@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:hrms/models/staticVars.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 class DonutChartWidget extends StatefulWidget {
@@ -33,7 +34,7 @@ class _DonutChartWidgetState extends State<DonutChartWidget> {
               dataSource: <ChartSampleData>[
                 ChartSampleData('Used Days', widget.usedDays ,Colors.red),
                 ChartSampleData(
-                    'Remaining Days', widget.totalDays - widget.usedDays , Colors.blue),
+                    'Remaining Days', widget.totalDays - widget.usedDays , staticVars.c1.withOpacity(0.33)),
               ],
               pointColorMapper: (ChartSampleData data, _) => data.color,
               xValueMapper: (ChartSampleData data, _) => data.x,
@@ -62,15 +63,12 @@ class _DonutChartWidgetState extends State<DonutChartWidget> {
                     SizedBox(height: 4),
                     Text(
                       '${(widget.usedDays / widget.totalDays * 100).toStringAsFixed(0)}% Used',
-                      style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.blue),
+                      style:staticVars.textStyle2,
                     ),
                     SizedBox(
                       height: 8,
                     ),
-                    Text(" Total days${this.widget.totalDays.toString()}")
+                    Text(" Total days${this.widget.totalDays.toString()}" , style: staticVars.textStyle2,)
                   ],
                 ),
               ),
@@ -79,8 +77,7 @@ class _DonutChartWidgetState extends State<DonutChartWidget> {
         ),
         Text(
           widget.txt,
-          style: TextStyle(
-              fontSize: 16, fontWeight: FontWeight.bold, color: widget.color),
+          style: staticVars.textStyle4,
         ),
       ],
     );

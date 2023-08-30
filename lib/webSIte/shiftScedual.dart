@@ -210,6 +210,15 @@ class _shiftScedualState extends State<shiftScedual> {
                                       AlertDialog(
                                           backgroundColor: Colors.transparent,
                                           content: Container(
+                                              decoration: BoxDecoration(
+                                                borderRadius: BorderRadius.circular(30),
+                                                image: DecorationImage(
+                                                  image: AssetImage(
+                                                      'assests/tstiBackGround.jpg'),
+                                                  fit: BoxFit.fill,
+                                                ),
+
+                                              ),
                                             width: MediaQuery.of(context)
                                                     .size
                                                     .width -
@@ -217,20 +226,13 @@ class _shiftScedualState extends State<shiftScedual> {
                                             height: 600,
                                             child: Stack(
                                               children: [
-                                                Container(
+                                              /*  Container(
                                                   decoration: BoxDecoration(
                                                       borderRadius:
                                                           BorderRadius.circular(
                                                               30),
-                                                      gradient: LinearGradient(
-                                                          colors: [
-                                                            Color.fromRGBO(90,
-                                                                137, 214, 1),
-                                                            Color.fromRGBO(95,
-                                                                167, 210, 1),
-                                                            Color.fromRGBO(
-                                                                49, 162, 202, 1)
-                                                          ])),
+                                                    color: staticVars.c1
+                                                     ),
                                                   child: Container(
                                                     decoration: BoxDecoration(
                                                       borderRadius:
@@ -246,8 +248,8 @@ class _shiftScedualState extends State<shiftScedual> {
                                                           .withOpacity(0.25),
                                                     ),
                                                   ),
-                                                ),
-                                                Container(
+                                                ),*/
+                                               /* Container(
                                                   decoration: BoxDecoration(
                                                     borderRadius:
                                                         BorderRadius.all(
@@ -256,8 +258,7 @@ class _shiftScedualState extends State<shiftScedual> {
                                                     border: Border.all(
                                                         color: Colors.white
                                                             .withOpacity(0.13)),
-                                                    color: Colors.grey.shade200
-                                                        .withOpacity(0.23),
+
                                                   ),
                                                   child: Padding(
                                                     padding:
@@ -268,7 +269,7 @@ class _shiftScedualState extends State<shiftScedual> {
                                                               .start,
                                                       children: [
                                                         Text(
-                                                          'Shift the secdual for all employees',
+                                                          'Shift the secdual for mployees',
                                                           style: TextStyle(
                                                               fontSize: 24,
                                                               fontWeight:
@@ -381,13 +382,129 @@ class _shiftScedualState extends State<shiftScedual> {
                                                       ],
                                                     ),
                                                   ),
-                                                ),
+                                                ),*/
+                                                Padding(
+                                                  padding:
+                                                  EdgeInsets.all(16.0),
+                                                  child: Column(
+                                                    crossAxisAlignment:
+                                                    CrossAxisAlignment
+                                                        .start,
+                                                    children: [
+                                                      Text(
+                                                        'Shift the secdual for mployees',
+                                                        style:staticVars.textStyle2,
+                                                      ),
+                                                      SizedBox(height: 16),
+                                                      DropdownButtonFormField<
+                                                          String>(
+                                                        value: 'On duty',
+                                                        onChanged: (value) {
+                                                          v1 = value!;
+                                                        },
+                                                        items: [
+                                                          'On duty',
+                                                          'Off'
+                                                        ].map((String value) {
+                                                          return DropdownMenuItem<
+                                                              String>(
+                                                            value: value,
+                                                            child:
+                                                            Text(value),
+                                                          );
+                                                        }).toList(),
+                                                        decoration:
+                                                        InputDecoration(
+                                                          labelText:
+                                                          'On duty / Off',
+                                                          border:
+                                                          OutlineInputBorder(),
+                                                        ),
+                                                      ),
+                                                      SizedBox(height: 16),
+                                                      DropdownButtonFormField<
+                                                          String>(
+                                                        value: 'AbuDabi',
+                                                        onChanged: (value) {
+                                                          v2 = value!;
+                                                          //widget.onSelectedItems();
+                                                        },
+                                                        items: Branchs.map(
+                                                                (String value) {
+                                                              return DropdownMenuItem<
+                                                                  String>(
+                                                                value: value,
+                                                                child:
+                                                                Text(value),
+                                                              );
+                                                            }).toList(),
+                                                        decoration:
+                                                        InputDecoration(
+                                                          labelText:
+                                                          'Please select the bransh',
+                                                          border:
+                                                          OutlineInputBorder(),
+                                                        ),
+                                                      ),
+                                                      SizedBox(height: 16),
+                                                      DropdownButtonFormField<
+                                                          String>(
+                                                        value: workeTime[0],
+                                                        onChanged: (value) {
+                                                          v3 = value!;
+                                                          //widget.onSelectedItems();
+                                                        },
+                                                        items: workeTime.map(
+                                                                (String value) {
+                                                              return DropdownMenuItem<
+                                                                  String>(
+                                                                value: value,
+                                                                child:
+                                                                Text(value),
+                                                              );
+                                                            }).toList(),
+                                                        decoration:
+                                                        InputDecoration(
+                                                          labelText:
+                                                          'Please select the time',
+                                                          border:
+                                                          OutlineInputBorder(),
+                                                        ),
+                                                      ),
+                                                      SizedBox(height: 16),
+                                                      Button(
+                                                        icon: Icons.add,
+                                                        txt: 'Submit',
+                                                        isSelected: true,
+                                                        onPress: () {
+                                                          try {
+                                                            if (v1 == '' ||
+                                                                v2 == '') {
+                                                              MyDialog.showAlert(
+                                                                  context,
+                                                                  "Please insert the both fileds");
+                                                              return;
+                                                            }
+
+                                                            Navigator.pop(
+                                                                context,
+                                                                [v1, v2]);
+                                                          } catch (e) {
+                                                            MyDialog.showAlert(
+                                                                context,
+                                                                e.toString());
+                                                          }
+                                                        },
+                                                      ),
+                                                    ],
+                                                  ),
+                                                )
                                               ],
                                             ),
                                           )),
                                 );
                                 if (x == null) {
-                                  Navigator.of(context).pop();
+                                //  Navigator.of(context).pop();
                                   return;
                                   v1 = 'OFF';
                                   v2 = 'Abudabi';
@@ -791,30 +908,18 @@ class _HoverContainerState extends State<HoverContainer> {
                                     height: 600,
                                     child: Stack(
                                       children: [
+
                                         Container(
-                                          decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(30),
-                                              gradient: LinearGradient(colors: [
-                                                Color.fromRGBO(90, 137, 214, 1),
-                                                Color.fromRGBO(95, 167, 210, 1),
-                                                Color.fromRGBO(49, 162, 202, 1)
-                                              ])),
-                                          child: Container(
-                                            decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(30),
-                                              //borderRadius: BorderRadius.all(Radius.circular(30)),
-                                              border: Border.all(
-                                                  color: Colors.white
-                                                      .withOpacity(0.13)),
-                                              color: Colors.grey.shade200
-                                                  .withOpacity(0.25),
-                                            ),
-                                          ),
-                                        ),
-                                        Container(
-                                          decoration: staticVars.tstiPobUpBackGround,/*BoxDecoration(
+                                    decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(30),
+                                    image: DecorationImage(
+                                      image: AssetImage(
+                                          'assests/tstiBackGround.jpg'),
+                                      fit: BoxFit.fill,
+                                    ),
+
+                                  ),
+                                          /*BoxDecoration(
                                             borderRadius: BorderRadius.all(
                                                 Radius.circular(30)),
                                             border: Border.all(
@@ -831,11 +936,7 @@ class _HoverContainerState extends State<HoverContainer> {
                                               children: [
                                                 Text(
                                                   'Shift the secdual for ${this.widget.empName}\n${this.widget.shiftDate}',
-                                                  style: TextStyle(
-                                                      fontSize: 24,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      color: Colors.white),
+                                                  style: staticVars.textStyle2,
                                                 ),
                                                 SizedBox(height: 16),
                                                 DropdownButtonFormField<String>(
